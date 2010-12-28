@@ -20,7 +20,7 @@ color()
 colors=$(tput colors)  # This better be 256
 
 str_a='%a'      # Action, if we are in the middle of one
-str_b='%b%u%c'  # Branch + staged/unstaged changes
+str_b='%b%u'    # Branch + staged/unstaged changes
 str_d='%~'      # PWD, shortened, if possible
 str_m='%m'      # Machine name
 str_n='%n'      # User name
@@ -61,10 +61,10 @@ case $colors in
         ;;
 esac
 
-str_format="· ${str_v} ${str_b}"
+str_format="· ${str_b}"
 str_format=${str_format//\%\(/%%(}
 
-zstyle ':vcs_info:*' enable git hg bzr svn
+zstyle ':vcs_info:*' enable git 
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' stagedstr     "$str_s"
 zstyle ':vcs_info:*' unstagedstr   "$str_u"
