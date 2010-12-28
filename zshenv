@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
 setopt noglobalrcs
-export LANG=en_US.utf-8
-export LC_ALL=$LANG
+export LANG="en_US.utf-8"
+export LC_ALL="$LANG"
 
 export USER_FULLNAME="Christopher Lord"
 export USER_EMAIL=christopherlord@gmail.com
