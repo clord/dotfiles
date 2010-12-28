@@ -4,7 +4,7 @@ alias cp='cp -rv'
 alias mv='mv -v'
 alias mkdir='mkdir -p'
 alias mmv='noglob zmv -W'
-alias grep='grep -I --color=auto'
+alias grep='grep -I '
 alias myip='curl http://ifconfig.me/ip'
 alias po=popd
 alias pu=pushd
@@ -30,7 +30,7 @@ alias -g N="&>/dev/null"
 
 # ls {{{1
 
-alias ls='ls -CFh --color=auto'
+alias ls='ls -CFh '
 alias lsh='ls -d .*'                       # Show hidden files
 alias lsd='ls -d *(/)'                     # Show directories
 alias lse='ls -d *(/^F)'                   # Show empty directories

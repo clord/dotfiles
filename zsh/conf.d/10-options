@@ -32,7 +32,7 @@ if (( $EUID != 0 )); then
         share_history
 fi
 
-eval $(dircolors)
+#eval $(dircolors)
 
 export ZLS_COLORS=$LS_COLORS
 
