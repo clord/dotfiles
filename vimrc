@@ -89,7 +89,7 @@ set modelines=5                 " check the first 5 lines for a modeline
 
 " Highlighting {{{
 if &t_Co >= 256 || has("gui_running")
-   colorscheme mustang
+   "colorscheme mustang
 endif
 
 if &t_Co > 2 || has("gui_running")
