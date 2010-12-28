@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+
+setopt \
+    auto_cd              \
+    auto_pushd           \
+    brace_ccl            \
+    complete_in_word     \
+    correct              \
+    csh_null_glob        \
+    extended_glob        \
+    interactive_comments \
+    no_bg_nice           \
+    no_beep              \
+    no_hist_beep         \
+    no_rm_star_silent    \
+    prompt_subst         \
+    pushd_ignore_dups    \
+    pushd_minus          \
+    pushd_silent         \
+    pushd_to_home        \
+    vi
+
+if (( $EUID != 0 )); then
+    setopt \
+        extended_history       \
+        hist_expire_dups_first \
+        hist_find_no_dups      \
+        hist_ignore_space      \
+        hist_no_functions      \
+        hist_reduce_blanks     \
+        inc_append_history     \
+        share_history
+fi
+
+eval $(dircolors)
+
+export ZLS_COLORS=$LS_COLORS
+
+READNULLCMD=${PAGER:-/usr/bin/pager}
+REPORTTIME=2  # Report time if exec exceeds secs
+
+if (( $EUID != 0 )); then
+    HISTFILE=~/.zsh/history
+    HISTSIZE=5500
+    SAVEHIST=5000
+fi
+
+typeset -ga chpwd_functions
+typeset -ga preexec_functions
+typeset -ga precmd_functions
+
+case $TERM in
+    xterm*|putty*|screen*)
+        precmd_functions+='set_window_title_default'
+        ;;
+esac

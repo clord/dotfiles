@@ -1,0 +1,7 @@
+#compdef
+
+_force_rehash()
+{
+    (( CURRENT == 1 )) && rehash
+    return 1
+}

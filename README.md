@@ -5,9 +5,9 @@ Start by getting the files:
 	git clone https://github.com/clord/dotfiles.git
 
 
-then run `dotfiles/init.rb dotfiles` (or whatever you want `$1` to be), which will perform the following:
+then run `$1/init dotfiles` (or whatever you want `$1` to be), which will perform the following:
 
-	cd dotfiles
+	cd $1 
 	git submodule init
 	git submodule update
 	ln -s ~/$1/zshrc ~/.zshrc
@@ -28,3 +28,7 @@ take care of upgrading components.
 
 will perpare the repository so as to pull this plugin.
 
+## IRB
+
+
+	gem install interactive_editor awesome_print

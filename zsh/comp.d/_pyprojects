@@ -1,0 +1,3 @@
+#compdef pydo pydep pypkg pydev
+
+_values 'python projects' $CODE_DIR/python/*/setup.py(.:h:t)

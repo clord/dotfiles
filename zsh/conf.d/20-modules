@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+autoload -U zargs
+autoload -U zmv
+
+unalias run-help
+autoload -U run-help
+
+# Automatically quote pasted URLs
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic

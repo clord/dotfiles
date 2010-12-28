@@ -1,0 +1,24 @@
+#compdef vcs
+
+# To install, just put this file somewhere in your fpath
+
+typeset -A opt_args
+
+_actions()  { _values 'actions'  $(vcs -A) }
+
+_arguments -s -S \
+    "-h[Display help message]" \
+    "-i[Interactive mode]" \
+    "-f[Non-interactive mode]" \
+    "-v[Verbose mode]" \
+    "-q[Non-verbose mode]" \
+    "-O[Specify origin for clone (VCS+URL)]:origin:" \
+    "-D[Specify the working directory]:directory:" \
+    "-a[Specify the archive filename]:archive:" \
+    "-m[Specify message for commit]:message:" \
+    "-A[List all available actions]" \
+    "-V[List all available VCS types]" \
+    "*::action:_actions" \
+    && return 0
+
+return 1

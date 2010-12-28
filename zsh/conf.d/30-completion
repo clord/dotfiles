@@ -1,0 +1,74 @@
+#!/usr/bin/env zsh
+
+zmodload zsh/complist
+autoload compinit
+
+# If we're the superuser, don't do caching or dumps as they will be not be
+# editable by the normal user.
+if (( $EUID == 0 )); then
+    compinit -D -C
+else
+    compinit
+fi
+
+# Order in which completion mechanisms will be tried:
+#
+#    1. Try completing the results of an old list (for use with history
+#    completion on ctrl-space)
+#
+#    2. Try to complete using context-sensitive completion
+#
+#    3. Try interpretting the typed text as a pattern and matching it against
+#    the possible completions in context
+#
+#    4. Try completing the word just up to the cursor, ignoring anything past it.
+#
+#    5. Try combining the effects of completion and correction.
+
+zstyle ':completion:*' completer _force_rehash _oldlist _complete _match _expand _prefix _approximate
+
+zstyle ':completion:*' file-sort name
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' list-colors ${(s.:.)ZLS_COLORS}
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' squeeze-slashes true
+
+zstyle ':completion::*:git-{name-rev,add,rm}:*' ignore-line true
+
+# Pasting tabs doesn't perform completion
+zstyle ':completion:*' insert-tab pending
+
+# Match lowercase letters to uppercase letters and dashes to underscores.
+zstyle ':completion:*' matcher-list 'm:{a-z-}={A-Z_}'
+
+# Allows /u/l/b<TAB> to menu complete as though you typed /u*/l*/b*<TAB>
+zstyle ':completion:*:paths' expand suffix
+
+# Menu complete on ambiguous paths
+zstyle ':completion:*:paths' list-suffixes true
+
+zstyle ':completion:*:*:(gvim|vim|vi|v):*:all-files' ignored-patterns '*.pyc' '*.zwc' '*.o' '*.class'
+
+zstyle ':completion:*:functions' ignored-patterns '_*'
+
+zstyle ':completion:*:manuals'       separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections   true
+
+zstyle ':completion:*:descriptions' format "- %F{3}%d%f -"
+zstyle ':completion:*:messages'     format "- %F{6}%d%f -"
+zstyle ':completion:*:corrections'  format "- %F{3}%d%f - (%F{6}errors %e%f)"
+zstyle ':completion:*:warnings'     format "- %F{1}no match%f - %F{3}%d%f"
+
+zstyle ':completion:*:default'  select-prompt "%F{3}Match %F{6}%m %F{3}Line %F{6}%l %F{1}%p%f"
+zstyle ':completion:*:default'  list-prompt   "%F{3}Line %F{6}%l %F{3}Matches%f"
+
+zstyle ':completion:*:*:kill:*' command 'ps -ax -o pid,%cpu,tty,time,command'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:kill:*' force-list always
+
+zstyle ':completion:*:*:killall:*' command 'ps -ax -o command'
+
+zstyle ':completion:*:*:dvipdf:*' file-patterns '*(-/):directories' '*.dvi'
+zstyle ':completion:*:*:latex:*'  file-patterns '*(-/):directories' '*.tex'

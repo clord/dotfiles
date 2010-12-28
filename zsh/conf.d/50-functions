@@ -1,0 +1,392 @@
+# Set window titles {{{1
+
+set_window_title() { print -Pn "\e]0;$*\a" }
+set_window_title_default() { set_window_title "%l: %n@%m: %~" }
+
+# python {{{1
+
+export WORKON_HOME=$HOME/.virtualenvs
+export PIP_VIRTUALENV_BASE=$WORKON_HOME
+export PIP_RESPECT_VIRTUALENV=1
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export VIRTUALENV_USE_DISTRIBUTE=1
+
+source virtualenvwrapper.sh
+
+# Work on a python project
+# Usage: wo [VIRTUALENV]
+# Activate (workon) with VIRTUALENV, deactivate (workoff) otherwise
+wo()
+{
+    [[ -n $VIRTUAL_ENV ]] && deactivate
+    (( $# > 0 )) && workon $@
+    true
+}
+
+pydeploy()
+{
+    command pydeploy -iv $@
+}
+
+pypkg()
+{
+    python setup.py sdist egg_info $@
+}
+
+# Search for python packages
+pys()
+{
+    pip search $1 | awk -F ' - ' '{print $1}'
+}
+
+# Install packages
+pyi()
+{
+    pip install -U ${VIRTUAL_ENV:+--user} $@
+}
+
+# Uninstall packages
+pyrm()
+{
+    pip uninstall -y $@
+}
+
+# Install/remove based on requirements file
+pyir()  { pyi  -r $WORKON_HOME/requirements/$1 }
+pyrmr() { pyrm -r $WORKON_HOME/requirements/$1 }
+
+# Information about the python environment
+pydir() { command pydir  -p ${VIRTUAL_ENV:-$HOME/.local} $@ }
+pyls()  { command pyls   -p ${VIRTUAL_ENV:-$HOME/.local} $@ }
+
+pyadd()
+{
+    [[ -z $VIRTUAL_ENV ]] && return 1
+    cd $(virtualenvwrapper_get_site_packages_dir)
+    local dir
+    for dir in $@; do
+        echo "$dir" >>custom.pth
+    done
+    cd - &>/dev/null
+}
+
+# Create new isolated python project
+pynew()
+{
+    [[ -n $VIRTUAL_ENV ]] && deactivate
+    mkvirtualenv --no-site-packages --clear $@
+}
+
+# Perform a command in a project directory
+pydo()
+{
+    cd $PROJECT_HOME/python/$1; shift
+    $@  # This is the actual command
+    cd -
+}
+
+# Perform a command on all projects
+pydoall()
+{
+    local name
+    for name in $HOME/Code/python/*/setup.py(.:h:t); do
+        pydo $name $@
+    done
+}
+
+# Deploy all given projects
+pydep()
+{
+    # If no args, run against current directory
+    (( $# == 0 )) && pydeploy
+    local name
+    for name in $@; do
+        pydo $name pydeploy
+    done
+}
+
+# ... and the version for everything
+pydepall() { pydoall pydeploy }
+
+# Package all given projects
+pypkg()
+{
+    # If no args, run against current directory
+    (( $# == 0 )) && pypkg
+    local name
+    for name in $@; do
+        pydo $name pypkg
+    done
+}
+
+# ... and the version for everything
+pypkgall() { pydoall pypkg }
+
+# Develop all given projects
+pydev()
+{
+    # If no args, run against current directory
+    (( $# == 0 )) && pip install -e $PWD
+    local name
+    for name in $@; do
+        pip install -e $HOME/Code/python/$name
+    done
+}
+
+# ... and the version for everything
+pydevall() { pydoall pydev }
+
+# cd {{{1
+
+# Go to parent directory $1 times
+..()
+{
+    local num=${1:-1}
+    local dir
+    while (( $num > 0 )); do
+        dir=../$dir
+        num=$(($num - 1))
+    done
+    cd $dir &>/dev/null
+}
+
+# Execute a command in a given directory
+# Usage: cdrun DIR CMD [ARG...]
+cdrun()
+{
+    cd $1; shift;
+    $@; local e=$?;
+    cd - &>/dev/null;
+    return ${e:-0}
+}
+
+# Create directory, then cd into it
+mkcd() { mkdir -p $@; cd $1 }
+
+# If virtualenv activated, cd with no args goes to project
+cd()
+{
+    if (( $# == 0 )); then
+        if [[ -n $VIRTUAL_ENV ]]; then
+            builtin cd $PROJECT_HOME/python/${VIRTUAL_ENV##*/}
+        fi
+    fi
+    builtin cd $@
+}
+
+# Change directory to the nearest repo root
+cdr()
+{
+    local dir=${1:-$PWD}
+    if [[ -d $dir/.svn ]]; then
+        while [[ -d $dir/../.svn ]]; do
+            d=${d%/*}
+        done
+    else
+        while ! [[ -z $dir || -d $dir/.git || -d $dir/.hg || -d $dir/.bzr ]]; do
+            dir=${dir%/*}
+        done
+    fi
+    [[ -n $dir ]] && cd $dir
+}
+
+# Same as cdr, but don't look at the current directory
+cdR() { cdr ${1:-$PWD}(:h) }
+
+# Make it easy to cd to common places
+c() { cd $PROJECT_HOME/$1 }; compdef '_files -W $PROJECT_HOME -/' c
+l() { cd ~/.local/$1      }; compdef '_files -W ~/.local      -/' l
+h() { cd ~/$1             }; compdef '_files -W ~             -/' h
+
+# vim {{{1
+
+compdef v=vim
+
+# Generate file using a template, then edit
+tv() { temple $@; v $@ }
+
+# Make sure the file is executable, then edit
+vx() { touch $@; chmod +x $@; v $@ }
+
+# Edit executable in path
+vw() { v $(whence -p $@) }; compdef vw=whence
+
+# Edit regular files
+vf() { v ${1:-$PWD}/**/*${2}(.) }; compdef '_files -/' vf
+
+# Edit any recognizable source code
+vc() { ack -lr --print0 $2 . ${1:-$PWD}/* | xargs -0 v }; compdef '_files -/' vc
+
+# Edit source code of various types
+vsh() { vc ${1:-$PWD} --shell  }; compdef vsh=vc
+vpy() { vc ${1:-$PWD} --python }; compdef vpy=vc
+vrb() { vc ${1:-$PWD} --ruby   }; compdef vrb=vc
+vpl() { vc ${1:-$PWD} --perl   }; compdef vpl=vc
+
+# zsh widgets {{{1
+
+toggle-prompt()
+{
+    if [[ -n $PS1 && -n $RPS1 ]]; then
+        OPS1=$PS1; ORPS1=$RPS1
+        unset PS1 RPS1
+    else
+        PS1=$OPS1; RPS1=$ORPS1
+    fi
+    zle reset-prompt
+}
+
+toggle-suspend()
+{
+    zle push-input
+    BUFFER=fg
+    zle accept-line
+}
+
+# sourcery {{{1
+
+# Shortcuts for current profile
+
+s() { sourcery -vf $@ }; compdef s=sourcery
+
+sP()  { s $@ push         }; compdef sP=s
+sb()  { s $@ build        }; compdef sb=s
+sbd() { s $@ build deploy }; compdef sbd=s
+sc()  { s $@ commit       }; compdef sc=s
+scP() { s $@ commit push  }; compdef scP=s
+sd()  { s $@ deploy       }; compdef sd=s
+sp()  { s $@ pull         }; compdef sp=s
+ss()  { s $@ status       }; compdef ss=s
+
+# Shortcuts for all profiles
+
+sa() { s -a $@ }; compdef sa=s
+
+saP()  { sa $@ push         }; compdef saP=s
+sab()  { sa $@ build        }; compdef sab=s
+sabd() { sa $@ build deploy }; compdef sabd=s
+sac()  { sa $@ commit       }; compdef sac=s
+sacP() { sa $@ commit push  }; compdef sacP=s
+sad()  { sa $@ deploy       }; compdef sad=s
+sap()  { sa $@ pull         }; compdef sap=s
+sas()  { sa $@ status       }; compdef sas=s
+
+# Shortcuts for various file types
+
+sbash()   { s -P "bash-.*"     $@ }; compdef sbash=s
+sdot()    { s -P "dotfiles-.*" $@ }; compdef sdot=s
+sperl()   { s -P "perl-.*"     $@ }; compdef sperl=s
+spython() { s -P "python-.*"   $@ }; compdef spython=s
+sruby()   { s -P "ruby-.*"     $@ }; compdef sruby=s
+svim()    { s -P "vim-.*"      $@ }; compdef svim=s
+
+# finder {{{1
+
+# Change directory to the current finder location
+# Intended to complement fdc which changes finder to $PWD
+cdf() { cd $(posd) }
+
+# Change directory in terminal and finder.
+cdd() { cd $@; fdc }
+
+# Commands performed in finder location
+grepf() { grep -iIrn $@ $(posd) }; compdef grepf=grep
+findf() { find $(posd) $@       }; compdef findf=find
+
+# Copy finder path to clipboard
+cpf() { quote $(posd) | pbcopy }
+
+# Open file/path in finder
+o() { open ${@:-.} }
+
+#}}}
+
+# Show frequencies of words in text
+freq()
+{
+    cat $@ | tr A-Z a-z | tr -cs a-z '\n' | sort | uniq -c | sort -nr
+}
+
+pgrep()
+{
+    ps -ax -o "pid=,command=" | grep $@ | awk '{print $1}'
+}
+
+# Make stuff mine and set sane permissions
+mine()
+{
+    chown -R ${UID}:${GID} $@
+    chmod -R u=rwX,go=rX $@
+}
+
+hide()
+{
+    local f
+    for f in $@; do
+        mv -v $f $(dirname $f)/.$(basename $f)
+    done
+}
+
+unhide()
+{
+    local f
+    for f in $@; do
+        mv -v $f $(dirname $f)/$(basename $f | sed 's/^\.\+//')
+    done
+}
+
+# Lookup words in the system dictionary
+dict()
+{
+    grep $@ /usr/share/dict/words
+}
+
+# Show a ruler that spans the width of the terminal
+ruler()
+{
+    local s
+    for s in '....^....|' '1234567890'; do
+        for (( i=1; $i<=$(( ($COLUMNS + ${#s}) / ${#s} )); i=$i+1 )); do
+            echo -n $s
+        done | cut -c -$COLUMNS
+    done
+}
+
+# Show samples of date formats
+dateh()
+{
+    # Valid flags:
+    #   -  Do not pad
+    #   _  Pad
+    #   0  Pad with zeros
+    #   ^  Use upper case
+    #   #  Use opposite case
+
+    local f
+    for f in {a-z} {A-Z} :z ::z :::z; do
+        printf "%-5s %s\n" "$f:" "$(date +%$1$f)"
+    done | grep -v '%' | grep -v '[[:space:]]$'
+}
+
+dut() # dut == du top (top disk usage offenders)
+{
+    du -sb .* * | sort -nr | head |
+    awk -F'\t' '{print $2}' | xargs du -sh
+}
+
+# Download jQuery (latest or requested version)
+latest_jquery()
+{
+    curl -s http://code.jquery.com/jquery${1:+-$1}.min.js >jquery.js
+}
+
+# Download latest completion file from zsh dev
+latest_completion()
+{
+    local name
+    for name in $@; do
+        curl -s http://zsh.cvs.sourceforge.net/viewvc/zsh/zsh/Completion/Unix/Command/_$name >~/.zsh/comp.d/_$name
+    done
+}
+
+# vim: set ft=zsh:

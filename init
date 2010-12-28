@@ -1,0 +1,15 @@
+#!/bin/zsh
+cd ~/$1
+git submodule init
+git submodule update
+ln -s ~/$1/zshrc ~/.zshrc
+ln -s ~/$1/vimrc ~/.vimrc
+ln -s ~/$1/irbrc ~/.irbrc
+ln -s ~/$1/vim ~/.vim
+ln -s ~/$1/zshrc ~/.zshrc
+ln -s ~/$1/zshenv ~/.zshenv
+ln -s ~/$1/zprofile ~/.zprofile
+ln -s ~/$1/zsh ~/.zsh
+mkdir -p ~/tmp
+touch ~/tmp/user.vim
+
