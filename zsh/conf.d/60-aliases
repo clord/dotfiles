@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+
 alias cp='cp -rv'
 alias mv='mv -v'
 alias mkdir='mkdir -p'
@@ -12,7 +13,6 @@ alias tree='tree --noreport --dirsfirst -F'
 alias t='ctags -R'
 alias vt='v -t'
 alias vv='v -c "EditConfig"'
-alias b='brew'
 
 # Make head/tail output fill screen
 alias head='head -n $((LINES-2))'
@@ -30,7 +30,7 @@ alias -g N="&>/dev/null"
 
 # ls {{{1
 
-alias ls='ls -CFh '
+alias ls='ls -CFh --color=auto'
 alias lsh='ls -d .*'                       # Show hidden files
 alias lsd='ls -d *(/)'                     # Show directories
 alias lse='ls -d *(/^F)'                   # Show empty directories
@@ -116,13 +116,3 @@ alias dfg='df -PT --block-size=1G'  # Gigabytes
 
 alias workoff=deactivate
 
-# python {{{1
-
-alias bpy=bpython
-alias ipy=ipython
-alias nt=nosetests
-alias py=python
-alias pudb='python -m pudb.run'
-alias web='python -m SimpleHTTPServer'
-
-#}}}
