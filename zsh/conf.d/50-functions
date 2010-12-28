@@ -3,138 +3,6 @@
 set_window_title() { print -Pn "\e]0;$*\a" }
 set_window_title_default() { set_window_title "%l: %n@%m: %~" }
 
-# python {{{1
-
-export WORKON_HOME=$HOME/.virtualenvs
-export PIP_VIRTUALENV_BASE=$WORKON_HOME
-export PIP_RESPECT_VIRTUALENV=1
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export VIRTUALENV_USE_DISTRIBUTE=1
-
-source virtualenvwrapper.sh
-
-# Work on a python project
-# Usage: wo [VIRTUALENV]
-# Activate (workon) with VIRTUALENV, deactivate (workoff) otherwise
-wo()
-{
-    [[ -n $VIRTUAL_ENV ]] && deactivate
-    (( $# > 0 )) && workon $@
-    true
-}
-
-pydeploy()
-{
-    command pydeploy -iv $@
-}
-
-pypkg()
-{
-    python setup.py sdist egg_info $@
-}
-
-# Search for python packages
-pys()
-{
-    pip search $1 | awk -F ' - ' '{print $1}'
-}
-
-# Install packages
-pyi()
-{
-    pip install -U ${VIRTUAL_ENV:+--user} $@
-}
-
-# Uninstall packages
-pyrm()
-{
-    pip uninstall -y $@
-}
-
-# Install/remove based on requirements file
-pyir()  { pyi  -r $WORKON_HOME/requirements/$1 }
-pyrmr() { pyrm -r $WORKON_HOME/requirements/$1 }
-
-# Information about the python environment
-pydir() { command pydir  -p ${VIRTUAL_ENV:-$HOME/.local} $@ }
-pyls()  { command pyls   -p ${VIRTUAL_ENV:-$HOME/.local} $@ }
-
-pyadd()
-{
-    [[ -z $VIRTUAL_ENV ]] && return 1
-    cd $(virtualenvwrapper_get_site_packages_dir)
-    local dir
-    for dir in $@; do
-        echo "$dir" >>custom.pth
-    done
-    cd - &>/dev/null
-}
-
-# Create new isolated python project
-pynew()
-{
-    [[ -n $VIRTUAL_ENV ]] && deactivate
-    mkvirtualenv --no-site-packages --clear $@
-}
-
-# Perform a command in a project directory
-pydo()
-{
-    cd $PROJECT_HOME/python/$1; shift
-    $@  # This is the actual command
-    cd -
-}
-
-# Perform a command on all projects
-pydoall()
-{
-    local name
-    for name in $HOME/Code/python/*/setup.py(.:h:t); do
-        pydo $name $@
-    done
-}
-
-# Deploy all given projects
-pydep()
-{
-    # If no args, run against current directory
-    (( $# == 0 )) && pydeploy
-    local name
-    for name in $@; do
-        pydo $name pydeploy
-    done
-}
-
-# ... and the version for everything
-pydepall() { pydoall pydeploy }
-
-# Package all given projects
-pypkg()
-{
-    # If no args, run against current directory
-    (( $# == 0 )) && pypkg
-    local name
-    for name in $@; do
-        pydo $name pypkg
-    done
-}
-
-# ... and the version for everything
-pypkgall() { pydoall pypkg }
-
-# Develop all given projects
-pydev()
-{
-    # If no args, run against current directory
-    (( $# == 0 )) && pip install -e $PWD
-    local name
-    for name in $@; do
-        pip install -e $HOME/Code/python/$name
-    done
-}
-
-# ... and the version for everything
-pydevall() { pydoall pydev }
 
 # cd {{{1
 
@@ -163,16 +31,6 @@ cdrun()
 # Create directory, then cd into it
 mkcd() { mkdir -p $@; cd $1 }
 
-# If virtualenv activated, cd with no args goes to project
-cd()
-{
-    if (( $# == 0 )); then
-        if [[ -n $VIRTUAL_ENV ]]; then
-            builtin cd $PROJECT_HOME/python/${VIRTUAL_ENV##*/}
-        fi
-    fi
-    builtin cd $@
-}
 
 # Change directory to the nearest repo root
 cdr()
@@ -193,10 +51,6 @@ cdr()
 # Same as cdr, but don't look at the current directory
 cdR() { cdr ${1:-$PWD}(:h) }
 
-# Make it easy to cd to common places
-c() { cd $PROJECT_HOME/$1 }; compdef '_files -W $PROJECT_HOME -/' c
-l() { cd ~/.local/$1      }; compdef '_files -W ~/.local      -/' l
-h() { cd ~/$1             }; compdef '_files -W ~             -/' h
 
 # vim {{{1
 
@@ -243,42 +97,6 @@ toggle-suspend()
     zle accept-line
 }
 
-# sourcery {{{1
-
-# Shortcuts for current profile
-
-s() { sourcery -vf $@ }; compdef s=sourcery
-
-sP()  { s $@ push         }; compdef sP=s
-sb()  { s $@ build        }; compdef sb=s
-sbd() { s $@ build deploy }; compdef sbd=s
-sc()  { s $@ commit       }; compdef sc=s
-scP() { s $@ commit push  }; compdef scP=s
-sd()  { s $@ deploy       }; compdef sd=s
-sp()  { s $@ pull         }; compdef sp=s
-ss()  { s $@ status       }; compdef ss=s
-
-# Shortcuts for all profiles
-
-sa() { s -a $@ }; compdef sa=s
-
-saP()  { sa $@ push         }; compdef saP=s
-sab()  { sa $@ build        }; compdef sab=s
-sabd() { sa $@ build deploy }; compdef sabd=s
-sac()  { sa $@ commit       }; compdef sac=s
-sacP() { sa $@ commit push  }; compdef sacP=s
-sad()  { sa $@ deploy       }; compdef sad=s
-sap()  { sa $@ pull         }; compdef sap=s
-sas()  { sa $@ status       }; compdef sas=s
-
-# Shortcuts for various file types
-
-sbash()   { s -P "bash-.*"     $@ }; compdef sbash=s
-sdot()    { s -P "dotfiles-.*" $@ }; compdef sdot=s
-sperl()   { s -P "perl-.*"     $@ }; compdef sperl=s
-spython() { s -P "python-.*"   $@ }; compdef spython=s
-sruby()   { s -P "ruby-.*"     $@ }; compdef sruby=s
-svim()    { s -P "vim-.*"      $@ }; compdef svim=s
 
 # finder {{{1
 

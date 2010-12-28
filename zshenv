@@ -13,6 +13,7 @@ export REPLYTO=$USER_EMAIL
 path=(
      {$HOME/.local,/usr/local}/{,s}bin
      {/usr,}/{,s}bin
+     $HOME/.cabal/bin /usr/local/Cellar/ruby/1.9.2-p0/bin 
      $path
      )
 manpath=(

@@ -1,0 +1,6 @@
+export GOROOT=`brew --cellar`/go/HEAD
+export GOARCH=amd64
+export GOOS=darwin
+
+export NODE_PATH=$NODE_PATH:/usr/local/lib/node
+

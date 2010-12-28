@@ -2,6 +2,7 @@
 
 autoload -U zargs
 autoload -U zmv
+autoload -U colors ; colors 
 
 unalias run-help
 autoload -U run-help
