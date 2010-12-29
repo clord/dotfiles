@@ -10,9 +10,6 @@
 [submodule "vim/bundle/snipmate"]
 	path = vim/bundle/snipmate
 	url = ssh://git@github.com:msanders/snipmate.vim.git
-[submodule "vim/bundle/abolish"]
-	path = vim/bundle/abolish
-	url = ssh://git@github.com:tpope/vim-abolish.git
 [submodule "vim/bundle/textobj-user"]
 	path = vim/bundle/textobj-user
 	url = ssh://git@github.com:kana/vim-textobj-user.git
