@@ -16,6 +16,7 @@ then run `$1/init dotfiles` (or whatever you want `$1` to be), which will perfor
 	ln -s ~/$1/vimrc ~/.vimrc
 	ln -s ~/$1/irbrc ~/.irbrc
 	ln -s ~/$1/vim ~/.vim
+	ln -s ~/$1/zsh ~/.zsh
 	mkdir -p ~/tmp
 	touch ~/tmp/user.vim
 
