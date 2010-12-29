@@ -1,27 +1,27 @@
 [submodule "vim/bundle/fugitive"]
 	path = vim/bundle/fugitive
-	url = git://github.com/tpope/vim-fugitive.git
+	url = ssh://git@github.com:tpope/vim-fugitive.git
 [submodule "vim/bundle/ack"]
 	path = vim/bundle/ack
-	url = git://github.com/mileszs/ack.vim.git
+	url = ssh://git@github.com:mileszs/ack.vim.git
 [submodule "vim/bundle/javascript"]
 	path = vim/bundle/javascript
-	url = git://github.com/pangloss/vim-javascript.git
+	url = ssh://git@github.com:pangloss/vim-javascript.git
 [submodule "vim/bundle/snipmate"]
 	path = vim/bundle/snipmate
-	url = git://github.com/msanders/snipmate.vim.git
+	url = ssh://git@github.com:msanders/snipmate.vim.git
 [submodule "vim/bundle/abolish"]
 	path = vim/bundle/abolish
-	url = git://github.com/tpope/vim-abolish.git
+	url = ssh://git@github.com:tpope/vim-abolish.git
 [submodule "vim/bundle/textobj-user"]
 	path = vim/bundle/textobj-user
-	url = git://github.com/kana/vim-textobj-user.git
+	url = ssh://git@github.com:kana/vim-textobj-user.git
 [submodule "vim/bundle/textobj-rubyblock"]
 	path = vim/bundle/textobj-rubyblock
-	url = git://github.com/nelstrom/vim-textobj-rubyblock.git
+	url = ssh://git@github.com:nelstrom/vim-textobj-rubyblock.git
 [submodule "vim/bundle/vspec"]
 	path = vim/bundle/vspec
-	url = git://github.com/kana/vim-vspec.git
+	url = ssh://git@github.com:kana/vim-vspec.git
 [submodule "vim/bundle/textobj-indent"]
 	path = vim/bundle/textobj-indent
-	url = git://github.com/kana/vim-textobj-indent.git
+	url = ssh://git@github.com:kana/vim-textobj-indent.git
