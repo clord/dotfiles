@@ -30,6 +30,7 @@ set smartcase                   " ignore case if search pattern is all lowercase
                                 "    case-sensitive otherwise
 set smarttab                    " insert tabs on the start of a line according to
                                 "    shiftwidth, not tabstop
+set expandtab                   " insert spaces for tabs
 set scrolloff=4                 " keep 4 lines off the edges of the screen when scrolling
 set hlsearch                    " highlight search terms
 set incsearch                   " show search matches as you type
