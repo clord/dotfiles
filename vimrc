@@ -255,6 +255,7 @@ map <F2> :mksession! .vim_session<CR>
 map <F3> :source .vim_session<CR>
 " }}}
 
+map <F5> :NERDTreeToggle<CR>
 
 " Extra vi-compatibility {{{
 " set extra vi-compatible options
