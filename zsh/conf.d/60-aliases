@@ -11,6 +11,7 @@ alias po=popd
 alias pu=pushd
 alias tree='tree --noreport --dirsfirst -F'
 alias t='ctags -R'
+alias v='vim'
 alias vt='v -t'
 alias vv='v -c "EditConfig"'
 

@@ -49,7 +49,7 @@ zstyle ':completion:*:paths' expand suffix
 # Menu complete on ambiguous paths
 zstyle ':completion:*:paths' list-suffixes true
 
-zstyle ':completion:*:*:(gvim|vim|vi|v):*:all-files' ignored-patterns '*.pyc' '*.zwc' '*.o' '*.class'
+zstyle ':completion:*:*:(gvim|vim|vi|v):*:all-files' ignored-patterns '*.pyc' '*.zwc' '*.o' '*.class' '*.d' '*.u'
 
 zstyle ':completion:*:functions' ignored-patterns '_*'
 

@@ -1,6 +1,7 @@
 " Use vim settings, rather then vi settings (much better!)
 " This must be first, because it changes other options as a side effect.
 set nocompatible
+set encoding=utf-8
 
 " Use pathogen to easily modify the runtime path to include all plugins under
 " the ~/.vim/bundle directory
@@ -12,6 +13,7 @@ filetype on                     " set filetype stuff to on
 filetype plugin on
 filetype indent on
 
+set expandtab
 set nowrap                      " don't wrap lines
 set tabstop=3                   " a tab is three spaces
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
@@ -35,7 +37,7 @@ set scrolloff=4                 " keep 4 lines off the edges of the screen when 
 set hlsearch                    " highlight search terms
 set incsearch                   " show search matches as you type
 set nolist                      " don't show invisible characters by default
-set listchars=tab:»·,trail:·,extends:#,nbsp:·
+set listchars=trail:·,precedes:«,extends:#,nbsp:·,tab:▸\ 
 set pastetoggle=<F2>            " when in insert mode, press <F2> to go to
                                 "    paste mode, where you can paste mass data
                                 "    that won't be autoindented
