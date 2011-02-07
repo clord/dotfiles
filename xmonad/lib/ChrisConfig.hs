@@ -8,9 +8,12 @@ type FontSpec = String
 data BgColor = Red | Orange | Green | Blue | White 
              | Black | Brown | Cyan 
              | Custom Integer Integer Integer
-data Machine = Pape | Bloor | Brimley
+
+data Machine = Sparky | Terran | CfeSles | CfeSles2 | CfeRhel | CfeLinux10 | Nobelium | -- << C++ FE
+               Pape | Bloor | Brimley -- << Fortran FE
                deriving Show
-data MyFont = Inconsolata | DejaVue | Liberation
+
+data Fonts = Inconsolata | DejaVue | Liberation
 data FgOrBg = Foreground | Background
 
 
@@ -26,7 +29,7 @@ intToHex n
                                                             in Just (b, a))
           int_to_dig n = map intToDigit $ itoh $ fromIntegral n
 
-makeSpec :: MyFont -> FontSize -> FontSpec 
+makeSpec :: Fonts -> FontSize -> FontSpec 
 makeSpec Inconsolata s = "Inconsolata:size=" ++ (show s)
 makeSpec DejaVue     s = "DejaVue Sans Mono:size=" ++ (show s)
 makeSpec Liberation  s = "Liberation Mono:size=" ++ (show s)

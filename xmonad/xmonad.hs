@@ -57,10 +57,12 @@ main = do
                ,m4  xK_s  $ spawn "/usr/bin/gnome-screensaver-command -a"
                ,m4  xK_h  $ spawn "/usr/bin/cmvc-client-gui"
                ,m1  xK_w  kill
-               ] ++
-                (term_launchers sp Bloor   [xK_F1, xK_F2, xK_F3, xK_F4]) ++
-                (term_launchers sp Pape    [xK_F9]) ++
-                (term_launchers sp Brimley [xK_F5, xK_F6, xK_F7, xK_F8]))
+               ] 
+               ++ (term_launchers sp Sparky   [xK_F1, xK_F2, xK_F3, xK_F4])
+           --  ++ (term_launchers sp Bloor    [xK_F1, xK_F2, xK_F3, xK_F4])
+           --  ++ (term_launchers sp Pape     [xK_F9])
+           --  ++ (term_launchers sp Brimley  [xK_F5, xK_F6, xK_F7, xK_F8])
+              )
          where smlFont = makeSpec defaultFont 11
                m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
