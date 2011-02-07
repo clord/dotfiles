@@ -248,8 +248,8 @@ endif " has("autocmd")
 " }}}
 
 " Auto save/restore {{{
-au BufWritePost *.* silent mkview!
-au BufReadPost *.* silent loadview
+"au BufWritePost *.* silent mkview!
+"au BufReadPost *.* silent loadview
 
 " Quick write session with F2
 map <F2> :mksession! .vim_session<CR>
