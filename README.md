@@ -7,20 +7,20 @@ Start by getting the files:
 
 then run `cd dotfiles; init` which will perform the following:
 
-   #!/bin/zsh
-   wdir=`pwd`
-   git submodule init
-   git submodule update
-   ln -fs $pwd/zshrc ~/.zshrc
-   ln -fs $pwd/vimrc ~/.vimrc
-   ln -fs $pwd/irbrc ~/.irbrc
-   ln -fs $pwd/vim ~/.vim
-   ln -fs $pwd/zshrc ~/.zshrc
-   ln -fs $pwd/zshenv ~/.zshenv
-   ln -fs $pwd/zprofile ~/.zprofile
-   ln -fs $pwd/zsh ~/.zsh
-   mkdir -p ~/tmp
-   touch ~/tmp/user.vim
+    #!/bin/zsh
+    wdir=`pwd`
+    git submodule init
+    git submodule update
+    ln -fs $pwd/zshrc ~/.zshrc
+    ln -fs $pwd/vimrc ~/.vimrc
+    ln -fs $pwd/irbrc ~/.irbrc
+    ln -fs $pwd/vim ~/.vim
+    ln -fs $pwd/zshrc ~/.zshrc
+    ln -fs $pwd/zshenv ~/.zshenv
+    ln -fs $pwd/zprofile ~/.zprofile
+    ln -fs $pwd/zsh ~/.zsh
+    mkdir -p ~/tmp
+    touch ~/tmp/user.vim
 
 ## Adding new vim plugins
 
