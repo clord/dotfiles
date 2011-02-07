@@ -5,21 +5,22 @@ Start by getting the files:
 	git clone https://github.com/clord/dotfiles.git
 
 
-then run `$1/init dotfiles` (or whatever you want `$1` to be), which will perform the following:
+then run `cd dotfiles; init` which will perform the following:
 
-	cd $1 
-	git submodule init
-	git submodule update
-	ln -s ~/$1/zshrc ~/.zshrc
-	ln -s ~/$1/zshenv ~/.zshenv
-	ln -s ~/$1/zprofile ~/.zprofile
-	ln -s ~/$1/vimrc ~/.vimrc
-	ln -s ~/$1/vim ~/.vim
-	ln -s ~/$1/irbrc ~/.irbrc
-	ln -s ~/$1/vim ~/.vim
-	ln -s ~/$1/zsh ~/.zsh
-	mkdir -p ~/tmp
-	touch ~/tmp/user.vim
+   #!/bin/zsh
+   wdir=`pwd`
+   git submodule init
+   git submodule update
+   ln -fs $pwd/zshrc ~/.zshrc
+   ln -fs $pwd/vimrc ~/.vimrc
+   ln -fs $pwd/irbrc ~/.irbrc
+   ln -fs $pwd/vim ~/.vim
+   ln -fs $pwd/zshrc ~/.zshrc
+   ln -fs $pwd/zshenv ~/.zshenv
+   ln -fs $pwd/zprofile ~/.zprofile
+   ln -fs $pwd/zsh ~/.zsh
+   mkdir -p ~/tmp
+   touch ~/tmp/user.vim
 
 ## Adding new vim plugins
 
