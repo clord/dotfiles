@@ -1,15 +1,14 @@
 #!/bin/zsh
+files=(irbrc vim zshrc zshenv zprofile zsh vimrc)
 wdir=`pwd`
 git submodule init
 git submodule update
-ln -fs $pwd/zshrc ~/.zshrc
-ln -fs $pwd/vimrc ~/.vimrc
-ln -fs $pwd/irbrc ~/.irbrc
-ln -fs $pwd/vim ~/.vim
-ln -fs $pwd/zshrc ~/.zshrc
-ln -fs $pwd/zshenv ~/.zshenv
-ln -fs $pwd/zprofile ~/.zprofile
-ln -fs $pwd/zsh ~/.zsh
+for f in $files; do
+   echo "-> " $f
+   rm ~/.$f
+   ln -s $wdir/$f ~/.$f
+done
+
 mkdir -p ~/tmp
 touch ~/tmp/user.vim
 
