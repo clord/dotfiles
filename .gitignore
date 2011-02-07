@@ -2,4 +2,8 @@
 vim/view
 *~
 vim/.netrwhist
+xmonad/xmonad-*
+xmonad/*.hi
+xmonad/lib/*.hi
+xmonad/*.errors
 

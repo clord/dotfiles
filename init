@@ -1,11 +1,11 @@
 #!/bin/zsh
-files=(irbrc vim zshrc zshenv zprofile zsh vimrc)
+files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad)
 wdir=`pwd`
 git submodule init
 git submodule update
 for f in $files; do
    echo "-> " $f
-   rm ~/.$f
+   rm -rf ~/.$f
    ln -s $wdir/$f ~/.$f
 done
 
