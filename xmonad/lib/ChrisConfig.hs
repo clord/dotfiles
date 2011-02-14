@@ -9,8 +9,14 @@ data BgColor = Red | Orange | Green | Blue | White
              | Black | Brown | Cyan 
              | Custom Integer Integer Integer
 
-data Machine = Sparky | Terran | CfeSles | CfeSles2 | CfeRhel | CfeLinux10 | Nobelium | -- << C++ FE
-               Pape | Bloor | Brimley -- << Fortran FE
+data Machine = Sparky     -- AIX 5.3, DCE auth
+             | Terran     -- AIX 5.3, GSA auth
+             | CfeSles    -- 
+             | CfeSles2   --
+             | CfeRhel    --
+             | CfeLinux10 -- 
+             | Nobelium   --
+             | Pape | Bloor | Brimley -- << Fortran FE
                deriving Show
 
 data Fonts = Inconsolata | DejaVue | Liberation
