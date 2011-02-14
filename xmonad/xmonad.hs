@@ -21,6 +21,8 @@ wsn = [":tx", ":ed" ,":tm", ":nt", ":wb", ":vc", ":tp", ":ei", ":im"]
 ws = zipWith (:) ['1'..] wsn
 
 defaultFont = Liberation
+smlFont = makeSpec defaultFont 10
+bigFont = makeSpec defaultFont 18
 
 
 localLayoutHook = smartBorders $ avoidStruts $ 
@@ -64,8 +66,7 @@ main = do
            --  ++ (term_launchers sp Pape     [xK_F9])
            --  ++ (term_launchers sp Brimley  [xK_F5, xK_F6, xK_F7, xK_F8])
               )
-         where smlFont = makeSpec defaultFont 10
-               m4 a = (,) (mod4Mask, a)
+         where m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
                m4s a = (,) ((mod4Mask .|. shiftMask), a)
                rta sp machine font tid = runInXTerm sp color font cmd
@@ -73,7 +74,7 @@ main = do
                                        color = csForMachine machine $ tid - 1
                term_launchers sp machine keys = [makepair kb md | md <- idxkeys, kb <- keyfnt]
                                           where idxkeys = zip keys [1..]
-                                                keyfnt = zip [smlFont,  makeSpec defaultFont 18]
+                                                keyfnt = zip [smlFont,  bigFont]
                                                              [mod4Mask, mod4Mask .|. shiftMask]
                                                 makepair kb md = ((snd kb, fst md),
                                                                   rta sp machine (fst kb) (snd md))
