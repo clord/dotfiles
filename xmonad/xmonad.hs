@@ -64,7 +64,7 @@ main = do
            --  ++ (term_launchers sp Pape     [xK_F9])
            --  ++ (term_launchers sp Brimley  [xK_F5, xK_F6, xK_F7, xK_F8])
               )
-         where smlFont = makeSpec defaultFont 11
+         where smlFont = makeSpec defaultFont 10
                m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
                m4s a = (,) ((mod4Mask .|. shiftMask), a)
