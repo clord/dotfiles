@@ -11,20 +11,24 @@ export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
 path=(
-     {$HOME/.local,/usr/local}/{,s}bin
+     {$HOME/{.local/`uname -s`,.cabal},/usr/local}/{,s}bin
      {/usr,}/{,s}bin
-     $HOME/.cabal/bin 
      $path
      )
-if [[ $OSTYPE == darwin* ]]; then
-	# Add homebrew's ruby to the path
-	path=(/usr/local/Cellar/ruby/1.9.2-p0/bin $path)
-fi
+
 manpath=(
-     {$HOME/.local,/usr/local}/share/man
+     {$HOME/.local/`uname -s`,/usr/local}/share/man
      $manpath
      )
+
 fpath=(
      ~/.zsh/{func.d,comp.d}
      $fpath
      )
+
+# Now add some platform-specific customizations
+
+if [[ $OSTYPE == darwin* ]]; then
+	# Add homebrew's ruby to the path
+	path=(/usr/local/Cellar/ruby/1.9.2-p0/bin $path)
+fi
