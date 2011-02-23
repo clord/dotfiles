@@ -17,19 +17,30 @@ import Data.Char
 import System.IO
 import ChrisConfig
 
+-- Workspace names without numbers
 wsn = [":tx", ":ed" ,":tm", ":nt", ":wb", ":vc", ":tp", ":ei", ":im"]
+
+-- workspace names with a prefix corresponding to the digits [1..9]
 ws = zipWith (:) ['1'..] wsn
 
+-- font configuration
 defaultFont = Liberation
 smlFont = makeSpec defaultFont 10
 bigFont = makeSpec defaultFont 18
 
 
-localLayoutHook = smartBorders $ avoidStruts $ 
-                    PW.onWorkspaces [ws!!3, ws!!4, ws!!5] (noBorders simpleTabbed)  $ 
-                        Tall 1 0.03 0.5 ||| noBorders Full ||| spiral (6/7) ||| 
-                        Accordion ||| noBorders Circle ||| (noBorders simpleTabbed)
+-- The layout we'll use for the workspaces.
+localLayoutHook = smartBorders
+                $ avoidStruts
+                $ PW.onWorkspaces [ws!!3, ws!!4, ws!!5] (noBorders simpleTabbed)
+                $   Tall 1 0.03 0.5
+                ||| noBorders Full
+                ||| spiral (6/7)
+                ||| Accordion
+                ||| noBorders Circle
+                ||| noBorders simpleTabbed
 
+-- Primary entrypoint
 main :: IO ()
 main = do
           sp <- mkSpawner
@@ -59,12 +70,11 @@ main = do
                ,m4  xK_s  $ spawn "/usr/bin/gnome-screensaver-command -a"
                ,m4  xK_h  $ spawn "/usr/bin/cmvc-client-gui"
                ,m1  xK_w  kill
-               ] 
+               ]
                ++ (term_launchers sp Sparky   [xK_F1, xK_F2, xK_F3, xK_F4])
                ++ (term_launchers sp Terran   [xK_F5, xK_F6, xK_F7, xK_F8])
-           --  ++ (term_launchers sp Bloor    [xK_F1, xK_F2, xK_F3, xK_F4])
-           --  ++ (term_launchers sp Pape     [xK_F9])
-           --  ++ (term_launchers sp Brimley  [xK_F5, xK_F6, xK_F7, xK_F8])
+               ++ (term_launchers sp Bloor    [xK_F11, xK_F12])
+               ++ (term_launchers sp Brimley  [xK_F9, xK_F10])
               )
          where m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
@@ -83,24 +93,27 @@ main = do
 
 
 
+-- given a command and some customizations, launches a terminal
 runInXTerm :: Spawner -> BgColor -> FontSpec -> String -> X ()
 runInXTerm sp color font e = spawnHere sp $ (getColoredTerm color font) ++ " -e \"" ++ e ++ "\""
 
+-- wrapper that spawns an editor in a given directory
 spawnEditorIn :: Spawner -> String -> String -> X ()
-spawnEditorIn sp e s = spawnHere sp $ wrapAndJoin [notifyCmd (e ++ "Editor") ("in " ++ s), 
+spawnEditorIn sp e s = spawnHere sp $ wrapAndJoin [notifyCmd (e ++ "Editor") ("in " ++ s),
                                                    "cd " ++ s, "gvim"]
 
+-- Customizations to various window types and classes
 zManageHook = composeAll [ className =? "Vncviewer" --> doFloat
                          , className =? "Firefox" --> doF (W.shift $ ws!!4)
                          , className =? "Google-chrome" --> doF (W.shift $ ws!!4)
                          , (resource =? "RootWindow" <&&> className =? "Totalview") --> (doF(W.shift $ ws!!8) <+> doFloat)
                          , (resource =? "dataTableWindow" <&&> className =? "Totalview") --> doFloat
                          , className =? "com-ibm-sdwb-cmvc-client-dc-CMVC" --> doF (W.shift $ ws!!5)
-                         , resource =? "gecko"  --> doFloat 
-                         , resource =? "gcalctool"  --> doFloat 
-                         , resource =? "empathy" --> doFloat 
-                         , resource =? "pidgin" --> doFloat 
-                         , className =? "Sametime" --> doFloat 
+                         , resource =? "gecko"  --> doFloat
+                         , resource =? "gcalctool"  --> doFloat
+                         , resource =? "empathy" --> doFloat
+                         , resource =? "pidgin" --> doFloat
+                         , className =? "Sametime" --> doFloat
                          , className =? "Lotus Notes" --> doF W.focusDown --- This prevents focus stealing
                          ]
 
