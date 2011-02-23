@@ -32,3 +32,7 @@ if [[ $OSTYPE == darwin* ]]; then
 	# Add homebrew's ruby to the path
 	path=(/usr/local/Cellar/ruby/1.9.2-p0/bin $path)
 fi
+
+# Now for ugly hacks from outside influences:
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
