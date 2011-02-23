@@ -5,16 +5,16 @@ import Data.Char
 
 type FontSize = Integer
 type FontSpec = String
-data BgColor = Red | Orange | Green | Blue | White 
-             | Black | Brown | Cyan 
+data BgColor = Red | Orange | Green | Blue | White
+             | Black | Brown | Cyan
              | Custom Integer Integer Integer
 
 data Machine = Sparky     -- AIX 5.3, DCE auth
              | Terran     -- AIX 5.3, GSA auth
-             | CfeSles    -- 
+             | CfeSles    --
              | CfeSles2   --
              | CfeRhel    --
-             | CfeLinux10 -- 
+             | CfeLinux10 --
              | Nobelium   --
              | Pape | Bloor | Brimley -- << Fortran FE
                deriving Show
@@ -30,12 +30,12 @@ intToHex n
      | n >= 255  = "ff"
      | n < 16    = '0' : int_to_dig n
      | otherwise = int_to_dig n
-    where itoh   = reverse . unfoldr (\x -> if x == 0 then Nothing 
-                                                      else let (a, b) = x `quotRem` 16 
+    where itoh   = reverse . unfoldr (\x -> if x == 0 then Nothing
+                                                      else let (a, b) = x `quotRem` 16
                                                             in Just (b, a))
           int_to_dig n = map intToDigit $ itoh $ fromIntegral n
 
-makeSpec :: Fonts -> FontSize -> FontSpec 
+makeSpec :: Fonts -> FontSize -> FontSpec
 makeSpec Inconsolata s = "Inconsolata:size=" ++ (show s)
 makeSpec DejaVue     s = "DejaVue Sans Mono:size=" ++ (show s)
 makeSpec Liberation  s = "Liberation Mono:size=" ++ (show s)
@@ -47,10 +47,10 @@ showColor a r g b = case a of
                     where digits = (intToHex r) ++ (intToHex g) ++ (intToHex b)
 
 colorstr :: Integer -> Integer -> Integer -> String
-colorstr r' g' b' = (showColor Background r' g' b')  ++ " " ++ 
+colorstr r' g' b' = (showColor Background r' g' b')  ++ " " ++
                     (showColor Foreground (r'+218) (g'+218) (b'+218))
 
-colorToStrings :: BgColor -> String 
+colorToStrings :: BgColor -> String
 colorToStrings White  = (showColor Background 255 255 255) ++ " " ++ (showColor Foreground 0 0 60)
 colorToStrings Red    = colorstr 30   0   0
 colorToStrings Cyan   = colorstr  0  30  40
@@ -102,12 +102,13 @@ screenCommand :: Machine -> String
 screenCommand    Pape = "/home/clord/Linux/bin/screen"
 screenCommand Brimley = "/home/clord/Linux/bin/screen"
 screenCommand   Bloor = "/home/clord/AIX/bin/screen"
+screenCommand  Sparky = "/usr/local/bin/screen"
 screenCommand       _ = error "can't find screen command for machine"
 
 screenOn :: Machine -> Int -> String
-screenOn m s = "TERM=xterm /usr/bin/ssh -XC clord@" ++ (show m) ++ 
-               " -t " ++ (screenCommand m) ++ " -A -xR " ++ mAndS ++ 
-               " -c '/home/clord/etc/screen/" ++ mAndS ++ ".screenrc'"
+screenOn m s = "TERM=xterm /usr/bin/ssh -XC clord@" ++ (show m) ++
+               " -t " ++ (screenCommand m) ++ " -A -xR " ++ mAndS ++
+               " -c '/home/clord/dotfiles/screenrc/s" ++ (show s) ++ "'"
          where mAndS = (map toLower $ show m) ++ (show s)
 
 notifyCmd :: String -> String -> String
