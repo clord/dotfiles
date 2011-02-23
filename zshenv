@@ -12,7 +12,7 @@ export REPLYTO=$USER_EMAIL
 
 path=(
      {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local}/{,s}bin
-     $path
+     $path /C++/montana/bin
      {/usr,}/{,s}bin
      )
 
