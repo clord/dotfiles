@@ -21,3 +21,8 @@ done
 mkdir -p ~/tmp
 touch ~/tmp/user.vim
 
+# Non-destructively create the ~/.local namespace, where user installed stuff will live
+mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share,etc,var,lib}
+
+# install ack
+curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
