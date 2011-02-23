@@ -96,6 +96,7 @@ csForMachine :: Machine -> Int -> BgColor
 csForMachine Brimley = csOne
 csForMachine   Bloor = csTwo
 csForMachine    Pape = csThree
+csForMachine  Sparky = csOne
 csForMachine       _ = error "can't find scheme for machine"
 
 screenCommand :: Machine -> String
@@ -107,7 +108,7 @@ screenCommand       _ = error "can't find screen command for machine"
 
 screenOn :: Machine -> Int -> String
 screenOn m s = "TERM=xterm /usr/bin/ssh -XC clord@" ++ (show m) ++
-               " -t " ++ (screenCommand m) ++ " -A -xR " ++ mAndS ++
+               " -t " ++ (screenCommand m) ++ " -A -xR s" ++ (show s) ++
                " -c '/home/clord/dotfiles/screenrc/s" ++ (show s) ++ "'"
          where mAndS = (map toLower $ show m) ++ (show s)
 
