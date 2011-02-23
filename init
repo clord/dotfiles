@@ -1,14 +1,23 @@
 #!/bin/zsh
+
+# The files that we are going to replace
 files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad)
+
+# use the working directory as the place to link into
 wdir=`pwd`
+
+# Update submodules
 git submodule init
 git submodule update
+
+# Remove old files, and symlink the new ones into place
 for f in $files; do
    echo "-> " $f
    rm -rf ~/.$f
    ln -s $wdir/$f ~/.$f
 done
 
+# Create a per-machine configuration file. 
 mkdir -p ~/tmp
 touch ~/tmp/user.vim
 

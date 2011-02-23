@@ -4,7 +4,9 @@ Start by getting the files:
 
 	git clone https://github.com/clord/dotfiles.git
 
-then run `cd dotfiles; init` which will initialize your home directory.
+then run `cd dotfiles; init` to initialize your home directory with appropriate symlinks. 
+WARNING: The above command will not make any backups of the files it clobbers. Only use if you know
+what you are doing. 
 
 
 ## Adding new vim plugins
