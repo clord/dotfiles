@@ -17,7 +17,7 @@ for f in $files; do
    ln -s $wdir/$f ~/.$f
 done
 
-# Create a per-machine configuration file. 
+# Create a per-machine configuration file.
 mkdir -p ~/tmp
 touch ~/tmp/user.vim
 
@@ -26,3 +26,9 @@ mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share,etc,var,lib}
 
 # install ack
 curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
+
+# global git config stuff
+git config --global color.branch auto
+git config --global color.diff auto
+git config --global color.interactive auto
+git config --global color.status auto
