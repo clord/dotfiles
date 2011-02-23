@@ -11,13 +11,13 @@ export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
 path=(
-     {$HOME/{.local{,/`uname -s`},.cabal},/usr/local,/usr/linux}/{,s}bin
-     {/usr,}/{,s}bin
+     {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local}/{,s}bin
      $path
+     {/usr,}/{,s}bin
      )
 
 manpath=(
-     {$HOME/.local{,/`uname -s`},/usr/local,/usr/linux}/share/man
+     {/usr/linux,$HOME/.local{,/`uname -s`},/usr/local}/share/man
      $manpath
      )
 
