@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/env zsh
 
 # The files that we are going to replace
 files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad)
@@ -25,7 +25,7 @@ touch ~/tmp/user.vim
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share,etc,var,lib}
 
 # install ack
-curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
+wget http://betterthangrep.com/ack-standalone -O ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
 
 # global git config stuff
 git config --global color.branch auto

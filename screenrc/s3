@@ -1,0 +1,25 @@
+startup_message off
+vbell off
+deflogin on
+defutf8 on
+nonblock on
+defscrollback 8096
+escape ^zz
+shell -/usr/bin/zsh
+zombie "^["
+sessionname "s3"
+altscreen on
+
+bind k
+bind K
+bind ^K
+bind ^k
+bind .
+bind x
+bind X
+bind ^x
+bind ^\
+bind \\
+bind ^h
+bindkey -d ^? stuff ^H
+
