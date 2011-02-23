@@ -37,7 +37,7 @@ set scrolloff=4                 " keep 4 lines off the edges of the screen when 
 set hlsearch                    " highlight search terms
 set incsearch                   " show search matches as you type
 set nolist                      " don't show invisible characters by default
-set listchars=trail:·,precedes:«,extends:#,nbsp:·,tab:▸\ 
+set listchars=trail:·,precedes:«,extends:#,nbsp:·,tab:▸\
 set pastetoggle=<F2>            " when in insert mode, press <F2> to go to
                                 "    paste mode, where you can paste mass data
                                 "    that won't be autoindented
@@ -258,6 +258,20 @@ map <F3> :source .vim_session<CR>
 " }}}
 
 map <F5> :NERDTreeToggle<CR>
+
+" Strip trailing whitespace
+function! <SID>StripTrailingWhitespaces()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " Extra vi-compatibility {{{
 " set extra vi-compatible options
