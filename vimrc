@@ -273,6 +273,8 @@ function! <SID>StripTrailingWhitespaces()
 endfunction
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
+let g:display_num = substitute($DISPLAY, "^[[:alpha:]]*:\([[:digit:]]\+\)\.[[:digit:]]\+$", "\1" , "")
+
 " Extra vi-compatibility {{{
 " set extra vi-compatible options
 set cpoptions+=$     " when changing a line, don't redisplay, but put a '$' at
