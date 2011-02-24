@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
 
 
-alias cp='cp -rv'
-alias mv='mv -v'
+#alias cp='cp -rv'
+alias cp='cp -r'
+#alias mv='mv -v'
 alias mkdir='mkdir -p'
 alias mmv='noglob zmv -W'
 alias grep='grep -I '
