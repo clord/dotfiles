@@ -1,8 +1,10 @@
 #!/usr/bin/env zsh
 
 setopt noglobalrcs
-export LANG="en_US.utf-8"
-export LC_ALL="$LANG"
+if [[ $OSTYPE != aix* ]]; then
+   export LANG="en_US.utf-8"
+   export LC_ALL="$LANG"
+fi
 
 export USER_FULLNAME="Christopher Lord"
 export USER_EMAIL=christopherlord@gmail.com
