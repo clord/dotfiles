@@ -54,7 +54,7 @@ end
 # shove things in, provide defaults, and so on
 def filter_command(envs, cmd)
    new_env = {}
-   envs.each do |env|
+   ENVS.each do |env|
       case env
       when /=/
          k,v = env.split(/\s*=\s*/, 2)
