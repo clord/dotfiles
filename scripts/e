@@ -19,6 +19,8 @@
 # shell with that environment, which is handy for making minor tweaks or extended sessions.
 
 require 'utilities'
+
+# You'll have to provide your own work/environment (mine is secret)
 require 'work/environment'
 
 # Work came from work/environment, whose body is private. any compatible class defines three methods:
