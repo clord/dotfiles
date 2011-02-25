@@ -1,0 +1,97 @@
+#!/usr/bin/env ruby
+
+require 'utilities'
+require 'work/environment'
+
+def expand_parm(key, value, cmd)
+   case key
+   when /^(C|cpp)$/
+      # Value will tell us which xlc to use.
+      # No change to cmd
+      [cmd, {key.to_sym => value}]
+   else
+      [cmd, {key.to_sym => value}]
+   end
+end
+
+
+def expand(env, cmd)
+   case env
+   when /^(C|cpp)$/
+      # TODO: Add the path to dev latest xlC to $PATH
+      [cmd, {}]
+   when /^mb$/
+      # TODO: add the default cpp build environment
+      [cmd, mt_env]
+   else
+      [cmd, {}]
+   end
+end
+
+# Given an environment and a command array, produce a new
+# environment and command array. this mechanism lets us
+# shove things in, provide defaults, and so on
+def filter_command(envs, cmd)
+   new_env = {}
+   envs.each do |env|
+      case env
+      when /=/
+         k,v = env.split(/\s*=\s*/, 2)
+         cmd, aenv = expand_parm(k,v,cmd)
+         new_env.update(aenv)
+      else
+         cmd, aenv = expand(env,cmd)
+         new_env.update(aenv)
+      end
+   end
+   [cmd, new_env]
+end
+
+# Given the set of env strings, set various environment variables.
+# Note that these can be set directly on the command line, too. but typically
+# you'd create a filter in the above function that expands to the desired
+# environment
+def build_environment(envs)
+   envs.each do |key, value|
+      if value
+         if value.to_s.length == 0
+            value = nil
+         else
+            value = value.to_s
+         end
+      end
+      ENV[key.to_s] = value
+   end
+end
+
+
+# Split the input command line
+found = false
+post, pre = ARGV.partition do |a|
+   found ||= a =~ /^\s*-+\s*$/
+end
+
+# remove delimiter from end
+post.shift
+
+# Pre-process the command line
+cmd, env = filter_command(pre, post)
+
+# construct the environment based on the user supplied string
+build_environment env
+
+# Set an environment variable so that the nested process can
+# know that it is nested. Perhaps to set a custom prompt, or
+# to complain biterly.
+ENV['E_NEST'] ||= "0"
+ENV['E_NEST'] = (ENV['E_NEST'].to_i + 1).to_s
+
+if cmd && cmd.count > 0
+   # If there is a command, we'll run it under the current environment.
+   exec *cmd
+else
+   # If there is no command, start a new shell with the new environment.
+   exec "zsh"
+end
+
+
