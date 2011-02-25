@@ -1,4 +1,22 @@
 #!/usr/bin/env ruby
+#
+# e -- The environment bundler
+#
+# I frequently need to tweak various environment variables before running certain programs
+# or invoking makefiles built with a particular style. I don't like the bugs associated with
+# accidental environment leakage causing unintended side-effects.
+#
+# Hence this script. It allows me to succinctly express a set of environment variables to use
+# on a per-invocation basis. For example, suppose a particular makefile uses environment variables
+# to control wether to build with asserts, and optimization, which platform to target, and a host
+# of other ephemera. Rather than remember the exact incantation, I can describe the environment
+# in a ruby class, and then do something like:
+#
+#    e bnd -- gmake -j20
+#
+# This will load theclass (by bnd), look up the environment to use, set the environment variables,
+# and finally exec the part after the delimiter (--). leaving off the delimiter and command will spawn a
+# shell with that environment, which is handy for making minor tweaks or extended sessions.
 
 require 'utilities'
 require 'work/environment'
