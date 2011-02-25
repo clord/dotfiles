@@ -52,25 +52,19 @@ end
 # Note that these can be set directly on the command line, too. but typically
 # you'd create a filter in the above function that expands to the desired
 # environment
-def build_environment(envs)
+def construct_environment(envs)
    envs.each do |key, value|
       if value
-         if value.to_s.length == 0
-            value = nil
-         else
-            value = value.to_s
-         end
+         value = value.to_s
+         value = nil if value.length == 0
       end
       ENV[key.to_s] = value
    end
 end
 
 
-# Split the input command line
-found = false
-post, pre = ARGV.partition do |a|
-   found ||= a =~ /^\s*-+\s*$/
-end
+# Split the input command line into the pre/post parts
+post, pre = ARGV.partition { |a| a =~ /^\s*-+\s*$/ }
 
 # remove delimiter from end
 post.shift
@@ -79,7 +73,7 @@ post.shift
 cmd, env = filter_command(pre, post)
 
 # construct the environment based on the user supplied string
-build_environment env
+construct_environment env
 
 # Set an environment variable so that the nested process can
 # know that it is nested. Perhaps to set a custom prompt, or

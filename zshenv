@@ -15,7 +15,7 @@ export REPLYTO=$USER_EMAIL
 path=(
      {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local}/{,s}bin
      $path /C++/montana/bin
-     {/usr,}/{,s}bin
+     {/usr,}/{,s}bin $HOME/dotfiles/scripts
      )
 
 manpath=(
@@ -30,7 +30,7 @@ fpath=(
 
 # Some ruby goodness
 export GEM_HOME=$HOME/.local/`uname -s`/gems
-export RUBYLIB=$LOAD_PATH:$HOME/dotfiles/scripts
+export RUBYLIB=$RUBYLIB:$HOME/dotfiles/scripts
 
 # Now add some platform-specific customizations
 
