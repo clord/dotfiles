@@ -30,7 +30,7 @@ fpath=(
 
 # Some ruby goodness
 export GEM_HOME=$HOME/.local/`uname -s`/gems
-export LOAD_PATH=$LOAD_PATH:$HOME/dotfiles/scripts
+export RUBYLIB=$LOAD_PATH:$HOME/dotfiles/scripts
 
 # Now add some platform-specific customizations
 
