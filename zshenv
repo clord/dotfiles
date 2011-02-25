@@ -28,6 +28,9 @@ fpath=(
      $fpath
      )
 
+# Some ruby goodness
+export GEM_HOME=$HOME/.local/`uname -s`/gems
+
 # Now add some platform-specific customizations
 
 if [[ $OSTYPE == darwin* ]]; then
