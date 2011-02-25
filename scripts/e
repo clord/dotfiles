@@ -3,29 +3,31 @@
 require 'utilities'
 require 'work/environment'
 
+ENVS = [Work]
+
 def expand_parm(key, value, cmd)
-   case key
-   when /^(C|cpp)$/
-      # Value will tell us which xlc to use.
-      # No change to cmd
-      [cmd, {key.to_sym => value}]
-   else
-      [cmd, {key.to_sym => value}]
+   found = false
+   ENVS.each do |e|
+      e.module_exec do
+         if found ||= works_with(key)
+            yield process_kv(key, value, cmd)
+         end
+      end
    end
+   yield [cmd, {key.to_sym => value}] unless found
 end
 
 
 def expand(env, cmd)
-   case env
-   when /^(C|cpp)$/
-      # TODO: Add the path to dev latest xlC to $PATH
-      [cmd, {}]
-   when /^mb$/
-      # TODO: add the default cpp build environment
-      [cmd, mt_env]
-   else
-      [cmd, {}]
+   found = false
+   ENVS.each do |e|
+      e.module_exec do
+         if found ||= works_with(env)
+            yield process_sn(env, cmd)
+         end
+      end
    end
+   yield [cmd, {}] unless found
 end
 
 # Given an environment and a command array, produce a new
@@ -37,11 +39,9 @@ def filter_command(envs, cmd)
       case env
       when /=/
          k,v = env.split(/\s*=\s*/, 2)
-         cmd, aenv = expand_parm(k,v,cmd)
-         new_env.update(aenv)
+         expand_parm(k,v,cmd) {|c, ae| new_env.update(ae); cmd = c }
       else
-         cmd, aenv = expand(env,cmd)
-         new_env.update(aenv)
+         expand(env,cmd) {|c, ae| new_env.update(ae); cmd = c }
       end
    end
    [cmd, new_env]
