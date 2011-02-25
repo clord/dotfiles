@@ -17,9 +17,7 @@ require 'pp'
 end
 
 
-ARGV.concat [ "--readline",
-  "--prompt-mode",
-  "simple" ]
+ARGV.concat ["--prompt-mode", "simple" ]
 
 # 1000 entries in the list
 IRB.conf[:SAVE_HISTORY] = 1000
