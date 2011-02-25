@@ -9,7 +9,8 @@ def expand_parm(key, value, cmd)
    found = false
    ENVS.each do |e|
       e.module_exec do
-         if found ||= works_with(key)
+         if works_with(key)
+            found ||= true
             yield process_kv(key, value, cmd)
          end
       end
@@ -22,7 +23,8 @@ def expand(env, cmd)
    found = false
    ENVS.each do |e|
       e.module_exec do
-         if found ||= works_with(env)
+         if works_with(env)
+            found ||= true
             yield process_sn(env, cmd)
          end
       end
