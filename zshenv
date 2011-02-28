@@ -13,9 +13,9 @@ export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
 path=(
-     {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local}/{,s}bin
-     $path /C++/montana/bin
-     {/usr,}/{,s}bin $HOME/dotfiles/scripts
+     {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local,$HOME/dotfiles}/{{,s}bin,scripts}
+     /C++/montana/bin {/usr,}/{,s}bin
+     $path
      )
 
 manpath=(
