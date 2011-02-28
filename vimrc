@@ -45,8 +45,8 @@ set mouse=a                     " enable using the mouse if terminal emulator
                                 "    supports it (xterm does)
 
 " Speed up scrolling of the viewport slightly
-nnoremap <C-e> 2<C-e>
-nnoremap <C-y> 2<C-y>
+nnoremap <C-e> 4<C-e>
+nnoremap <C-y> 4<C-y>
 " }}}
 
 " Editor layout {{{
@@ -57,6 +57,7 @@ set laststatus=2                " tell VIM to always put a status line in, even
                                 "    if there is only one window
 set showtabline=2               " show a tabbar on top, always
 set cmdheight=2                 " use a status bar that is 2 rows high
+set ruler
 " }}}
 
 " Vim behaviour {{{
@@ -72,6 +73,7 @@ set undolevels=1000             " use many muchos levels of undo
 set nobackup                    " do not keep backup files, it's 70's style cluttering
 set noswapfile                  " do not write annoying intermediate swap files,
                                 "    who did ever restore from swap files anyway?
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
                                 " store swap files in one of these directories
 set viminfo='20,\"80            " read/write a .viminfo file, don't store more
@@ -88,6 +90,8 @@ set showcmd                     " show (partial) command in the last line of the
 set modeline                    " allow files to include a 'mode line', to
                                 "    override vim defaults
 set modelines=5                 " check the first 5 lines for a modeline
+
+set shortmess=atI
 " }}}
 
 " Highlighting {{{
