@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+include YAML
+F_PWD = "/home/clord/.passwords"
+section = ARGV[0]
+arg = ARGV[1]
+
+def readpw(prompt="Password")
+   STDERR.puts "#{prompt}: "
+   system "stty -echo"
+   STDIN.gets.strip
+ensure
+   system "stty echo"
+end
+
+
+pws = load_file F_PWD
+raise "password file unparsable" unless pws
+pwd = pws[section]
+raise "can't find anything for #{section}" unless pwd
+case arg
+when "-user"
+   print pwd["username"]
+when "-pass"
+   print pwd["password"]
+when "-chpass"
+   pwd["password"] = readpw "New Password"
+   pds[section] = pwd
+   File.open(F_PWD) { |out| dump(pds, out) }
+   print pwd["password"]
+else
+   STDERR.puts "Unknown argument #{arg}"
+   exit 1
+end
+
