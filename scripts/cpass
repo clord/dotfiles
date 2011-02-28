@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
+# You must trust your sysadmin and sudoers with your passwords
+# in order to use this script safely, assuming permissions are set
+# correctly.
 
 require 'yaml'
-F_PWD = "/home/clord/.passwords"
+F_PWD = "#{ENV['HOME']}/.passwords"
+system "chmod u=rw,go= #{F_PWD}" # Make sure permissions are good
 if ARGV.count == 2
    arg = ARGV[0]
    section = ARGV[1]
