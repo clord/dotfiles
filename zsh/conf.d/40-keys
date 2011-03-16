@@ -64,5 +64,6 @@ bindkey '^e' edit-command-line
 bindkey '^j' push-line
 bindkey '^z' toggle-suspend
 bindkey '^x' toggle-prompt
+bindkey '^r' history-incremental-search-backward
 
 #}}}
