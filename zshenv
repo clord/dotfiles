@@ -12,21 +12,39 @@ export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
-path=(
-     {/usr/linux,$HOME/{.local{,/`uname -s`},.cabal},/usr/local,$HOME/dotfiles}/{{,s}bin,scripts}
-     /C++/montana/bin {/usr,}/{,s}bin
-     $path
-     )
+prepend_path() {
+   [ -d $1/sbin ] && path=($1/sbin $path)
+   [ -d $1/bin ] && path=($1/bin $path)
+   [ -d $1/scripts ] && path=($1/scripts $path)
+   [ -d $1/share/man ] && manpath=($1/share/man $manpath)
+}
 
-manpath=(
-     {/usr/linux,$HOME/.local{,/`uname -s`},/usr/local}/share/man
-     $manpath
-     )
+append_path() {
+   [ -d $1/sbin ] && path+=($1/sbin)
+   [ -d $1/bin ] && path+=($1/bin)
+   [ -d $1/scripts ] && path+=($1/scripts)
+   [ -d $1/share/man ] && manpath+=($1/share/man)
+}
 
-fpath=(
-     ~/.zsh/{func.d,comp.d}
-     $fpath
-     )
+prepend_path /usr
+prepend_path /usr/linux
+prepend_path /usr/local
+prepend_path /C++/montana
+prepend_path $HOME/.cabal
+prepend_path $HOME/dotfiles
+prepend_path $HOME/.local
+prepend_path $HOME/.local/`uname -s`
+
+# all directories with a .local can add to the namespace
+path=(./.local/bin ./.local/scripts $path)
+manpath=(./.local/share/man $manpath)
+
+typeset -U path
+typeset -U manpath
+
+
+fpath=(~/.zsh/{func.d,comp.d} $fpath)
+typeset -U fpath
 
 # Some ruby goodness
 export GEM_HOME=$HOME/.local/`uname -s`/gems
