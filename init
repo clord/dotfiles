@@ -1,7 +1,7 @@
 #!/bin/env zsh
 
 # The files that we are going to replace
-files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad)
+files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig)
 
 # use the working directory as the place to link into
 wdir=`pwd`
@@ -22,13 +22,8 @@ mkdir -p ~/tmp
 touch ~/tmp/user.vim
 
 # Non-destructively create the ~/.local namespace, where user installed stuff will live
-mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share,etc,var,lib}
+mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
 # install ack
 wget http://betterthangrep.com/ack-standalone -O ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
 
-# global git config stuff
-git config --global color.branch auto
-git config --global color.diff auto
-git config --global color.interactive auto
-git config --global color.status auto

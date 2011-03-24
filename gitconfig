@@ -1,0 +1,45 @@
+
+[user]
+	name = Christopher Lord
+	email = christopherlord@gmail.com
+
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+   pager = true
+	status = auto
+   ui = auto
+
+[core]
+	editor = mate -w
+   whitespace = trailing-space,space-before-tab,cr-at-eol
+
+[apply]
+	whitespace = fix
+
+[alias]
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%Cgreen%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	unstage = reset HEAD --
+	staged = diff --cached
+	last = log -1 HEAD
+	graph = log --graph --oneline --decorate
+	s = status
+	d = diff
+	c = commit
+	co = checkout
+	cm = commit -m
+	ca = commit --amend
+	caa = commit -a --amend -C HEAD
+	cma = commit -a -m
+	a = add
+	ai = add --interactive
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	rh = reset --hard
+	rh1 = reset HEAD^ --hard
+	rh2 = reset HEAD^^ --hard
+
+[diff]
+   renamed = copy
