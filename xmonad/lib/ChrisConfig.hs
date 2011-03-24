@@ -74,10 +74,11 @@ getTerminal = getColoredTerm Black
 
 
 csOne :: Int -> BgColor
-csOne = (!!) [ Custom 47 21 00
-             , Custom 47 31 30
-             , Custom 47 00 00
+csOne = (!!) [ Custom 20 47 79
+             , Custom 52 71 82
+             , Custom 130 55 55
              , Custom 61 22 22 ]
+
 
 csTwo :: Int -> BgColor
 csTwo = (!!) [ Custom 08 26 28
@@ -86,7 +87,13 @@ csTwo = (!!) [ Custom 08 26 28
              , Custom 46 28 12 ]
 
 csThree :: Int -> BgColor
-csThree i = bgColorTriplet ((zip3 (repeat 80) [20,25..] [10,15..]) !! i)
+csThree = (!!) [ Custom 32 31 37
+               , Custom 57 49 55
+               , Custom 89 64 66
+               , Custom 73 56 60 ]
+
+csFour :: Int -> BgColor
+csFour i = bgColorTriplet ((zip3 (repeat 80) [20,25..] [10,15..]) !! i)
 
 
 wrapAndJoin :: [String] -> String
@@ -95,8 +102,8 @@ wrapAndJoin a = '(' : (concat (intersperse "; " a)) ++ ")&"
 csForMachine :: Machine -> Int -> BgColor
 csForMachine Brimley = csOne
 csForMachine   Bloor = csTwo
-csForMachine    Pape = csThree
-csForMachine  Sparky = csOne
+csForMachine  Sparky = csThree
+csForMachine    Pape = csFour
 csForMachine       _ = error "can't find scheme for machine"
 
 screenCommand :: Machine -> String
