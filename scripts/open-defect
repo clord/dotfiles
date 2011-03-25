@@ -1,0 +1,40 @@
+#!/bin/env ruby
+
+require 'lib/cmvc'
+require 'ostruct'
+require 'optparse'
+
+opt = OpenStruct.new
+opt.mode = :makeitso
+opt.assign_to = "clord"
+opt.severity = 3
+
+opts = OptionParser.new do |opts|
+   opts.banner = "Usage: #{$0} [options]"
+   opts.on("--dryrun", "only print commands that will be executed") { opt.mode = :dryrun }
+   opts.on("--abstract=ABS", String) {|a| opt.abstract = a }
+   opts.on("--severity=S", Integer) {|a| opt.severity = a }
+   opts.on("--assign=TO", String) {|a| opt.assign_to = a }
+   opts.on("--product=P", String) {|a| opt.product = a }
+   opts.on("--component=C", String) {|a| opt.component = a }
+   opts.on("--remarks=REM", String) {|a| opt.remarks = a }
+   opts.on("--release=REL", String, "List of releases to open tracks for (first is rel)") {|a| opt.releases = a.split /\s*,\s*/ }
+end.parse!
+
+if opt.mode == :makeitso
+   raise "failed to log in" unless system "ibmlogin"
+end
+
+defect_hash = { abstract: opt.abstract,
+                 remarks: opt.remarks,
+                 release: opt.releases.first,
+               component: opt.component,
+                severity: opt.severity,
+                 product: opt.product }
+
+Cmvc::Context.open(:defect, defect_hash, opt.mode).
+              assign(opt.assign_to).
+              accept(opt.remarks).
+              create_tracks(opt.releases)
+
+

@@ -56,7 +56,7 @@ module Cmvc
       become = args[:become]
       test_file = args[:check]
       dest_dir = args[:to]
-      command = "Release -extract #{cmvc_release} -nokeys -node direct -root #{dest_dir}"
+      command = "#{CMVC_DIR}/Release -extract #{cmvc_release} -nokeys -node direct -root #{dest_dir}"
       command += " -component #{comp}" unless comp.nil?
       command += " -become #{become}" unless become.nil?
       STDERR.puts command
