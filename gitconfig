@@ -12,7 +12,7 @@
    ui = auto
 
 [core]
-	editor = mate -w
+	editor = vim
    whitespace = trailing-space,space-before-tab,cr-at-eol
 
 [apply]
@@ -25,11 +25,12 @@
 	last = log -1 HEAD
 	graph = log --graph --oneline --decorate
 	s = status
-	d = diff
+	d = diff -w
 	c = commit
 	co = checkout
 	cm = commit -m
-	ca = commit --amend
+	ca = commit -a
+	amend = commit --amend
 	caa = commit -a --amend -C HEAD
 	cma = commit -a -m
 	a = add
