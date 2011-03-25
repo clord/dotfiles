@@ -8,9 +8,21 @@ opt = OpenStruct.new
 opt.mode = :makeitso
 opt.assign_to = "clord"
 opt.severity = 3
+opt.prefixes = []
 
+# Script is named open-<comp>-<defect/feature>
+scriptname = File.basename($0).split /-/
+if scriptname.count == 3
+   comp = scriptname[1]
+   case comp
+      when "wcode"
+         opt.prefixes << "WCODE"
+         opt.severity = 2
+         opt.product = "OTHER"
+   end
+end
 opts = OptionParser.new do |opts|
-   opts.banner = "Usage: #{$0} [options]"
+   opts.banner = "Usage: #{File.basename($0)} [options]"
    opts.on("--dryrun", "only print commands that will be executed") { opt.mode = :dryrun }
    opts.on("--abstract=ABS", String) {|a| opt.abstract = a }
    opts.on("--severity=S", Integer) {|a| opt.severity = a }
@@ -25,7 +37,8 @@ if opt.mode == :makeitso
    raise "failed to log in" unless system "ibmlogin"
 end
 
-defect_hash = { abstract: opt.abstract,
+
+defect_hash = { abstract: Cmvc::prefix(opt.prefixes, opt.abstract),
                  remarks: opt.remarks,
                  release: opt.releases.first,
                component: opt.component,

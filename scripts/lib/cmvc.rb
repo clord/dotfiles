@@ -17,9 +17,12 @@ module Cmvc
       end
    end
 
-   def login
-      system "ibmlogin"
+   # Prefix a string with a list of tags, in the CMVC manner
+   def prefix pfxs, str
+      return str unless pfxs && pfxs.length > 0
+      pfxs.join(':') + ": " + str
    end
+
 
    # Given a string containing lines and a list of keys, converts CMVC's raw format into an array of Hashes.
    # if you want to ignore a line, pass a key called :ignore for that index.
