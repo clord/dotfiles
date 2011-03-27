@@ -18,7 +18,7 @@
 # and finally exec the part after the delimiter (--). leaving off the delimiter and command will spawn a
 # shell with that environment, which is handy for making minor tweaks or extended sessions.
 
-require 'utilities'
+require 'lib/util'
 
 # You'll have to provide your own work/environment (mine is secret)
 require 'work/environment'
