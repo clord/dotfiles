@@ -1,0 +1,39 @@
+#!/bin/env ruby
+# This little ditty will just extract all instances of a pattern in a file
+# with some useful default patterns provided under options.
+
+require 'optparse'
+require 'ostruct'
+
+opt = OpenStruct.new
+opt.pattern = /(?!)/
+opt.ignore_case = false
+
+opts = OptionParser.new do |opts|
+   opts.banner = "Usage: #{File.basename($0)} [options]"
+   opts.on("--scenario", "default pattern that will match scenario files") do
+      opt.pattern = Regexp.union(/(\$[\(\w\)]+|\/tst\w+|\/test)\/([^ ]*)\.scenario\b/, opt.pattern)
+   end
+   opts.on("--string=S", String, "Specify a string to look for") do |p|
+      opt.pattern = Regexp.union(Regexp.new(Regexp.escape(p)), opt.pattern)
+   end
+   opts.on("--or=P", String, "add another pattern to the mix (alias for --pattern)") do |p|
+      opt.pattern = Regexp.union(Regexp.new(p, opt.ignore_case), opt.pattern)
+   end
+   opts.on("--pattern=P", String, "Specify the pattern to look for") do |p|
+      opt.pattern = Regexp.union(Regexp.new(p, opt.ignore_case))
+   end
+   opts.on("-i") do
+      opt.ignore_case = true
+   end
+end.parse!
+
+while line=ARGF.gets
+   if line =~ opt.pattern
+      puts $&
+   end
+end
+
+
+
+
