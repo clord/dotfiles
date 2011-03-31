@@ -34,47 +34,51 @@ end
 ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
 
 opt.releases.each do |r|
-   tstate = :unknown
-   fix = nil
+   fixes = nil
 
    # Check that fixView finds something. result is the fixlog
-   ctx.fix_view(r){|d| fix = d.first}
-   ctx.track_view(r){|d| tstate = d.first[3].to_sym}
+   ctx.fix_view(r) { |d| fixes = d }
    ctx.exec
-   raise :hell if (!fix || tstate == :unknown) && opt.mode == :makeitso
+   raise :hell if fixes.empty? && opt.mode == :makeitso
 
-   # if undo, then change track to fix tstate
-   if opt.undo && tstate != :fix
-      STDERR.puts "track: #{tstate} => fix"
-      ctx.track_fix(r)
-   end
-
-   # iterate the fix log, change and fixing along the way
-   component = fix[2].to_sym
-   fstate = fix[3].to_sym
-   userLogin = fix[4].to_sym
-   if opt.undo && fstate != :active
-      STDERR.puts "fix: #{fstate} => active"
-      ctx.activate_fix component, r
-      ctx.assign_fix userLogin, component, r
-   elsif !opt.undo && fstate != :complete
-      STDERR.puts "fix: #{fstate} => complete"
-      ctx.assign_fix opt.to, component, r
-      ctx.complete_fix component, r
-   else
-      STDERR.puts "nothing to do, Fix record is already #{fstate}"
-   end
-   ctx.exec
-
-   # finally, check if we're in integrate state, and if not, make it so
-   unless opt.undo
-      ctx.track_view(r){|d| tstate = d.first[3].to_sym}.exec
-
-      if tstate != :integrate
-         STDERR.puts "track: #{tstate} => integrate"
-         ctx.track_integrate(r).exec
+   if opt.undo
+      ctx.track_view(r) do |tracks|
+         tracks.each do |track|
+            ctx.track_fix(r) unless track[3] == "fix"
+         end
+      end
+      ctx.exec
+      fixes.each do |name, rel, component, fstate, fix_owner|
+         next if fstate.to_sym == :active
+         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => active"
+         ctx.activate_fix component.to_sym, r
       end
    end
+
+   fixes.each do |name, rel, component, fstate, fix_owner|
+      next if fix_owner.to_sym == opt.to.to_sym
+      STDERR.puts "fix owned by #{fix_owner} changed to #{opt.to}"
+      ctx.assign_fix opt.to, component.to_sym, r
+   end
+   ctx.exec
+
+   unless opt.undo
+      fixes.each do |name, rel, component, fstate, fix_owner|
+         next if fstate.to_sym == :complete
+         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => complete"
+         ctx.complete_fix component.to_sym, r
+      end
+
+      ctx.track_view(r) do |tracks|
+         tracks.each do |track|
+            next if track[3] == "integrate"
+            STDERR.puts "track: #{tstate} => integrate"
+            ctx.track_integrate(r)
+         end
+      end
+   end
+   ctx.exec
+
 
 end
 
