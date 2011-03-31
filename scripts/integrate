@@ -1,0 +1,83 @@
+#!/bin/env ruby
+
+require 'lib/cmvc'
+require 'ostruct'
+require 'optparse'
+
+opt = OpenStruct.new
+opt.mode = :makeitso
+opt.tool = :defect
+opt.family = ENV['CMVC_FAMILY']
+opt.become = ENV['CMVC_BECOME']
+opt.releases = [ENV['CMVC_RELEASE']]
+opt.to = ENV['USER']
+ENV['CMVC_AUTH_METHOD'] ||= 'PW'
+
+scriptname = File.basename($0)
+
+opts = OptionParser.new do |opts|
+   opts.banner = "Usage: #{File.basename($0)} [options]"
+   opts.on("--dryrun", "only print commands that will be executed") { opt.mode = :dryrun }
+   opts.on("--undo", "If possible, restore to fix state") { opt.undo = true}
+   opts.on("--family=FAM", String, "the CMVC_FAMILY") {|a| opt.family = a }
+   opts.on("--become=BEC", String, "become another user") {|a| opt.become = a }
+   opts.on("--to=TO", String, "who will fix") {|a| opt.to = a }
+   opts.on("--defect=N", String, "use the defect commands") {|a| opt.name = a; opt.tool = :defect }
+   opts.on("--feature=N", String, "use the feature commands") {|a| opt.name = a; opt.tool = :feature }
+   opts.on("--release=REL", String, "List of releases to integrate") {|a| opt.releases = a.split /\s*,\s*/ }
+end.parse!
+
+if opt.mode == :makeitso
+   raise "failed to log in" unless system "ibmlogin"
+end
+
+ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
+
+opt.releases.each do |r|
+   tstate = :unknown
+   fix = nil
+
+   # Check that fixView finds something. result is the fixlog
+   ctx.fix_view(r){|d| fix = d.first}
+   ctx.track_view(r){|d| tstate = d.first[3].to_sym}
+   ctx.exec
+   raise :hell if (!fix || tstate == :unknown) && opt.mode == :makeitso
+
+   # if undo, then change track to fix tstate
+   if opt.undo && tstate != :fix
+      STDERR.puts "track: #{tstate} => fix"
+      ctx.track_fix(r)
+   end
+
+   # iterate the fix log, change and fixing along the way
+   component = fix[2].to_sym
+   fstate = fix[3].to_sym
+   userLogin = fix[4].to_sym
+   if opt.undo && fstate != :active
+      STDERR.puts "fix: #{fstate} => active"
+      ctx.activate_fix component, r
+      ctx.assign_fix userLogin, component, r
+   elsif !opt.undo && fstate != :complete
+      STDERR.puts "fix: #{fstate} => complete"
+      ctx.assign_fix opt.to, component, r
+      ctx.complete_fix component, r
+   else
+      STDERR.puts "nothing to do, Fix record is already #{fstate}"
+   end
+   ctx.exec
+
+   # finally, check if we're in integrate state, and if not, make it so
+   unless opt.undo
+      ctx.track_view(r){|d| tstate = d.first[3].to_sym}.exec
+
+      if tstate != :integrate
+         STDERR.puts "track: #{tstate} => integrate"
+         ctx.track_integrate(r).exec
+      end
+   end
+
+end
+
+
+
+
