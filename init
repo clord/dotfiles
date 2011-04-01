@@ -1,7 +1,7 @@
 #!/bin/env zsh
 
 # The files that we are going to replace
-files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig)
+files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf)
 
 # use the working directory as the place to link into
 wdir=`pwd`
