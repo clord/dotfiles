@@ -18,7 +18,7 @@ module Cmvc
    end
 
    # Prefix a string with a list of tags, in the CMVC manner
-   def prefix pfxs, str
+   def self.prefix pfxs, str
       return str unless pfxs && pfxs.length > 0
       pfxs.join(':') + ": " + str
    end
@@ -38,6 +38,7 @@ module Cmvc
    end
 
    # Wraps the command that produces the list of tracks.
+   # TODO: Turn this into a CmvcCommand
    def gather_tracks states, release
       report_keys = [:release, :name, :ignore, :state, :ignore,
                      :date, :user, :user_name, :ignore, :ignore,
@@ -86,17 +87,15 @@ module Cmvc
 
    # Wraps up a cmvc command
    class Command
-      attr_accessor :tool, :command, :exec_mode, :parameters
+      attr_accessor :tool, :parameters
 
       # will use the parms hash to create a CMVC command to open a defect
-      def initialize(tool, command, exec_mode=:dryrun, parms)
+      def initialize(tool, parms)
          @tool = tool
-         @exec_mode = exec_mode
-         @command = command
          raise "abstract is too long" if parms[:abstract] && parms[:abstract].length > 63
          @parameters = {}
          @parameters.update defaults
-         @parameters.update parms
+         parms.each { |k,v| @parameters[k.to_s.to_sym] = v }
       end
 
 
@@ -104,11 +103,16 @@ module Cmvc
       def parameters_to_cmvc_arg(parm=@parameters)
          cmd = ""
          parm.keys.each do |key|
-            cmd += " -#{key.to_s}"
             case parm[key].class.to_s
             when "Hash"
+               cmd += " -#{key}"
                cmd += parameters_to_cmvc_arg(parm[key])
+            when "FalseClass"
+               # Do nothing
+            when "TrueClass"
+               cmd += " -#{key}"
             else
+               cmd += " -#{key}"
                value = parm[key].to_s
                value = '"' + value + '"' if value =~ /\s/
                cmd += " " + value
@@ -123,8 +127,19 @@ module Cmvc
 
       def exec
          puts "% " + to_s
-         return unless @exec_mode == :makeitso
          system to_s
+         raise "Failed to execute #{to_s}" unless $?.success?
+      end
+
+      # Exec, but captures output as an array of lines
+      def exec_read
+         lines = []
+         puts "% " + to_s
+         IO.popen(to_s, mode="r") do |cmdout|
+            lines = cmdout.readlines
+         end
+         raise CmvcError.new("Failed to exec '#{to_s}'") unless $?.success?
+         return lines
       end
 
       def exec_open
@@ -133,15 +148,8 @@ module Cmvc
          #the stdout/stderr return looks like this:
          #new defect was opened successfully.
          #The new defect number is 368193.
-         lines = []
-         puts "% " + to_s
-         return unless @exec_mode == :makeitso
-         IO.popen(to_s, mode="r") do |cmdout|
-            lines = cmdout.readlines
-         end
-         if $?.success? && lines[1] =~ /^ *The new (defect|feature) number is ([-0-9a-z\.]+)\. *$/
-            return $2
-         end
+         lines = exec_read
+         return $2 if lines[1] =~ /^ *The new (defect|feature) number is ([-0-9a-z\.]+)\. *$/
          raise CmvcError.new("May have failed to open defect: could not parse '#{lines[1]}'")
       end
 
@@ -152,7 +160,7 @@ module Cmvc
          when :defect
             case @command
             when :open
-               return { prefix: "d", symptom: "ot", severity: "3" }
+               return { prefix: "d", symptom: "ot" }
             end
          end
          return {}
@@ -164,27 +172,87 @@ module Cmvc
    # Context.open(:defect, true, {severity: 3}).assign("...").accept("...").create_track("...")
    # and the pipeline will stall if anything fails.
    class Context
-      attr_accessor :name, :exec_mode, :tool
+      attr_accessor :name, :exec_mode, :tool, :actions
       def initialize(name, tool=:defect, exec_mode=:dryrun)
          @name = name || "<#{tool}>"
          @exec_mode = exec_mode
          @tool = tool
+         @actions = []
       end
       def self.open tool, parms, exec_mode=:dryrun
          must_contain parms, [:release, :abstract, :severity, :product, :component]
-         Context.new(Command.new(tool, :open, exec_mode, :open => parms).exec_open, tool, exec_mode)
+         Context.new(Command.new(tool, :open => paRms).exec_open, tool, exec_mode)
       end
       def accept(remarks)
-         Command.new(@tool, :accept, @exec_mode, {:accept => @name, :remarks => remarks}).exec
+         @actions << {
+            command: Command.new(@tool, accept: @name, remarks: remarks),
+            thunk: proc { |c| c.exec }
+         }
+         return self
+      end
+      def view(view, where, &handler)
+         @actions << {
+            command: Command.new(:report, view: view, where: where, raw: true),
+            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+            safe: true,
+            handler: handler
+         }
+         return self
+      end
+      def track_view release, &handler
+         view 'TrackView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+      end
+      def fix_view release, &handler
+         view 'fixView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+      end
+      def complete_fix component, release
+         @actions << {
+            command: Command.new(:fix, complete: {@tool => @name}, component: component, release: release),
+            thunk: proc { |c| c.exec }
+         }
+         return self
+      end
+      def assign_fix user, component, release
+         @actions << {
+            command: Command.new(:fix, assign: {:to => user, @tool => @name}, component: component, release: release),
+            thunk: proc { |c| c.exec }
+         }
+         return self
+      end
+      def activate_fix component, release
+         @actions << {
+            command: Command.new(:fix, activate: {@tool => @name}, component: component, release: release),
+            thunk: proc { |c| c.exec }
+         }
          return self
       end
       def assign(to)
-         Command.new(@tool, :assign, @exec_mode, {:assign => @name, :owner => to}).exec
+         @actions << {
+            command: Command.new(@tool, assign: @name, owner: to),
+            thunk: proc { |c| c.exec }
+         }
+         return self
+      end
+      def track_integrate for_release
+         @actions << {
+            command: Command.new(:track, integrate: {@tool => @name}, release: for_release),
+            thunk: proc {|c| c.exec }
+         }
+         return self
+      end
+      def track_fix for_release
+         @actions << {
+            command: Command.new(:track, fix: @name, release: for_release),
+            thunk: proc {|c| c.exec }
+         }
          return self
       end
       def create_track(for_release)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         Command.new(:track, :create, @exec_mode, {:"create -#{@tool}" => @name, :release => for_release }).exec
+         @actions << {
+            command: Command.new(:track, create: {@tool => @name}, release: for_release),
+            thunk: proc { |c| c.exec }
+         }
          return self
       end
       def create_tracks(releases)
@@ -193,8 +261,23 @@ module Cmvc
       end
       def approve_track(release, become)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         Command.new(:approval, :accept, @exec_mode, {:"accept -#{@tool}" => @name, :become => become, :release => release}).exec
+         @actions << {
+            command: Command.new(:approval, accept: {@tool => @name}, become: become, release: release),
+            thunk: proc { |c| c.exec }
+         }
          return self
+      end
+      def exec &a
+         @actions.each do |action|
+            if @exec_mode == :makeitso || action[:safe]
+               r = action[:thunk].call(action[:command])
+               action[:handler].call(r) if action[:handler]
+            else
+               puts "## #{action[:command]}"
+            end
+         end
+         # Clear the list of actions so we can do it again
+         @actions = []
       end
    end
 

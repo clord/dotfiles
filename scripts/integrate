@@ -1,0 +1,87 @@
+#!/bin/env ruby
+
+require 'lib/cmvc'
+require 'ostruct'
+require 'optparse'
+
+opt = OpenStruct.new
+opt.mode = :makeitso
+opt.tool = :defect
+opt.family = ENV['CMVC_FAMILY']
+opt.become = ENV['CMVC_BECOME']
+opt.releases = [ENV['CMVC_RELEASE']]
+opt.to = ENV['USER']
+ENV['CMVC_AUTH_METHOD'] ||= 'PW'
+
+scriptname = File.basename($0)
+
+opts = OptionParser.new do |opts|
+   opts.banner = "Usage: #{File.basename($0)} [options]"
+   opts.on("--dryrun", "only print commands that will be executed") { opt.mode = :dryrun }
+   opts.on("--undo", "If possible, restore to fix state") { opt.undo = true}
+   opts.on("--family=FAM", String, "the CMVC_FAMILY") {|a| opt.family = a }
+   opts.on("--become=BEC", String, "become another user") {|a| opt.become = a }
+   opts.on("--to=TO", String, "who will fix") {|a| opt.to = a }
+   opts.on("--defect=N", String, "use the defect commands") {|a| opt.name = a; opt.tool = :defect }
+   opts.on("--feature=N", String, "use the feature commands") {|a| opt.name = a; opt.tool = :feature }
+   opts.on("--release=REL", String, "List of releases to integrate") {|a| opt.releases = a.split /\s*,\s*/ }
+end.parse!
+
+if opt.mode == :makeitso
+   raise "failed to log in" unless system "ibmlogin"
+end
+
+ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
+
+opt.releases.each do |r|
+   fixes = nil
+
+   # Check that fixView finds something. result is the fixlog
+   ctx.fix_view(r) { |d| fixes = d }
+   ctx.exec
+   raise :hell if fixes.empty? && opt.mode == :makeitso
+
+   if opt.undo
+      ctx.track_view(r) do |tracks|
+         tracks.each do |track|
+            ctx.track_fix(r) unless track[3] == "fix"
+         end
+      end
+      ctx.exec
+      fixes.each do |name, rel, component, fstate, fix_owner|
+         next if fstate.to_sym == :active
+         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => active"
+         ctx.activate_fix component.to_sym, r
+      end
+   end
+
+   fixes.each do |name, rel, component, fstate, fix_owner|
+      next if fix_owner.to_sym == opt.to.to_sym
+      STDERR.puts "fix owned by #{fix_owner} changed to #{opt.to}"
+      ctx.assign_fix opt.to, component.to_sym, r
+   end
+   ctx.exec
+
+   unless opt.undo
+      fixes.each do |name, rel, component, fstate, fix_owner|
+         next if fstate.to_sym == :complete
+         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => complete"
+         ctx.complete_fix component.to_sym, r
+      end
+
+      ctx.track_view(r) do |tracks|
+         tracks.each do |track|
+            next if track[3] == "integrate"
+            STDERR.puts "track: #{tstate} => integrate"
+            ctx.track_integrate(r)
+         end
+      end
+   end
+   ctx.exec
+
+
+end
+
+
+
+
