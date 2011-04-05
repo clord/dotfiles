@@ -72,9 +72,9 @@ main = do
                ,m1  xK_w  kill
                ]
                ++ (term_launchers sp Sparky   [xK_F1, xK_F2, xK_F3, xK_F4])
-               ++ (term_launchers sp Terran   [xK_F5, xK_F6, xK_F7, xK_F8])
-               ++ (term_launchers sp Bloor    [xK_F11, xK_F12])
-               ++ (term_launchers sp Brimley  [xK_F9, xK_F10])
+               ++ (term_launchers sp Bloor    [xK_F5, xK_F6, xK_F7, xK_F8])
+               ++ (term_launchers sp Brimley  [xK_F9, xK_F10, xK_F11, xK_F12])
+        --       ++ (term_launchers sp Terran   )
               )
          where m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
