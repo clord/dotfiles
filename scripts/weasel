@@ -1,7 +1,11 @@
 #!/bin/env ruby
+# have a look at http://writing.wisc.edu/Handbook/ClearConciseSentences.html
+# if this script is punishing you a lot.
 
 weasel_words = /\b(many|various|very|fairly|several|extremely|exceedingly|quite|remarkably|few|surprisingly|mostly|largely|huge|tiny|excellent|interestingly|significantly|substantially|clearly|vast|relatively|completely|legendary|great|eminent|visionary|outstanding|leading|celebrated|cutting-edge|extraordinary|brilliant|famous|renowned|remarkable|prestigious|world-class|respected|notable|virtuoso|it is believed|some people say|of the opinion|most feel|widely thought\b)/
 passive_words = /\b(am|are|were|being|is|been|was|be)\b *\b(\w+ed|awoken|been|born|beat|become|begun|bent|beset|bet|bid|bidden|bound|bitten|bled|blown|broken|bred|brought|broadcast|built|burnt|burst|bought|cast|caught|chosen|clung|come|cost|crept|cut|dealt|dug|dived|done|drawn|dreamt|driven|drunk|eaten|fallen|fed|felt|fought|found|fit|fled|flung|flown|forbidden|forgotten|foregone|forgiven|forsaken|frozen|gotten|given|gone|ground|grown|hung|heard|hidden|hit|held|hurt|kept|knelt|knit|known|laid|led|leapt|learnt|left|lent|let|lain|lighted|lost|made|meant|met|misspelt|mistaken|mown|overcome|overdone|overtaken|overthrown|paid|pled|proven|put|quit|read|rid|ridden|rung|risen|run|sawn|said|seen|sought|sold|sent|set|sewn|shaken|shaven|shorn|shed|shone|shod|shot|shown|shrunk|shut|sung|sunk|sat|slept|slain|slid|slung|slit|smitten|sown|spoken|sped|spent|spilt|spun|spit|split|spread|sprung|stood|stolen|stuck|stung|stunk|stridden|struck|strung|striven|sworn|swept|swollen|swum|swung|taken|taught|torn|told|thought|thrived|thrown|thrust|trodden|understood|upheld|upset|woken|worn|woven|wed|wept|wound|won|withheld|withstood|wrung|written)\b/
+inflated_words = /\b(cogni[zs]ant|facilitate|impact on|impliment|subsequent|utili[sz]e)\b/
+vague_words = /\b(factor|aspect|area|situation|consideration|degree|case)\b/
 
 def header
    "[1m[34m#{ARGF.filename}:#{ARGF.lineno}:[0m"
@@ -14,6 +18,12 @@ ARGF.each_line do |line|
    end
    if line =~ passive_words
       puts "#{header} #{line.gsub(passive_words, '[32m\0[0m')}"
+   end
+   if line =~ vauge_words
+      puts "#{header} #{line.gsub(vauge_words, '[32m\0[0m')}"
+   end
+   if line =~ inflated_words
+      puts "#{header} #{line.gsub(inflated_words, '[33m\0[0m')}"
    end
    if cur != ARGF.filename
       ARGF.lineno = 1
