@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+#
+# Perform a set operation such as union, intersection, or subtraction. I use these most often
+# when dealing with a set of testlists that I'm manipulating while finding regressions.
+# but they would also come in useful in many other contexts.
+#
 
 require 'set'
 require 'fileutils'
