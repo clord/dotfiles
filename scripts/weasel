@@ -19,8 +19,8 @@ ARGF.each_line do |line|
    if line =~ passive_words
       puts "#{header} #{line.gsub(passive_words, '[32m\0[0m')}"
    end
-   if line =~ vauge_words
-      puts "#{header} #{line.gsub(vauge_words, '[32m\0[0m')}"
+   if line =~ vague_words
+      puts "#{header} #{line.gsub(vague_words, '[32m\0[0m')}"
    end
    if line =~ inflated_words
       puts "#{header} #{line.gsub(inflated_words, '[33m\0[0m')}"
