@@ -29,7 +29,7 @@ cdrun()
 }
 
 # Create directory, then cd into it
-mkcd() { mkdir -p $@; cd $1 }
+mcd() { mkdir -p $@; cd $1 }
 
 
 # Change directory to the nearest repo root
@@ -206,5 +206,18 @@ latest_completion()
         curl -s http://zsh.cvs.sourceforge.net/viewvc/zsh/zsh/Completion/Unix/Command/_$name >~/.zsh/comp.d/_$name
     done
 }
+
+# Dropbox notes
+
+function n {
+vim "$HOME/Dropbox/Notes/$@.txt"
+}
+function nall {
+ls -c $HOME/Dropbox/Notes
+}
+function ns {
+ls -c $HOME/Dropbox/Notes | grep -i "$@"
+}
+
 
 # vim: set ft=zsh:
