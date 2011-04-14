@@ -34,6 +34,11 @@ prepend_path $HOME/.cabal
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.local
 prepend_path $HOME/.local/`uname -s`
+prepend_path $HOME/.local/`uname -s`/gems
+
+if [[ $OSTYPE == darwin* ]]; then
+   prepend_path /usr/local/Cellar/ruby/1.9.2-p180
+fi
 
 # all directories with a .local can add to the namespace
 path=(./.local/bin ./.local/scripts $path)
@@ -50,12 +55,6 @@ typeset -U fpath
 export GEM_HOME=$HOME/.local/`uname -s`/gems
 export RUBYLIB=$RUBYLIB:$HOME/dotfiles/scripts
 
-# Now add some platform-specific customizations
-
-if [[ $OSTYPE == darwin* ]]; then
-	# Add homebrew's ruby to the path
-	path=(/usr/local/Cellar/ruby/1.9.2-p0/bin $path)
-fi
 
 # Now for ugly hacks from outside influences:
 

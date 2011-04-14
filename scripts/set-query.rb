@@ -1,4 +1,10 @@
 #!/usr/bin/env ruby
+#
+# Perform set queries on files and stdin.
+# This is useful to:
+# - check that a testlist is a subset of another subset
+# - determine if all music files in one dir are also in some other directory
+# - check set equality without regard to order
 
 require 'set'
 require 'fileutils'
