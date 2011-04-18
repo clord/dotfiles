@@ -242,7 +242,7 @@ module Cmvc
       end
       def track_fix for_release
          @actions << {
-            command: Command.new(:track, fix: @name, release: for_release),
+            command: Command.new(:track, fix: {@tool => @name}, release: for_release),
             thunk: proc {|c| c.exec }
          }
          return self
