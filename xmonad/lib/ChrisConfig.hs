@@ -70,7 +70,7 @@ getColoredTerm :: BgColor -> FontSpec -> String
 getColoredTerm c s = "xterm -fa '" ++ s ++ "' " ++ (colorToStrings c)
 
 getTerminal :: FontSpec -> String
-getTerminal = getColoredTerm Black
+getTerminal a = "xterm -fa '" ++ a ++ "'"
 
 
 csOne :: Int -> BgColor
