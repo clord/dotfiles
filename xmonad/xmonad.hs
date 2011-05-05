@@ -25,8 +25,8 @@ ws = zipWith (:) ['1'..] wsn
 
 -- font configuration
 defaultFont = Liberation
-smlFont = makeSpec defaultFont 7
-bigFont = makeSpec defaultFont 11
+smlFont = makeSpec defaultFont 10
+bigFont = makeSpec defaultFont 14
 
 
 -- The layout we'll use for the workspaces.
