@@ -26,7 +26,8 @@ ws = zipWith (:) ['1'..] wsn
 -- font configuration
 defaultFont = Liberation
 smlFont = makeSpec defaultFont 10
-bigFont = makeSpec defaultFont 14
+medFont = makeSpec defaultFont 12
+bigFont = makeSpec defaultFont 15
 
 
 -- The layout we'll use for the workspaces.
@@ -57,7 +58,7 @@ main = do
                , manageHook         = manageDocks <+> zManageHook <+> manageHook defaultConfig
                , layoutHook         = localLayoutHook
                , modMask            = mod4Mask
-               , terminal           = getTerminal $ smlFont
+               , terminal           = getTerminal $ medFont
                , logHook            = dynamicLogWithPP $ xmobarPP {
                                                   ppOutput = hPutStrLn xmobar,
                                                   ppTitle = xmobarColor "green" "" . shorten 90 }
