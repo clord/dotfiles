@@ -49,6 +49,13 @@ nnoremap <C-e> 4<C-e>
 nnoremap <C-y> 4<C-y>
 " }}}
 
+" Learn: hjkl " {{{
+nmap <Left>   :echo "You should have typed h instead."<CR>
+nmap <Right>  :echo "You should have typed l instead."<CR>
+nmap <Up>     :echo "You should have typed k instead."<CR>
+nmap <Down>   :echo "You should have typed j instead."<CR>
+" " }}}
+
 " Editor layout {{{
 set termencoding=utf-8
 set encoding=utf-8
