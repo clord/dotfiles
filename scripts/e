@@ -23,10 +23,10 @@ require 'lib/util'
 # You'll have to provide your own work/environment (mine is secret)
 require 'work/environment'
 
-# Work came from work/environment, whose body is private. any compatible class defines three methods:
+# these classes came from work/environment, whose body is private. any compatible class defines three methods:
 # process_sn, process_kv, and works_with. The three act as the adapter that lets this script
-# call into them, causing the real work to be done,
-ENVS = [Work.new]
+# call into them, causing the real work to be done.
+ENVS = [Mtn.new, Tv.new, Gsa.new]
 
 def expand_parm(key, value, cmd)
    found = false
@@ -36,7 +36,7 @@ def expand_parm(key, value, cmd)
          yield e.process_kv(key, value, cmd)
       end
    end
-   yield [cmd, {key.to_sym => value}] unless found
+   yield [cmd, {key.to_sym => value}, nil] unless found
 end
 
 
@@ -48,7 +48,7 @@ def expand(env, cmd)
          yield e.process_sn(env, cmd)
       end
    end
-   yield [cmd, {}] unless found
+   yield [cmd, {}, nil] unless found
 end
 
 # Given an environment and a command array, produce a new
@@ -56,17 +56,19 @@ end
 # shove things in, provide defaults, and so on
 def filter_command(envs, cmd)
    new_env = {}
-   new_cmd = []
+   merged_path = ENV["PATH"].split(/:/)
+   new_cmd = cmd
    envs.each do |env|
       case env
       when /=/
          k,v = env.split(/\s*=\s*/, 2)
-         expand_parm(k,v,cmd) {|c, ae| new_env.update(ae); new_cmd = c }
+         expand_parm(k,v,cmd) {|c, ae, p| new_env.update(ae); new_cmd = c; merged_path << p; }
       else
-         expand(env,cmd) {|c, ae| new_env.update(ae); new_cmd = c }
+         expand(env,cmd) {|c, ae, p| new_env.update(ae); new_cmd = c; merged_path << p; }
       end
    end
-   [cmd, new_env]
+   ENV["PATH"] = merged_path.uniq.compact.join(":")
+   [new_cmd.flatten.compact, new_env]
 end
 
 # Given the set of env strings, set various environment variables.
