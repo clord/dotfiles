@@ -39,7 +39,7 @@ opt.releases.each do |r|
    # Check that fixView finds something. result is the fixlog
    ctx.fix_view(r) { |d| fixes = d }
    ctx.exec
-   raise :hell if fixes.empty? && opt.mode == :makeitso
+   raise "fixes empty" if fixes.empty? && opt.mode == :makeitso
 
    if opt.undo
       ctx.track_view(r) do |tracks|
@@ -65,14 +65,14 @@ opt.releases.each do |r|
    unless opt.undo
       fixes.each do |name, rel, component, fstate, fix_owner|
          next if fstate.to_sym == :complete
-         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => complete"
+         STDERR.puts "fix #{fstate} => complete"
          ctx.complete_fix component.to_sym, r
       end
 
       ctx.track_view(r) do |tracks|
          tracks.each do |track|
             next if track[3] == "integrate"
-            STDERR.puts "track: #{tstate} => integrate"
+            STDERR.puts "track: #{track[3]} => integrate"
             ctx.track_integrate(r)
          end
       end
