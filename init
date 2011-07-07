@@ -1,4 +1,4 @@
-#!/bin/env zsh
+#!/usr/bin/env zsh
 
 # The files that we are going to replace
 files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)

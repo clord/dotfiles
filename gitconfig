@@ -56,6 +56,6 @@
 [merge]
 	stat = true
 [difftool "Kaleidoscope"]
-	cmd = /usr/local/bin/ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
+	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
 [difftool]
 	prompt = false
