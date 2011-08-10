@@ -30,6 +30,7 @@ prepend_path /usr
 prepend_path /usr/linux
 prepend_path /usr/local
 prepend_path /C++/montana
+prepend_path /usr/local/Cellar/python/2.7.2
 prepend_path $HOME/.cabal
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.local
