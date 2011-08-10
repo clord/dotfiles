@@ -9,6 +9,8 @@ opt.mode = :makeitso
 opt.assign_to = "clord"
 opt.severity = 3
 opt.prefixes = []
+opt.defect_prefix = "d"
+opt.defect_symptom = "ot"
 
 # Script is named open-<comp>-<defect/feature>
 scriptname = File.basename($0).split /-/
@@ -18,6 +20,7 @@ if scriptname.count == 3
       when "wcode"
          opt.prefixes << "WCODE"
          opt.severity = 2
+         opt.component = "wcode"
          opt.product = "OTHER"
    end
 end
@@ -30,16 +33,21 @@ opts = OptionParser.new do |opts|
    opts.on("--product=P", String) {|a| opt.product = a }
    opts.on("--component=C", String) {|a| opt.component = a }
    opts.on("--remarks=REM", String) {|a| opt.remarks = a }
-   opts.on("--release=REL", String, "List of releases to open tracks for (first is rel)") {|a| opt.releases = a.split /\s*,\s*/ }
+   opts.on("--release=REL", String, "List of releases to open tracks for (first is rel)") {|a| opt.releases = a.split /\s*[,: |]\s*/ }
 end.parse!
+
+raise "Require release" if opt.releases.nil? || opt.releases.empty?
 
 if opt.mode == :makeitso
    raise "failed to log in" unless system "ibmlogin"
 end
 
 
+
 defect_hash = { abstract: Cmvc::prefix(opt.prefixes, opt.abstract),
                  remarks: opt.remarks,
+                  prefix: opt.defect_prefix,
+                 symptom: opt.defect_symptom,
                  release: opt.releases.first,
                component: opt.component,
                 severity: opt.severity,

@@ -174,6 +174,10 @@ nmap ,ac :center<CR>
 cmap w!! w !sudo tee % >/dev/null
 " }}}
 
+nmap <silent> ,[ :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <silent> ,{ :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <silent> ,\ :cs find c <C-R>=expand("<cword>")<CR><CR>
+
 " Working with tabs {{{
 set tabpagemax=10    " use at most 10 tabs
 nmap ,t <Esc>:tabedit .<CR>

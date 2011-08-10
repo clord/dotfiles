@@ -181,7 +181,7 @@ module Cmvc
       end
       def self.open tool, parms, exec_mode=:dryrun
          must_contain parms, [:release, :abstract, :severity, :product, :component]
-         Context.new(Command.new(tool, :open => paRms).exec_open, tool, exec_mode)
+         Context.new(Command.new(tool, :open => parms).exec_open, tool, exec_mode)
       end
       def accept(remarks)
          @actions << {
@@ -199,11 +199,73 @@ module Cmvc
          }
          return self
       end
+      def level_view(action, where, &handler)
+         @actions << {
+            command: Command.new(:level, view: action, where: where, raw: true),
+            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+            safe: true,
+            handler: handler
+         }
+         return self
+      end
+      def release_view(action, where, &handler)
+         @actions << {
+            command: Command.new(:release, view: action, where: where, raw: true),
+            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+            safe: true,
+            handler: handler
+         }
+         return self
+      end
+      def clean_up_map map
+         {
+            id: map[0].to_i,
+            release: map[1],
+            unknown1: map[2],
+            component: map[3],
+            version: map[4],
+            path1: map[5],
+            path2: map[6],
+            unknown2: map[7],
+            mode: map[8],
+            type: map[9].to_sym,
+            unknown3: map[10]
+         }
+      end
+      private :clean_up_map
+      def release_map release, &handler
+         @actions << {
+            command: Command.new(:release, map: release),
+            thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
+            safe: true,
+            handler: handler
+         }
+         return self
+      end
+      def level_map release, &handler
+         @actions << {
+            command: Command.new(:level, map: release),
+            thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
+            safe: true,
+            handler: handler
+         }
+         return self
+      end
+      def last_levels release, n, &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'LevelView', "releaseName in (#{releases}) and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
+      end
+      def change_view release, &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'ChangeView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
+      end
       def track_view release, &handler
-         view 'TrackView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'TrackView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
       end
       def fix_view release, &handler
-         view 'fixView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'fixView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
       end
       def complete_fix component, release
          @actions << {
