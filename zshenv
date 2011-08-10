@@ -38,10 +38,11 @@ prepend_path $HOME/.local/`uname -s`
 prepend_path $HOME/.local/`uname -s`/gems
 
 if [[ $OSTYPE == darwin* ]]; then
+   # homebrew rocks, worth sullying my script with this hack
    prepend_path /usr/local/Cellar/ruby/1.9.2-p180
 fi
 
-# all directories with a .local can add to the namespace
+# look in ./.local, too. This lets subprojects override things
 path=(./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
 
@@ -54,7 +55,7 @@ typeset -U fpath
 
 # Some ruby goodness
 export GEM_HOME=$HOME/.local/`uname -s`/gems
-export RUBYLIB=$RUBYLIB:$HOME/dotfiles/scripts
+export RUBYLIB=$RUBYLIB:$HOME/dotfiles/scripts:$HOME/.local/scripts/ruby
 
 
 # Now for ugly hacks from outside influences:

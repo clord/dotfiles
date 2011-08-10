@@ -252,16 +252,20 @@ module Cmvc
          return self
       end
       def last_levels release, n, &handler
-         view 'LevelView', "releaseName='#{release}' and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'LevelView', "releaseName in (#{releases}) and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
       end
       def change_view release, &handler
-         view 'ChangeView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'ChangeView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
       end
       def track_view release, &handler
-         view 'TrackView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'TrackView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
       end
       def fix_view release, &handler
-         view 'fixView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'fixView', "releaseName in (#{releases}) and defectName='#{@name}'", &handler
       end
       def complete_fix component, release
          @actions << {

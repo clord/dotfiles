@@ -20,24 +20,36 @@ syn region literalDoubleString start=+"+ end=+"+ skip=+""+
 " special section headers
 syn match StreamHeader /^\s*@stream\s*\([^>]*\)\s*;\s*$/
 
-syn match expressionInstruction /\<\(ADDA\?\|MPY\|\(AND\|OR\)I\|EQU\|NEQ\|SUB\|CONV\|DIV\|IXA\|IND\|SWP\|DUP\|OVER\|POP\|PUSH\|NEG\)\>/
-syn match memoryInstruction /\<\(LDC\|LOD\|LDA\|INDA\|STO\|STR\|RSTR\|LCA\)\>/
-syn match branchInstruction /\<\(FJP\|LAB\|DO\|ENDL\|SWE\|BRK\|CASE\|ENDS\|UJP\)\>/
-syn match invocationInstruction /\<\(SECTION\|CUP\|RET\)\>/
-syn match headerInstruction /SYM{\w*}\|\(\<\(DATA\|SYM\(A\|B\)\|SYM\|SYMT\|INFO\|LOC\|PSTR\|DIR\|EOF\|ENT\|END\|DEF\|LIT\|SRC\|ENV\|BGN\|PALI\)\>\)/
-syn match argument /\w*=/
+syn match debugInstruction /\<\(TDLOC\|DXP\|DPXP\|XP[BE]\?\|ARRY\|TP\|COND\|RANGE\|FORM\|B\?CLS\|LEVEL\|CMEM\|CMFC\|CTYP\|ECON\|END[PR]\|ENUM\|FPAR\|FRND\|FUNC\|MPTR\|NCON\|PRIM\|PTR\|QUAL\|REC\|REF\|RREF\|RMEM\|SET\|TDEF\|VBP\|VREC\|BB\|EB\|TEST\|UDECL\|ANS\|ENS\|NMEM\|NS\)\>/
+syn match subprogramInstruction /\<\(CFP\|CUP\|END\|ENT\|LEX\|PSTR\|RET\|ASM\|RSTR\({\w*}\)\?\|SNEW\)\>/
+syn match conditionInstruction /\<\(EQU\|NEQ\|GRT\|GEQ\|LES\|LEQ\|NOT\|CHKO\?\)\>/
+syn match flowInstruction /\<\([FUXT]JP\|IJMP\|CMP\|G\?LAB\|SWE\|CASE\|BRK\|ENDS\|DO\|ENDL\|SEL\|CIND\|CSTO\)\>/
+syn match expressionInstruction /\<\(S[LR][AL]\|SHF[ALD]\|ADDA\?\|MPY\|\(AND\|X\?OR\|SET\)I\|EQU\|EXPI\?\|NEQ\|INC\|IXA\|DEC\|SUBA\?\|CONV\|ABS\|DIVR\?\|NEG\)\>/
+syn match referenceInstruction /\<\(LOD\|IND\|PIND\|LODL\|LDC\|LCA\|LDA\|IXA\|STR\|STO\|PSTO\|FILL\)\>/
+syn match dictionaryInstruction /\<\(SYM\({\w*}\)\?\|SYMT\|SYMA\|SYMB\|PALI\|CPIN\|CPOUT\|LIT\|EMAP\|KILL\)\>/
+syn match stackInstruction /\<\(DUP\|OVER\|POP\|SWP\|BLK\)\>/
+syn match informationalInstruction /\<\(BGN\|DEF\|DIR\|ENV\|EOF\|INFO\|MODE\|LOC\|IMAP\|NOP\|OPTN\|SRC\)\>/
+
 
 " Instruction lines
-syn region InstructionBlock start=/^([A-Z]+)/ end=";" contains=invocationInstruction,branchInstruction,headerInstruction,expressionInstruction,memoryInstruction,argument,literalSingleString,literalDoubleString
+syn region InstructionBlock start=/^([A-Z]+)/ end=";" contains=debugInstruction,subprogramInstruction,conditionInstruction,flowInstruction,expressionInstruction,referenceInstruction,dictionaryInstruction,stackInstruction,informationInstruction
 
-hi expressionInstruction ctermfg=DarkGreen
-hi memoryInstruction ctermfg=Cyan
-hi invocationInstruction ctermfg=Red
-hi branchInstruction ctermfg=Magenta
-hi headerInstruction ctermfg=Yellow
+
+
+hi debugInstruction ctermfg=61 guifg=#5f5faf
+hi subprogramInstruction ctermfg=33 guifg=#0087ff
+hi conditionInstruction ctermfg=Red
+hi flowInstruction ctermfg=Magenta
+hi expressionInstruction ctermfg=58 guifg=#5f5f00
+hi referenceInstruction ctermfg=Yellow
+hi dictionaryInstruction ctermfg=63 guifg=#5f5fff
+hi stackInstruction ctermfg=52 guifg=#5f0000
+hi informationalInstruction ctermfg=59 guifg=#5f5f5f
+
 hi StreamHeader ctermfg=Red
 hi ErrorComment ctermfg=Red
-hi literalDoubleString ctermfg=darkgreen
+
+hi literalDoubleString ctermfg=34 guifg=#00af00
 hi literalSingleString ctermfg=darkgreen
 
 let b:current_syntax = "wcode"

@@ -107,6 +107,10 @@ if &t_Co >= 256 || has("gui_running")
    colorscheme solarized
 endif
 
+if has("gui_running")
+    set guioptions=egmrt
+endif
+
 if &t_Co > 2 || has("gui_running")
    syntax on                    " switch syntax highlighting on, when the terminal has colors
 endif
@@ -169,6 +173,10 @@ nmap ,ac :center<CR>
 " Sudo to write
 cmap w!! w !sudo tee % >/dev/null
 " }}}
+
+nmap <silent> ,[ :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <silent> ,{ :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <silent> ,\ :cs find c <C-R>=expand("<cword>")<CR><CR>
 
 " Working with tabs {{{
 set tabpagemax=10    " use at most 10 tabs
