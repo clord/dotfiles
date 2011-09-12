@@ -1,4 +1,4 @@
-#!/bin/env ruby
+#!/usr/bin/env ruby
 
 require 'lib/cmvc'
 require 'ostruct'
@@ -34,40 +34,33 @@ end
 ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
 
 if opt.undo
-   ctx.track_view(opt.releases) do |tracks|
-      tracks.each do |r, tname, empty, state|
-         ctx.track_fix(r) unless state == "fix"
+   View.track(opt.releases) do |r, tname, empty, state|
+      ctx.track_fix(r) unless state == "fix"
+   end
+end
+
+View.fix(opt.releases) do |name, r, component, fstate, fix_owner|
+   if opt.undo
+      if fstate != "active"
+         ctx.activate_fix component.to_sym, r
       end
    end
-   ctx.exec
-end
-ctx.fix_view(opt.releases) do |fixes|
-   fixes.each do |name, r, component, fstate, fix_owner|
-      if opt.undo
-         if fstate != "active"
-            ctx.activate_fix component.to_sym, r
-         end
-      end
 
-      if fix_owner != opt.to
-         ctx.assign_fix opt.to, component.to_sym, r
-      end
+   if fix_owner != opt.to
+      ctx.assign_fix opt.to, component.to_sym, r
+   end
 
-      unless opt.undo
-         if fstate != "complete"
-            ctx.complete_fix component.to_sym, r
-         end
+   unless opt.undo
+      if fstate != "complete"
+         ctx.complete_fix component.to_sym, r
       end
    end
 end
-ctx.exec
+
 unless opt.undo
-   ctx.track_view(opt.releases) do |tracks|
-      tracks.each do |r, tname, empty, state|
-         next if state == "integrate"
-         ctx.track_integrate(r)
-         ctx.track_fix(r) unless state == "fix"
-      end
+   View.track(opt.releases) do |r, tname, empty, state|
+      next if state == "integrate"
+      ctx.track_integrate(r)
+      ctx.track_fix(r) unless state == "fix"
    end
-   ctx.exec
 end
