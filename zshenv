@@ -40,11 +40,15 @@ prepend_path $HOME/.local/`uname -s`/gems
 if [[ $OSTYPE == darwin* ]]; then
    # homebrew rocks, worth sullying my script with this hack
    prepend_path /usr/local/Cellar/ruby/1.9.2-p180
+
+   path=($path /usr/local/texlive/2011/bin/x86_64-darwin)
 fi
+
 
 # look in ./.local, too. This lets subprojects override things
 path=(./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
+
 
 typeset -U path
 typeset -U manpath
