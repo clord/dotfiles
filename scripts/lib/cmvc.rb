@@ -168,7 +168,6 @@ module Cmvc
    end
 
    module ExecAction
-
       def exec_action mode=:makeitso, action
          if mode == :makeitso || action[:safe]
             r = action[:thunk].call(action[:command])
@@ -186,7 +185,7 @@ module Cmvc
          exec_action command: Command.new(:report, view: view, where: where, raw: true),
                      thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
                      safe: true,
-                     handler: proc { |a| a.each { |x| handler(x) } }
+                     handler: proc { |a| a.each { |x| handler.call(*x) } }
       end
 
       def level(action, where, &handler)
@@ -202,6 +201,7 @@ module Cmvc
                      safe: true,
                      handler: handler
       end
+      # crack open the Level and Release maps
       def clean_up_map map
          {
             id: map[0].to_i,
@@ -242,13 +242,13 @@ module Cmvc
    # and the pipeline will stall if anything fails.
    class Context
       include ExecAction
+      include View
       attr_accessor :name, :exec_mode, :tool
       def initialize(name, tool=:defect, exec_mode=:dryrun)
          @name = name || "<#{tool}>"
          @exec_mode = exec_mode
          @tool = tool
       end
-
 
       def self.open tool, parms, exec_mode=:dryrun
          must_contain parms, [:release, :abstract, :severity, :product, :component]
@@ -260,46 +260,46 @@ module Cmvc
          return self
       end
       def complete_fix component, release
-         exec_action command: Command.new(:fix, complete: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
+         exec_action @mode, command: Command.new(:fix, complete: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def assign_fix user, component, release
-         exec_action command: Command.new(:fix, assign: {:to => user, @tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
+         exec_action @mode, command: Command.new(:fix, assign: {:to => user, @tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def activate_fix component, release
-         exec_action command: Command.new(:fix, activate: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
+         exec_action @mode, command: Command.new(:fix, activate: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def assign(to)
-         exec_action command: Command.new(@tool, assign: @name, owner: to), thunk: proc { |c| c.exec }
+         exec_action @mode, command: Command.new(@tool, assign: @name, owner: to), thunk: proc { |c| c.exec }
          return self
       end
       def track_integrate for_release
-         exec_action command: Command.new(:track, integrate: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
+         exec_action @mode, command: Command.new(:track, integrate: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
          return self
       end
       def track_fix for_release
-         exec_action  command: Command.new(:track, fix: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
+         exec_action @mode, command: Command.new(:track, fix: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
          return self
       end
 
-      def changed_view defect, release, &handler
+      def changed_view  release, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
          view 'ChangeView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
       end
-      def track_view defect, release, &handler
+      def track_view release, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
          view 'TrackView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
       end
-      def fix_view defect, release, &handler
+      def fix_view release, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
          view 'fixView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
       end
 
       def create_track(for_release)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         exec_action  command: Command.new(:track, create: {@tool => @name}, release: for_release), thunk: proc { |c| c.exec }
+         exec_action @mode,  command: Command.new(:track, create: {@tool => @name}, release: for_release), thunk: proc { |c| c.exec }
          return self
       end
       def create_tracks(releases)
@@ -308,7 +308,7 @@ module Cmvc
       end
       def approve_track(release, become)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         exec_action  command: Command.new(:approval, accept: {@tool => @name}, become: become, release: release), thunk: proc { |c| c.exec }
+         exec_action @mode,  command: Command.new(:approval, accept: {@tool => @name}, become: become, release: release), thunk: proc { |c| c.exec }
          return self
       end
    end

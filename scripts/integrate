@@ -34,12 +34,12 @@ end
 ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
 
 if opt.undo
-   View.track(opt.releases) do |r, tname, empty, state|
+   ctx.track_view(opt.releases) do |r, tname, empty, state|
       ctx.track_fix(r) unless state == "fix"
    end
 end
 
-View.fix(opt.releases) do |name, r, component, fstate, fix_owner|
+ctx.fix_view(opt.releases) do |name, r, component, fstate, fix_owner|
    if opt.undo
       if fstate != "active"
          ctx.activate_fix component.to_sym, r
@@ -58,7 +58,7 @@ View.fix(opt.releases) do |name, r, component, fstate, fix_owner|
 end
 
 unless opt.undo
-   View.track(opt.releases) do |r, tname, empty, state|
+   ctx.track_view(opt.releases) do |r, tname, empty, state|
       next if state == "integrate"
       ctx.track_integrate(r)
       ctx.track_fix(r) unless state == "fix"
