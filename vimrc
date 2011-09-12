@@ -13,12 +13,12 @@ filetype on                     " set filetype stuff to on
 filetype plugin on
 filetype indent on
 
-set expandtab
 set nowrap                      " don't wrap lines
 set tabstop=3                   " a tab is three spaces
 set backspace=indent,eol,start  " allow backspacing over everything in insert mode
 set autoindent                  " always set autoindenting on
 set copyindent                  " copy the previous indentation on autoindenting
+set cindent                     " Try to intelligently indent c code
 "set number                      " always show line numbers
 set shiftwidth=3                " number of spaces to use for autoindenting
 set shiftround                  " use multiple of shiftwidth when indenting with '<' and '>'
@@ -30,7 +30,7 @@ set foldopen=block,hor,insert,jump,mark,percent,quickfix,search,tag,undo
 set ignorecase                  " ignore case when searching
 set smartcase                   " ignore case if search pattern is all lowercase,
                                 "    case-sensitive otherwise
-set smarttab                    " insert tabs on the start of a line according to
+"set smarttab                    " insert tabs on the start of a line according to
                                 "    shiftwidth, not tabstop
 set expandtab                   " insert spaces for tabs
 set scrolloff=4                 " keep 4 lines off the edges of the screen when scrolling
@@ -49,12 +49,6 @@ nnoremap <C-e> 4<C-e>
 nnoremap <C-y> 4<C-y>
 " }}}
 
-" Learn: hjkl " {{{
-"nmap <Left>   :echo "You should have typed h instead."<CR>
-"nmap <Right>  :echo "You should have typed l instead."<CR>
-"nmap <Up>     :echo "You should have typed k instead."<CR>
-"nmap <Down>   :echo "You should have typed j instead."<CR>
-" " }}}
 
 " Editor layout {{{
 set termencoding=utf-8
@@ -62,8 +56,7 @@ set encoding=utf-8
 set lazyredraw                  " don't update the display while executing macros
 set laststatus=2                " tell VIM to always put a status line in, even
                                 "    if there is only one window
-set showtabline=2               " show a tabbar on top, always
-set cmdheight=2                 " use a status bar that is 2 rows high
+set cmdheight=1                 " use a status bar that is 2 rows high
 set ruler
 " }}}
 
