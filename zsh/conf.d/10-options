@@ -27,6 +27,7 @@ if (( $EUID != 0 )); then
         hist_find_no_dups      \
         hist_ignore_space      \
         hist_no_functions      \
+        hist_ignore_dups       \
         hist_reduce_blanks     \
         inc_append_history     \
         share_history
