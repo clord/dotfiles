@@ -40,21 +40,9 @@ if opt.undo
 end
 
 ctx.fix_view(opt.releases) do |name, r, component, fstate, fix_owner|
-   if opt.undo
-      if fstate != "active"
-         ctx.activate_fix component.to_sym, r
-      end
-   end
-
-   if fix_owner != opt.to
-      ctx.assign_fix opt.to, component.to_sym, r
-   end
-
-   unless opt.undo
-      if fstate != "complete"
-         ctx.complete_fix component.to_sym, r
-      end
-   end
+   ctx.activate_fix(component.to_sym, r) if opt.undo && fstate != "active"
+   ctx.assign_fix(opt.to, component.to_sym, r) if fix_owner != opt.to
+   ctx.complete_fix(component.to_sym, r) unless opt.undo || fstate == "complete"
 end
 
 unless opt.undo
