@@ -36,15 +36,15 @@ syn region InstructionBlock start=/^([A-Z]+)/ end=";" contains=debugInstruction,
 
 
 
-hi debugInstruction ctermfg=61 guifg=#5f5faf
-hi subprogramInstruction ctermfg=33 guifg=#0087ff
+hi debugInstruction ctermfg=Yellow guifg=#5f5faf
+hi subprogramInstruction ctermfg=Blue guifg=#0087ff
 hi conditionInstruction ctermfg=Red
 hi flowInstruction ctermfg=Magenta
-hi expressionInstruction ctermfg=58 guifg=#5f5f00
-hi referenceInstruction ctermfg=Yellow
-hi dictionaryInstruction ctermfg=63 guifg=#5f5fff
-hi stackInstruction ctermfg=52 guifg=#5f0000
-hi informationalInstruction ctermfg=59 guifg=#5f5f5f
+hi expressionInstruction ctermfg=red guifg=#5f5f00
+hi referenceInstruction ctermfg=cyan
+hi dictionaryInstruction ctermfg=Magenta guifg=#5f5fff
+hi stackInstruction ctermfg=darkred  guifg=#5f0000
+hi informationalInstruction ctermfg=DarkGray guifg=#5f5f5f
 
 hi StreamHeader ctermfg=Red
 hi ErrorComment ctermfg=Red

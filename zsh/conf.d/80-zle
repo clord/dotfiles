@@ -1,0 +1,31 @@
+#!/bin/zsh
+
+zle -N concat-with-ampersand
+
+# Concat the previous two commands with ampersand, and
+# if there is text in the current buffer, concat it too
+function concat-with-ampersand {
+   local CMD1
+   local CMD2
+   local newcmd
+   history -2 | sed -e 's/^ *//g;s/ *$//g' | cut -f2- -d ' ' | while read acmd; do
+      if [[ -z $CMD1 ]]; then
+         CMD1=$acmd
+      else
+         CMD2=$acmd
+      fi
+   done
+   newcmd="$CMD1 && $CMD2"
+   integer newbufflen
+   echo $newcmd | wc -c | read newbufflen
+   if [[ -z $BUFFER ]]; then
+      BUFFER="$newcmd"
+      CURSOR=$newbufflen
+   else
+      BUFFER="$newcmd && $BUFFER"
+      CURSOR=$(($newbufflen + 3 + $CURSOR))
+   fi
+}
+
+bindkey '^u' concat-with-ampersand
+

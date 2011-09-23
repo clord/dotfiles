@@ -43,11 +43,14 @@ if [[ $OSTYPE == darwin* ]]; then
    # add some least-common-denominator scripting engines
    append_path /usr/local/Cellar/ruby/1.9.2-p180
    append_path /usr/local/Cellar/python/2.7.2
+   path=($path /usr/local/texlive/2011/bin/x86_64-darwin)
 fi
+
 
 # look in ./.local, too. This lets subprojects override things
 path=(./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
+
 
 typeset -U path
 typeset -U manpath
