@@ -1,7 +1,6 @@
 # .irbrc
 # vim: set syntax=ruby foldmethod=marker :
 require 'irb/completion'
-require 'irb/ext/save-history'
 require 'fileutils'
 require 'pp'
 
