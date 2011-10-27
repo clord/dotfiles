@@ -18,7 +18,9 @@ end
 def readpw(prompt="Password")
    STDOUT.print "#{prompt}: "
    system "stty -echo"
-   STDIN.gets.strip
+   inp = STDIN.gets
+   raise "Password required" unless inp
+   inp.strip
 ensure
    system "stty echo"
 end

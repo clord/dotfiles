@@ -25,6 +25,7 @@
 	last = log -1 HEAD
 	graph = log --graph --oneline --decorate
 	s = status
+   p = push
 	d = diff -w
 	c = commit
 	co = checkout

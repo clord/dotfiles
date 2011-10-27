@@ -61,7 +61,11 @@ typeset -U fpath
 export GEM_HOME=$HOME/.local/`uname -s`/gems
 export RUBYLIB=$RUBYLIB:$HOME/dotfiles/scripts:$HOME/.local/scripts/ruby
 
+# Cap some silly things I don't need
+ulimit -c 0
 
 # Now for ugly hacks from outside influences:
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+

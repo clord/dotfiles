@@ -248,6 +248,7 @@ module Cmvc
          @name = name || "<#{tool}>"
          @exec_mode = exec_mode
          @tool = tool
+         @mode = exec_mode
       end
 
       def self.open tool, parms, exec_mode=:dryrun
