@@ -28,3 +28,18 @@
 [submodule "vim/bundle/solarized"]
 	path = vim/bundle/solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule "vim/bundle/delimitmate"]
+	path = vim/bundle/delimitmate
+	url = git://github.com/Raimondi/delimitMate.git
+[submodule "vim/bundle/vim-slim"]
+	path = vim/bundle/vim-slim
+	url = git://github.com/bbommarito/vim-slim.git
+[submodule "vim/bundle/vim-coffee-script"]
+	path = vim/bundle/vim-coffee-script
+	url = git://github.com/kchmck/vim-coffee-script.git
+[submodule "vim/bundle/arg-text-object"]
+	path = vim/bundle/arg-text-object
+	url = git://github.com/vim-scripts/argtextobj.vim.git
+[submodule "vim/bundle/indent-object"]
+	path = vim/bundle/indent-object
+	url = git://github.com/michaeljsmith/vim-indent-object.git
