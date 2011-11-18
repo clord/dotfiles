@@ -45,7 +45,7 @@
 	url = git://github.com/michaeljsmith/vim-indent-object.git
 [submodule "vim/bundle/syntastic"]
 	path = vim/bundle/syntastic
-	url = https://github.com/scrooloose/syntastic.git
+	url = git://github.com/scrooloose/syntastic.git
 [submodule "vim/bundle/commentary"]
 	path = vim/bundle/commentary
-	url = https://github.com/tpope/vim-commentary.git
+	url = git://github.com/tpope/vim-commentary.git
