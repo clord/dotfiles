@@ -18,7 +18,7 @@ set showmode
 set showcmd
 set hidden
 set visualbell
-set cursorline
+"set cursorline
 set ttyfast
 set ruler
 set backspace=indent,eol,start
@@ -29,8 +29,8 @@ set history=1000
 set undofile
 set undoreload=10000
 set cpoptions+=J
-set list
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
+"set list
+"set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
 set shell=/bin/bash
 set lazyredraw
 set matchtime=3
@@ -94,9 +94,9 @@ set colorcolumn=+1
 " }}}
 " Backups {{{
 
-set undodir=~/.vim/tmp/undo/     " undo files
-set backupdir=~/.vim/tmp/backup/ " backups
-set directory=~/.vim/tmp/swap/   " swap files
+set undodir=~/tmp/undo/     " undo files
+set backupdir=~/tmp/backup/ " backups
+set directory=~/tmp/swap/   " swap files
 set backup                       " enable backups
 
 " }}}
