@@ -132,7 +132,7 @@ set statusline+=%w   " Preview window flag.
 set statusline+=\    " Space.
 
 set statusline+=%#redbar#                " Highlight the following as a warning.
-set statusline+=%{SyntasticStatuslineFlag()} " Syntastic errors.
+"set statusline+=%{SyntasticStatuslineFlag()} " Syntastic errors.
 set statusline+=%*                           " Reset highlighting.
 
 set statusline+=%=   " Right align.
@@ -872,10 +872,10 @@ let g:sparkupNextMapping = '<c-s>'
 "}}}
 " Syntastic {{{
 
-let g:syntastic_enable_signs = 1
-let g:syntastic_disabled_filetypes = ['html']
-let g:syntastic_stl_format = '[%E{Error 1/%e: line %fe}%B{, }%W{Warning 1/%w: line %fw}]'
-let g:syntastic_jsl_conf = '$HOME/.vim/jsl.conf'
+"let g:syntastic_enable_signs = 1
+"let g:syntastic_disabled_filetypes = ['html','C','h','t']
+"let g:syntastic_stl_format = '[%E{Error 1/%e: line %fe}%B{, }%W{Warning 1/%w: line %fw}]'
+"let g:syntastic_jsl_conf = '$HOME/.vim/jsl.conf'
 
 " }}}
 " Threesome {{{
