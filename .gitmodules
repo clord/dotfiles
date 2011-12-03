@@ -49,3 +49,6 @@
 [submodule "vim/bundle/commentary"]
 	path = vim/bundle/commentary
 	url = git://github.com/tpope/vim-commentary.git
+[submodule "vim/bundle/clang-complete"]
+	path = vim/bundle/clang-complete
+	url = git://github.com/Rip-Rip/clang_complete.git
