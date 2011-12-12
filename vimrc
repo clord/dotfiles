@@ -1,8 +1,5 @@
-" My fork of Steve Losh's Vim script
-" Source: http://bitbucket.org/sjl/dotfiles/src/tip/vim/
-
 set nocompatible
-set encoding=utf-8
+syntax enable
 
 filetype off
 " Use pathogen to easily modify the runtime path to include all plugins under
@@ -86,7 +83,7 @@ set tabstop=3
 set shiftwidth=3
 set softtabstop=3
 set expandtab
-set wrap
+set nowrap
 set textwidth=110
 set formatoptions=qrn1
 set colorcolumn=+1
@@ -108,7 +105,6 @@ let maplocalleader = "\\"
 " }}}
 " Color scheme {{{
 
-syntax on
 set background=dark
 colorscheme molokai
 
@@ -151,7 +147,6 @@ set statusline+=\ (line\ %l\/%L,\ col\ %03c)
 
 " }}}
 " Abbreviations ----------------------------------------------------------- {{{
-
 function! EatChar(pat)
     let c = nr2char(getchar(0))
     return (c =~ a:pat) ? '' : c
@@ -168,16 +163,8 @@ call MakeSpacelessIabbrev('fsc/', 'http://www.freshslowcooking.com/')
 iabbrev cl@ christopher@lord.ac
 iabbrev clg@ christopherlord@gmail.com
 
-
-
-
-
 " }}}
 " Searching and movement -------------------------------------------------- {{{
-
-" Use sane regexes.
-"nnoremap / /\v
-"vnoremap / /\v
 
 set ignorecase
 set smartcase
@@ -194,41 +181,11 @@ set virtualedit+=block
 
 noremap <leader><space> :noh<cr>:call clearmatches()<cr>
 
-runtime macros/matchit.vim
-map <tab> %
-
-" Made D behave
-nnoremap D d$
-
-" Keep search matches in the middle of the window
-" to them.
-nnoremap n nzzzv<cr>
-nnoremap N Nzzzv<cr>
-
-" Don't move on * or #
-nnoremap * *<c-o>
-nnoremap # #<c-o>
-
-" Same when jumping around
-nnoremap g; g;zz
-nnoremap g, g,zz
-
-" Easier to type, and I never use the default behavior.
-noremap H ^
-noremap L g_
-
-" Heresy
-inoremap <c-a> <esc>I
-inoremap <c-e> <esc>A
-
 " Open a Quickfix window for the last search.
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
 " Ack for the last search.
 nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
-
-" Fix linewise visual selection of various text objects
-nnoremap VV V
 
 " Error navigation {{{
 "
@@ -739,48 +696,6 @@ inoremap <s-cr> <esc>A:<cr>
 map <leader>a :Ack!
 
 " }}}
-" Autoclose {{{
-
-nmap <Leader>x <Plug>ToggleAutoCloseMappings
-
-" }}}
-" Commentary {{{
-
-nmap <leader>c <Plug>CommentaryLine
-xmap <leader>c <Plug>Commentary
-
-" }}}
-" Ctrl-P {{{
-
-let g:ctrlp_map = '<leader>,'
-let g:ctrlp_working_path_mode = 0
-let g:ctrlp_match_window_reversed = 1
-let g:ctrlp_split_window = 0
-let g:ctrlp_prompt_mappings = {
-\ 'PrtSelectMove("j")':   ['<c-j>', '<down>', '<s-tab>'],
-\ 'PrtSelectMove("k")':   ['<c-k>', '<up>', '<tab>'],
-\ 'PrtHistory(-1)':       ['<c-n>'],
-\ 'PrtHistory(1)':        ['<c-p>'],
-\ 'ToggleFocus()':        ['<c-tab>'],
-\ }
-
-" }}}
-" Easymotion {{{
-
-let g:EasyMotion_do_mapping = 0
-
-nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
-onoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
-vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
-
-nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
-onoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
-vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
-
-onoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
-onoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
-
-" }}}
 " Fugitive {{{
 
 nnoremap <leader>gd :Gdiff<cr>
@@ -814,233 +729,6 @@ let g:atia_attributes_complete = 0
 let g:lisp_rainbow = 1
 
 " }}}
-" NERD Tree {{{
-
-noremap  <F2> :NERDTreeToggle<cr>
-inoremap <F2> <esc>:NERDTreeToggle<cr>
-
-au Filetype nerdtree setlocal nolist
-
-let NERDTreeHighlightCursorline=1
-let NERDTreeIgnore=['.vim$', '\~$', '.*\.pyc$', 'pip-log\.txt$', 'whoosh_index', 'xapian_index', '.*.pid', 'monitor.py', '.*-fixtures-.*.json', '.*\.o$', 'db.db']
-
-let NERDTreeMinimalUI = 1
-let NERDTreeDirArrows = 1
-
-" }}}
-" OrgMode {{{
-
-let g:org_plugins = ['ShowHide', '|', 'Navigator', 'EditStructure', '|', 'Todo', 'Date', 'Misc']
-
-let g:org_todo_keywords = ['TODO', '|', 'DONE']
-
-let g:org_debug = 1
-
-" }}}
-" Scratch {{{
-
-command! ScratchToggle call ScratchToggle()
-
-function! ScratchToggle() " {{{
-  if exists("w:is_scratch_window")
-    unlet w:is_scratch_window
-    exec "q"
-  else
-    exec "normal! :Sscratch\<cr>\<C-W>J:resize 13\<cr>"
-    let w:is_scratch_window = 1
-  endif
-endfunction " }}}
-
-nnoremap <silent> <leader><tab> :ScratchToggle<cr>
-
-" }}}
-" Sparkup {{{
-
-let g:sparkupNextMapping = '<c-s>'
-
-"}}}
-" Syntastic {{{
-
-"let g:syntastic_enable_signs = 1
-"let g:syntastic_disabled_filetypes = ['html','C','h','t']
-"let g:syntastic_stl_format = '[%E{Error 1/%e: line %fe}%B{, }%W{Warning 1/%w: line %fw}]'
-"let g:syntastic_jsl_conf = '$HOME/.vim/jsl.conf'
-
-" }}}
-" Threesome {{{
-
-let g:threesome_leader = "-"
-
-let g:threesome_initial_mode = "grid"
-
-let g:threesome_initial_layout_grid = 1
-let g:threesome_initial_layout_loupe = 0
-let g:threesome_initial_layout_compare = 0
-let g:threesome_initial_layout_path = 0
-
-let g:threesome_initial_diff_grid = 1
-let g:threesome_initial_diff_loupe = 0
-let g:threesome_initial_diff_compare = 0
-let g:threesome_initial_diff_path = 0
-
-let g:threesome_initial_scrollbind_grid = 0
-let g:threesome_initial_scrollbind_loupe = 0
-let g:threesome_initial_scrollbind_compare = 0
-let g:threesome_initial_scrollbind_path = 0
-
-let g:threesome_wrap = "nowrap"
-
-" }}}
-" VimClojure {{{
-
-let vimclojure#HighlightBuiltins = 1
-let vimclojure#ParenRainbow = 1
-let vimclojure#WantNailgun = 0
-
-" }}}
-" YankRing {{{
-
-function! YRRunAfterMaps()
-    nnoremap Y :<C-U>YRYankCount 'y$'<CR>
-    omap <expr> L YRMapsExpression("", "$")
-    omap <expr> H YRMapsExpression("", "^")
-endfunction
-
-
-" }}}
-
-" }}}
-" Text objects ------------------------------------------------------------ {{{
-
-" Next and Last {{{
-
-" Motion for "next/last object". For example, "din(" would go to the next "()" pair
-" and delete its contents.
-
-onoremap an :<c-u>call <SID>NextTextObject('a', 'f')<cr>
-xnoremap an :<c-u>call <SID>NextTextObject('a', 'f')<cr>
-onoremap in :<c-u>call <SID>NextTextObject('i', 'f')<cr>
-xnoremap in :<c-u>call <SID>NextTextObject('i', 'f')<cr>
-
-onoremap al :<c-u>call <SID>NextTextObject('a', 'F')<cr>
-xnoremap al :<c-u>call <SID>NextTextObject('a', 'F')<cr>
-onoremap il :<c-u>call <SID>NextTextObject('i', 'F')<cr>
-xnoremap il :<c-u>call <SID>NextTextObject('i', 'F')<cr>
-
-function! s:NextTextObject(motion, dir)
-  let c = nr2char(getchar())
-
-  if c ==# "b"
-      let c = "("
-  elseif c ==# "B"
-      let c = "{"
-  elseif c ==# "d"
-      let c = "["
-  endif
-
-  exe "normal! ".a:dir.c."v".a:motion.c
-endfunction
-
-" }}}
-
-" }}}
-" Ack motions ------------------------------------------------------------- {{{
-
-" Motions to Ack for things.  Works with pretty much everything, including:
-"
-"   w, W, e, E, b, B, t*, f*, i*, a*, and custom text objects
-"
-" Awesome.
-"
-" Note: If the text covered by a motion contains a newline it won't work.  Ack
-" searches line-by-line.
-
-nnoremap <silent> \a :set opfunc=<SID>AckMotion<CR>g@
-xnoremap <silent> \a :<C-U>call <SID>AckMotion(visualmode())<CR>
-
-function! s:CopyMotionForType(type)
-    if a:type ==# 'v'
-        silent execute "normal! `<" . a:type . "`>y"
-    elseif a:type ==# 'char'
-        silent execute "normal! `[v`]y"
-    endif
-endfunction
-
-function! s:AckMotion(type) abort
-    let reg_save = @@
-
-    call s:CopyMotionForType(a:type)
-
-    execute "normal! :Ack! --literal " . shellescape(@@) . "\<cr>"
-
-    let @@ = reg_save
-endfunction
-
-" }}}
-" Error toggles ----------------------------------------------------------- {{{
-
-command! ErrorsToggle call ErrorsToggle()
-function! ErrorsToggle() " {{{
-  if exists("w:is_error_window")
-    unlet w:is_error_window
-    exec "q"
-  else
-    exec "Errors"
-    lopen
-    let w:is_error_window = 1
-  endif
-endfunction " }}}
-
-command! -bang -nargs=? QFixToggle call QFixToggle(<bang>0)
-function! QFixToggle(forced) " {{{
-  if exists("g:qfix_win") && a:forced == 0
-    cclose
-    unlet g:qfix_win
-  else
-    copen 10
-    let g:qfix_win = bufnr("$")
-  endif
-endfunction " }}}
-
-nmap <silent> <f3> :ErrorsToggle<cr>
-nmap <silent> <f4> :QFixToggle<cr>
-
-" }}}
-" Utils ------------------------------------------------------------------- {{{
-
-function! g:echodammit(msg)
-    exec 'echom "----------> ' . a:msg . '"'
-endfunction
-
-" Synstack {{{
-
-" Show the stack of syntax hilighting classes affecting whatever is under the
-" cursor.
-function! SynStack() "{{{
-  echo join(map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")'), " > ")
-endfunc "}}}
-
-nnoremap ß :call SynStack()<CR>
-
-" }}}
-" Toggle whitespace in diffs {{{
-
-set diffopt-=iwhite
-let g:diffwhitespaceon = 1
-function! ToggleDiffWhitespace() "{{{
-    if g:diffwhitespaceon
-        set diffopt-=iwhite
-        let g:diffwhitespaceon = 0
-    else
-        set diffopt+=iwhite
-        let g:diffwhitespaceon = 1
-    endif
-    diffupdate
-endfunc "}}}
-
-nnoremap <leader>dw :call ToggleDiffWhitespace()<CR>
-
-" }}}
 
 " }}}
 " Environments (GUI/Console) ---------------------------------------------- {{{
@@ -1063,7 +751,7 @@ if has('gui_running')
     " Different cursors for different modes.
     set guicursor=n-c:block-Cursor-blinkon0
     set guicursor+=v:block-vCursor-blinkon0
-    set guicursor+=i-ci:ver20-iCursor
+   " set guicursor+=i-ci:ver20-iCursor
 
     if has("gui_macvim")
         " Full screen means FULL screen
