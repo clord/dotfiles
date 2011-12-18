@@ -281,9 +281,6 @@ inoremap <F1> <ESC>:set invfullscreen<CR>a
 " Fuck you too, manual key.
 nnoremap K <nop>
 
-" Stop it, hash key.
-" inoremap # X<BS>#
-
 " }}}
 " Various filetype-specific stuff ----------------------------------------- {{{
 
@@ -562,9 +559,6 @@ nnoremap <leader>! :Shell
 
 " Clean whitespace
 map <leader>W  :%s/\s\+$//<cr>:let @/=''<CR>
-
-" Dammit, Slimv
-map <leader>WW :%s/\s\+$//<cr>:let @/=''<CR>
 
 " Change case
 nnoremap <C-u> gUiw
