@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+counts = 0
+
+scriptname = File.basename $0
+now = Time.now
+counts = Hash.new
+
+ARGF.each_line do  |l|
+   t, c = l.split(';')
+   next unless c
+   next unless t
+   times = t.split(/ *: */)
+   next unless times && times[1]
+   next if c.start_with? scriptname
+   k = c.strip.to_sym
+   weeks = (now - times[1].to_i).to_f / 604800.0
+   amount = 1.0 / (2.0 ** weeks)
+   counts[k] ||= 0.0
+   counts[k] += amount
+
+end
+
+ca = counts.to_a.sort do |a,b|
+   a[1] <=> b[1]
+end
+ca.each do |k,v|
+   next if v <= 1
+   printf("%13.1f  %s\n", v, k)
+end
+
+
