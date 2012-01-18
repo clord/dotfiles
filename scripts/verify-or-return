@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+
+# This script queries CMVC for verify or return defects
 
 products = %w{  }
 users = %w{ clord cbowler catherine hstong }
