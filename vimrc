@@ -86,7 +86,7 @@ set expandtab
 set nowrap
 set textwidth=110
 set formatoptions=qrn1
-set colorcolumn=+1
+"set colorcolumn=+1
 
 " }}}
 " Backups {{{
@@ -173,9 +173,9 @@ set showmatch
 set hlsearch
 set gdefault
 
-set scrolloff=3
-set sidescroll=1
-set sidescrolloff=10
+"set scrolloff=3
+"set sidescroll=1
+"set sidescrolloff=10
 
 set virtualedit+=block
 
@@ -280,9 +280,6 @@ inoremap <F1> <ESC>:set invfullscreen<CR>a
 
 " Fuck you too, manual key.
 nnoremap K <nop>
-
-" Stop it, hash key.
-inoremap # X<BS>#
 
 " }}}
 " Various filetype-specific stuff ----------------------------------------- {{{
@@ -562,9 +559,6 @@ nnoremap <leader>! :Shell
 
 " Clean whitespace
 map <leader>W  :%s/\s\+$//<cr>:let @/=''<CR>
-
-" Dammit, Slimv
-map <leader>WW :%s/\s\+$//<cr>:let @/=''<CR>
 
 " Change case
 nnoremap <C-u> gUiw
