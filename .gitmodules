@@ -52,3 +52,9 @@
 [submodule "vim/bundle/clang-complete"]
 	path = vim/bundle/clang-complete
 	url = git://github.com/Rip-Rip/clang_complete.git
+[submodule "vim/bundle/surround"]
+	path = vim/bundle/surround
+	url = https://github.com/tpope/vim-surround.git
+[submodule "vim/bundle/repeat"]
+	path = vim/bundle/repeat
+	url = https://github.com/tpope/vim-repeat.git
