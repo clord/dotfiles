@@ -52,3 +52,6 @@
 [submodule "vim/bundle/clang-complete"]
 	path = vim/bundle/clang-complete
 	url = git://github.com/Rip-Rip/clang_complete.git
+[submodule "vim/bundle/powerline"]
+	path = vim/bundle/powerline
+	url = git://github.com/Lokaltog/vim-powerline
