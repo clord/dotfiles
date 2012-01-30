@@ -55,7 +55,7 @@ set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
 set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
 set wildignore+=*.spl                            " compiled spelling word lists
 set wildignore+=*.sw?                            " Vim swap files
-set wildignore+=*.DS_Store                       " OSX bullshit
+set wildignore+=*.DS_Store                       " OSX
 
 set wildignore+=*.luac                           " Lua byte code
 
@@ -114,36 +114,36 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " }}}
 " Status line ------------------------------------------------------------- {{{
 
-augroup ft_statuslinecolor
-    au!
-    au InsertEnter * hi StatusLine ctermfg=196 guifg=#FF3145
-    au InsertLeave * hi StatusLine ctermfg=130 guifg=#CD5907
-augroup END
+"augroup ft_statuslinecolor
+"    au!
+"    au InsertEnter * hi StatusLine ctermfg=196 guifg=#FF3145
+"    au InsertLeave * hi StatusLine ctermfg=130 guifg=#CD5907
+"augroup END
 
-set statusline=%f    " Path.
-set statusline+=%m   " Modified flag.
-set statusline+=%r   " Readonly flag.
-set statusline+=%w   " Preview window flag.
+"set statusline=%f    " Path.
+"set statusline+=%m   " Modified flag.
+"set statusline+=%r   " Readonly flag.
+"set statusline+=%w   " Preview window flag.
 
-set statusline+=\    " Space.
+"set statusline+=\    " Space.
 
-set statusline+=%#redbar#                " Highlight the following as a warning.
+"set statusline+=%#redbar#                " Highlight the following as a warning.
 "set statusline+=%{SyntasticStatuslineFlag()} " Syntastic errors.
-set statusline+=%*                           " Reset highlighting.
+"set statusline+=%*                           " Reset highlighting.
 
-set statusline+=%=   " Right align.
+"set statusline+=%=   " Right align.
 
 " File format, encoding and type.  Ex: "(unix/utf-8/python)"
-set statusline+=(
-set statusline+=%{&ff}                        " Format (unix/DOS).
-set statusline+=/
-set statusline+=%{strlen(&fenc)?&fenc:&enc}   " Encoding (utf-8).
-set statusline+=/
-set statusline+=%{&ft}                        " Type (python).
-set statusline+=)
+"set statusline+=(
+"set statusline+=%{&ff}                        " Format (unix/DOS).
+"set statusline+=/
+"set statusline+=%{strlen(&fenc)?&fenc:&enc}   " Encoding (utf-8).
+"set statusline+=/
+"set statusline+=%{&ft}                        " Type (python).
+"set statusline+=)
 
 " Line and column position and counts.
-set statusline+=\ (line\ %l\/%L,\ col\ %03c)
+"set statusline+=\ (line\ %l\/%L,\ col\ %03c)
 
 " }}}
 " Abbreviations ----------------------------------------------------------- {{{
@@ -241,8 +241,6 @@ vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
 " }}}
 " Folding ----------------------------------------------------------------- {{{
 
-set foldlevelstart=0
-
 " Space to toggle folds.
 nnoremap <Space> za
 vnoremap <Space> za
@@ -254,32 +252,6 @@ nnoremap zO zCzO
 " Use ,z to "focus" the current fold.
 nnoremap <leader>z zMzvzz
 
-function! MyFoldText() " {{{
-    let line = getline(v:foldstart)
-
-    let nucolwidth = &fdc + &number * &numberwidth
-    let windowwidth = winwidth(0) - nucolwidth - 3
-    let foldedlinecount = v:foldend - v:foldstart
-
-    " expand tabs into spaces
-    let onetab = strpart('          ', 0, &tabstop)
-    let line = substitute(line, '\t', onetab, 'g')
-
-    let line = strpart(line, 0, windowwidth - 2 -len(foldedlinecount))
-    let fillcharcount = windowwidth - len(line) - len(foldedlinecount)
-    return line . '…' . repeat(" ",fillcharcount) . foldedlinecount . '…' . ' '
-endfunction " }}}
-set foldtext=MyFoldText()
-
-" }}}
-" Destroy infuriating keys ------------------------------------------------ {{{
-
-" Fuck you, help key.
-noremap  <F1> :set invfullscreen<CR>
-inoremap <F1> <ESC>:set invfullscreen<CR>a
-
-" Fuck you too, manual key.
-nnoremap K <nop>
 
 " }}}
 " Various filetype-specific stuff ----------------------------------------- {{{
@@ -323,31 +295,6 @@ augroup ft_clojure
 augroup END
 
 " }}}
-" Confluence {{{
-
-augroup ft_c
-    au!
-
-    au BufRead,BufNewFile *.confluencewiki setlocal filetype=confluencewiki
-
-    " Wiki pages should be soft-wrapped.
-    au FileType confluencewiki setlocal wrap linebreak nolist
-augroup END
-
-" }}}
-" Cram {{{
-
-let cram_fold=1
-
-augroup ft_cram
-    au!
-
-    au BufNewFile,BufRead *.t set filetype=cram
-    au Syntax cram setlocal foldlevel=1
-augroup END
-
-
-" }}}
 " CSS and LessCSS {{{
 
 augroup ft_css
@@ -387,24 +334,7 @@ augroup ft_css
 augroup END
 
 " }}}
-" Firefox {{{
-
-augroup ft_firefox
-    au!
-    au BufRead,BufNewFile ~/Library/Caches/*.html setlocal buftype=nofile
-augroup END
-
-" }}}
-" Fish {{{
-
-augroup ft_fish
-    au!
-
-    au BufNewFile,BufRead *.fish setlocal filetype=fish
-augroup END
-
-" }}}
-" HTML and HTMLDjango {{{
+" HTML {{{
 
 augroup ft_html
     au!
@@ -424,16 +354,6 @@ augroup ft_html
     "     </tag>
     au FileType html,jinja,htmldjango nnoremap <buffer> <s-cr> vit<esc>a<cr><esc>vito<esc>i<cr><esc>
 
-augroup END
-
-" }}}
-" Java {{{
-
-augroup ft_java
-    au!
-
-    au FileType java setlocal foldmethod=marker
-    au FileType java setlocal foldmarker={,}
 augroup END
 
 " }}}
@@ -483,36 +403,11 @@ augroup ft_nginx
 augroup END
 
 " }}}
-" OrgMode {{{
-
-augroup ft_org
-    au!
-
-    au Filetype org nmap <buffer> Q vahjgq
-augroup END
-
-" }}}
-" QuickFix {{{
-
-augroup ft_quickfix
-    au!
-    au Filetype qf setlocal colorcolumn=0 nolist nocursorline nowrap
-augroup END
-
-" }}}
 " Ruby {{{
 
 augroup ft_ruby
     au!
     au Filetype ruby setlocal foldmethod=syntax
-augroup END
-
-" }}}
-" Vagrant {{{
-
-augroup ft_vagrant
-    au!
-    au BufRead,BufNewFile Vagrantfile set ft=ruby
 augroup END
 
 " }}}
@@ -552,7 +447,7 @@ function! s:ExecuteInShell(command) " {{{
     echo 'Shell command ' . command . ' executed.'
 endfunction " }}}
 command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
-nnoremap <leader>! :Shell 
+nnoremap <leader>! :Shell
 
 " }}}
 " Convenience mappings ---------------------------------------------------- {{{
@@ -560,39 +455,8 @@ nnoremap <leader>! :Shell
 " Clean whitespace
 map <leader>W  :%s/\s\+$//<cr>:let @/=''<CR>
 
-" Change case
-nnoremap <C-u> gUiw
-inoremap <C-u> <esc>gUiwea
-
-" Substitute
-nnoremap <leader>s :%s//<left>
-
-" Emacs bindings in command line mode
-cnoremap <c-a> <home>
-cnoremap <c-e> <end>
-
-" Diffoff
-nnoremap <leader>D :diffoff!<cr>
-
-" Yankring
-nnoremap <silent> <F6> :YRShow<cr>
-
-" Formatting, TextMate-style
-nnoremap Q gqip
-
 " Easier linewise reselection
 nnoremap <leader>V V`]
-
-" HTML tag closing
-inoremap <C-_> <Space><BS><Esc>:call InsertCloseTag()<cr>a
-
-" Align text
-nnoremap <leader>Al :left<cr>
-nnoremap <leader>Ac :center<cr>
-nnoremap <leader>Ar :right<cr>
-vnoremap <leader>Al :left<cr>
-vnoremap <leader>Ac :center<cr>
-vnoremap <leader>Ar :right<cr>
 
 " Less chording
 nnoremap ; :
@@ -600,86 +464,18 @@ nnoremap ; :
 " Faster Esc
 inoremap jk <esc>
 
-" Cmdheight switching
-nnoremap <leader>1 :set cmdheight=1<cr>
-nnoremap <leader>2 :set cmdheight=2<cr>
-
 " Source
 vnoremap <leader>S y:execute @@<cr>
 nnoremap <leader>S ^vg_y:execute @@<cr>
 
-" Replaste
-nnoremap <D-p> "_ddPV`]=
-
-" Marks and Quotes
-noremap ' `
-noremap æ '
-noremap ` <C-^>
-
-" Calculator
-inoremap <C-B> <C-O>yiW<End>=<C-R>=<C-R>0<CR>
-
-" Better Completion
 set completeopt=longest,menuone,preview
-" inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" inoremap <expr> <C-p> pumvisible() ? '<C-n>'  : '<C-n><C-r>=pumvisible() ? "\<lt>up>" : ""<CR>'
-" inoremap <expr> <C-n> pumvisible() ? '<C-n>'  : '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
 " Sudo to write
 cmap w!! w !sudo tee % >/dev/null
 
-
-" Easy filetype switching {{{
-nnoremap _md :set ft=markdown<CR>
-nnoremap _hd :set ft=htmldjango<CR>
-nnoremap _jt :set ft=htmljinja<CR>
-nnoremap _cw :set ft=confluencewiki<CR>
-nnoremap _pd :set ft=python.django<CR>
-nnoremap _d  :set ft=diff<CR>
-" }}}
-
 " Toggle paste
 set pastetoggle=<F8>
 
-" Split/Join {{{
-"
-" Basically this splits the current line into two new ones at the cursor position,
-" then joins the second one with whatever comes next.
-"
-" Example:                      Cursor Here
-"                                    |
-"                                    V
-" foo = ('hello', 'world', 'a', 'b', 'c',
-"        'd', 'e')
-"
-"            becomes
-"
-" foo = ('hello', 'world', 'a', 'b',
-"        'c', 'd', 'e')
-"
-" Especially useful for adding items in the middle of long lists/tuples in Python
-" while maintaining a sane text width.
-nnoremap K h/[^ ]<cr>"zd$jyyP^v$h"zpJk:s/\v +$//<cr>:noh<cr>j^
-" }}}
-
-" Handle URL {{{
-" Stolen from https://github.com/askedrelic/homedir/blob/master/.vimrc
-" OSX only: Open a web-browser with the URL in the current line
-function! HandleURI()
-    let s:uri = matchstr(getline("."), '[a-z]*:\/\/[^ >,;]*')
-    echo s:uri
-    if s:uri != ""
-        exec "!open \"" . s:uri . "\""
-    else
-        echo "No URI found in line."
-    endif
-endfunction
-map <leader>u :call HandleURI()<CR>
-" }}}
-
-" Quickreturn
-inoremap <c-cr> <esc>A<cr>
-inoremap <s-cr> <esc>A:<cr>
 
 
 " }}}
@@ -690,34 +486,7 @@ inoremap <s-cr> <esc>A:<cr>
 map <leader>a :Ack!
 
 " }}}
-" Fugitive {{{
-
-nnoremap <leader>gd :Gdiff<cr>
-nnoremap <leader>gs :Gstatus<cr>
-nnoremap <leader>gw :Gwrite<cr>
-nnoremap <leader>ga :Gadd<cr>
-nnoremap <leader>gb :Gblame<cr>
-nnoremap <leader>gco :Gcheckout<cr>
-nnoremap <leader>gci :Gcommit<cr>
-nnoremap <leader>gm :Gmove<cr>
-nnoremap <leader>gr :Gremove<cr>
-nnoremap <leader>gl :Shell git gl -18<cr>:wincmd \|<cr>
-
-augroup ft_fugitive
-    au!
-
-    au BufNewFile,BufRead .git/index setlocal nolist
-augroup END
-
-" }}}
-" HTML5 {{{
-
-let g:event_handler_attributes_complete = 0
-let g:rdfa_attributes_complete = 0
-let g:microdata_attributes_complete = 0
-let g:atia_attributes_complete = 0
-
-" }}}
+"
 " Lisp (built-in) {{{
 
 let g:lisp_rainbow = 1
