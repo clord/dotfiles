@@ -4,6 +4,7 @@
 # correctly.
 
 require 'yaml'
+ENV['HOME'] ||= "/home/clord"
 F_PWD = "#{ENV['HOME']}/.passwords"
 system "chmod u=rw,go= #{F_PWD}" # Make sure permissions are good
 if ARGV.count == 2
