@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+# This script queries CMVC for verify or return defects
+
+products = %w{  }
+users = %w{ clord cbowler catherine hstong }
+
+class Array
+   def to_cmvc
+      "(#{self.map { |s| "'#{s}'"}.join(",")})"
+   end
+end
+
+ids = `Report -general VerifyView -select dupDefectId -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.lines.select do |id|
+   if products.empty
+      true
+   else
+      `Report -general Defects -select id -where "id=#{id} and product in #{products.to_cmvc}"`.lines.length > 1
+   end
+end.to_a
+
+unless ids.empty?
+   system "Report -general Defects -select name,originLogin,abstract" -where "id in #{id.to_cmvc} order by originLogin"
+end
+
