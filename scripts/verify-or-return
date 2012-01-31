@@ -67,9 +67,13 @@ user_info = {}
 
 
 def verify_records(users)
-   `Report -general VerifyView -select dupDefectId,userLogin,type -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.each_line do |q|
-      id,usr,type=q.chomp.split("|")
-      yield id.to_i, usr.to_sym, type
+   `Report -general VerifyView -select defectId,dupDefectName,userLogin,type -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.each_line do |q|
+      did,ddid,usr,type=q.chomp.split("|")
+      if type == "duplicate"
+         yield did.to_i, usr.to_sym, type.to_sym, ddid.to_i
+      else
+         yield did.to_i, usr.to_sym, type.to_sym
+      end
    end
 end
 
@@ -101,7 +105,6 @@ def level_of_track(defs)
    end
 end
  
-
 def pres_name(user_info, user)
    return user_info[user][:name] if user_info && user_info[user]
    return user
@@ -117,11 +120,11 @@ end
 
 sem = Mutex.new
 vr = Thread.new do
-   verify_records(users) do |id, usr, type|
+   verify_records(users) do |id, usr, type, dup|
       sem.synchronize do
          id_by_user[usr] ||= []
          id_by_user[usr] << id
-         props_of_item[id] = {user: usr, type: type, mode: :verify }
+         props_of_item[id] = {user: usr, type: type, mode: :verify, duplicate: dup }
       end
    end
 end
@@ -230,6 +233,12 @@ mail = Mail.new do
                               end 
                               b.td do
                                  b.a({href:"https://ctweb.torolab.ibm.com/?cat=defects&sec=showdefdetails&id=#{d[:name]}"}, d[:name]) 
+                                 dup = props_of_item[d[:id]][:duplicate]
+                                 if props_of_item[d[:id]][:type] == :duplicate
+                                    b.span "(via "
+                                    b.a({href:"https://ctweb.torolab.ibm.com/?cat=defects&sec=showdefdetails&id=#{dup}"}, dup) 
+                                    b.span ")"
+                                 end
                               end
                               b.td d[:abstract]
                            end
