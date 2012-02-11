@@ -18,7 +18,10 @@ for f in $files; do
 done
 
 # Create a per-machine configuration file.
-mkdir -p ~/tmp
+mkdir -p ~/tmp/undo
+mkdir -p ~/tmp/backup
+mkdir -p ~/tmp/swap
+
 touch ~/tmp/user.vim
 
 # Non-destructively create the ~/.local namespace, where user installed stuff will live

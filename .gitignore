@@ -1,5 +1,6 @@
 *.swp
 .AppleDouble
+.DS_Store
 *.o
 vim/view
 *~

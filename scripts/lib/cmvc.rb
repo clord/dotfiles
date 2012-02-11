@@ -167,56 +167,41 @@ module Cmvc
       end
    end
 
-   # Provides operations that depend on a defect or feature
-   # With this, we can write:
-   # Context.open(:defect, true, {severity: 3}).assign("...").accept("...").create_track("...")
-   # and the pipeline will stall if anything fails.
-   class Context
-      attr_accessor :name, :exec_mode, :tool, :actions
-      def initialize(name, tool=:defect, exec_mode=:dryrun)
-         @name = name || "<#{tool}>"
-         @exec_mode = exec_mode
-         @tool = tool
-         @actions = []
+   module ExecAction
+      def exec_action mode=:makeitso, action
+         if mode == :makeitso || action[:safe]
+            r = action[:thunk].call(action[:command])
+            action[:handler].call(r) if action[:handler]
+         else
+            puts "## #{action[:command]}"
+         end
       end
-      def self.open tool, parms, exec_mode=:dryrun
-         must_contain parms, [:release, :abstract, :severity, :product, :component]
-         Context.new(Command.new(tool, :open => parms).exec_open, tool, exec_mode)
-      end
-      def accept(remarks)
-         @actions << {
-            command: Command.new(@tool, accept: @name, remarks: remarks),
-            thunk: proc { |c| c.exec }
-         }
-         return self
-      end
+   end
+
+   module View
+      include ExecAction
+
       def view(view, where, &handler)
-         @actions << {
-            command: Command.new(:report, view: view, where: where, raw: true),
-            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
-            safe: true,
-            handler: handler
-         }
-         return self
+         exec_action command: Command.new(:report, view: view, where: where, raw: true),
+                     thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+                     safe: true,
+                     handler: proc { |a| a.each { |x| handler.call(*x) } }
       end
-      def level_view(action, where, &handler)
-         @actions << {
-            command: Command.new(:level, view: action, where: where, raw: true),
-            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
-            safe: true,
-            handler: handler
-         }
-         return self
+
+      def level(action, where, &handler)
+         exec_action command: Command.new(:level, view: action, where: where, raw: true),
+                     thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+                     safe: true,
+                     handler: handler
       end
-      def release_view(action, where, &handler)
-         @actions << {
-            command: Command.new(:release, view: action, where: where, raw: true),
-            thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
-            safe: true,
-            handler: handler
-         }
-         return self
+
+      def release(action, where, &handler)
+         exec_action command: Command.new(:release, view: action, where: where, raw: true),
+                     thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
+                     safe: true,
+                     handler: handler
       end
+      # crack open the Level and Release maps
       def clean_up_map map
          {
             id: map[0].to_i,
@@ -232,85 +217,90 @@ module Cmvc
             unknown3: map[10]
          }
       end
-      private :clean_up_map
       def release_map release, &handler
-         @actions << {
-            command: Command.new(:release, map: release),
-            thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
-            safe: true,
-            handler: handler
-         }
-         return self
+         exec_action command: Command.new(:release, map: release),
+                     thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
+                     safe: true,
+                     handler: handler
       end
       def level_map release, &handler
-         @actions << {
-            command: Command.new(:level, map: release),
-            thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
-            safe: true,
-            handler: handler
-         }
-         return self
+         exec_action command: Command.new(:level, map: release),
+                     thunk: proc { |c| c.exec_read.map { |i| clean_up_map(i.split('|')) } },
+                     safe: true,
+                     handler: handler
       end
       def last_levels release, n, &handler
-         view 'LevelView', "releaseName='#{release}' and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'LevelView', "releaseName in (#{releases}) and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
       end
-      def change_view release, &handler
-         view 'ChangeView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+
+   end
+
+   # Provides operations that depend on a defect or feature
+   # With this, we can write:
+   # Context.open(:defect, true, {severity: 3}).assign("...").accept("...").create_track("...")
+   # and the pipeline will stall if anything fails.
+   class Context
+      include ExecAction
+      include View
+      attr_accessor :name, :exec_mode, :tool
+      def initialize(name, tool=:defect, exec_mode=:dryrun)
+         @name = name || "<#{tool}>"
+         @exec_mode = exec_mode
+         @tool = tool
+         @mode = exec_mode
       end
-      def track_view release, &handler
-         view 'TrackView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+
+      def self.open tool, parms, exec_mode=:dryrun
+         must_contain parms, [:release, :abstract, :severity, :product, :component]
+         Context.new(Command.new(tool, :open => parms).exec_open, tool, exec_mode)
       end
-      def fix_view release, &handler
-         view 'fixView', "releaseName='#{release}' and defectName='#{@name}'", &handler
+
+      def accept(remarks)
+         exec_action @mode, command: Command.new(@tool, accept: @name, remarks: remarks), thunk: proc { |c| c.exec }
+         return self
       end
       def complete_fix component, release
-         @actions << {
-            command: Command.new(:fix, complete: {@tool => @name}, component: component, release: release),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode, command: Command.new(:fix, complete: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def assign_fix user, component, release
-         @actions << {
-            command: Command.new(:fix, assign: {:to => user, @tool => @name}, component: component, release: release),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode, command: Command.new(:fix, assign: {:to => user, @tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def activate_fix component, release
-         @actions << {
-            command: Command.new(:fix, activate: {@tool => @name}, component: component, release: release),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode, command: Command.new(:fix, activate: {@tool => @name}, component: component, release: release), thunk: proc { |c| c.exec }
          return self
       end
       def assign(to)
-         @actions << {
-            command: Command.new(@tool, assign: @name, owner: to),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode, command: Command.new(@tool, assign: @name, owner: to), thunk: proc { |c| c.exec }
          return self
       end
       def track_integrate for_release
-         @actions << {
-            command: Command.new(:track, integrate: {@tool => @name}, release: for_release),
-            thunk: proc {|c| c.exec }
-         }
+         exec_action @mode, command: Command.new(:track, integrate: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
          return self
       end
       def track_fix for_release
-         @actions << {
-            command: Command.new(:track, fix: {@tool => @name}, release: for_release),
-            thunk: proc {|c| c.exec }
-         }
+         exec_action @mode, command: Command.new(:track, fix: {@tool => @name}, release: for_release), thunk: proc {|c| c.exec }
          return self
       end
+
+      def changed_view  release, &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'ChangeView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+      end
+      def track_view release, &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'TrackView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+      end
+      def fix_view release, &handler
+         releases = [*release].map { |a| "'#{a}'" }.join(", ")
+         view 'fixView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+      end
+
       def create_track(for_release)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         @actions << {
-            command: Command.new(:track, create: {@tool => @name}, release: for_release),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode,  command: Command.new(:track, create: {@tool => @name}, release: for_release), thunk: proc { |c| c.exec }
          return self
       end
       def create_tracks(releases)
@@ -319,23 +309,8 @@ module Cmvc
       end
       def approve_track(release, become)
          raise "invalid tool #{@tool}" unless @tool == :defect || @tool == :feature
-         @actions << {
-            command: Command.new(:approval, accept: {@tool => @name}, become: become, release: release),
-            thunk: proc { |c| c.exec }
-         }
+         exec_action @mode,  command: Command.new(:approval, accept: {@tool => @name}, become: become, release: release), thunk: proc { |c| c.exec }
          return self
-      end
-      def exec &a
-         @actions.each do |action|
-            if @exec_mode == :makeitso || action[:safe]
-               r = action[:thunk].call(action[:command])
-               action[:handler].call(r) if action[:handler]
-            else
-               puts "## #{action[:command]}"
-            end
-         end
-         # Clear the list of actions so we can do it again
-         @actions = []
       end
    end
 

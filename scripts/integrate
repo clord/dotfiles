@@ -1,4 +1,4 @@
-#!/bin/env ruby
+#!/usr/bin/env ruby
 
 require 'lib/cmvc'
 require 'ostruct'
@@ -33,55 +33,22 @@ end
 
 ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
 
-opt.releases.each do |r|
-   fixes = nil
-
-   # Check that fixView finds something. result is the fixlog
-   ctx.fix_view(r) { |d| fixes = d }
-   ctx.exec
-   raise "fixes empty" if fixes.empty? && opt.mode == :makeitso
-
-   if opt.undo
-      ctx.track_view(r) do |tracks|
-         tracks.each do |track|
-            ctx.track_fix(r) unless track[3] == "fix"
-         end
-      end
-      ctx.exec
-      fixes.each do |name, rel, component, fstate, fix_owner|
-         next if fstate.to_sym == :active
-         STDERR.puts "fix owned by #{fix_owner}: #{fstate} => active"
-         ctx.activate_fix component.to_sym, r
-      end
+if opt.undo
+   ctx.track_view(opt.releases) do |r, tname, empty, state|
+      ctx.track_fix(r) unless state == "fix"
    end
-
-   fixes.each do |name, rel, component, fstate, fix_owner|
-      next if fix_owner.to_sym == opt.to.to_sym
-      STDERR.puts "fix owned by #{fix_owner} changed to #{opt.to}"
-      ctx.assign_fix opt.to, component.to_sym, r
-   end
-   ctx.exec
-
-   unless opt.undo
-      fixes.each do |name, rel, component, fstate, fix_owner|
-         next if fstate.to_sym == :complete
-         STDERR.puts "fix #{fstate} => complete"
-         ctx.complete_fix component.to_sym, r
-      end
-
-      ctx.track_view(r) do |tracks|
-         tracks.each do |track|
-            next if track[3] == "integrate"
-            STDERR.puts "track: #{track[3]} => integrate"
-            ctx.track_integrate(r)
-         end
-      end
-   end
-   ctx.exec
-
-
 end
 
+ctx.fix_view(opt.releases) do |name, r, component, fstate, fix_owner|
+   ctx.activate_fix(component.to_sym, r) if opt.undo && fstate != "active"
+   ctx.assign_fix(opt.to, component.to_sym, r) if fix_owner != opt.to
+   ctx.complete_fix(component.to_sym, r) unless opt.undo || fstate == "complete"
+end
 
-
-
+unless opt.undo
+   ctx.track_view(opt.releases) do |r, tname, empty, state|
+      next if state == "integrate"
+      ctx.track_integrate(r)
+      ctx.track_fix(r) unless state == "fix"
+   end
+end

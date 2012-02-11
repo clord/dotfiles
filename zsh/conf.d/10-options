@@ -27,6 +27,7 @@ if (( $EUID != 0 )); then
         hist_find_no_dups      \
         hist_ignore_space      \
         hist_no_functions      \
+        hist_ignore_dups       \
         hist_reduce_blanks     \
         inc_append_history     \
         share_history
@@ -42,8 +43,8 @@ REPORTTIME=2  # Report time if exec exceeds secs
 if (( $EUID != 0 )); then
    # Per-screen-session history file.
     HISTFILE=~/.zsh/history.${STY:e}
-    HISTSIZE=5500
-    SAVEHIST=5000
+    HISTSIZE=15500
+    SAVEHIST=15000
 fi
 
 typeset -ga chpwd_functions

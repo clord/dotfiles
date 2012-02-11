@@ -1,4 +1,4 @@
-#!/bin/env ruby
+#!/usr/bin/env ruby
 # This little ditty will just extract all instances of a pattern in a file
 # with some useful default patterns provided under options.
 
@@ -7,6 +7,7 @@ require 'ostruct'
 
 opt = OpenStruct.new
 opt.pattern = /(?!)/
+opt.output = nil
 opt.ignore_case = false
 
 opts = OptionParser.new do |opts|
@@ -20,6 +21,9 @@ opts = OptionParser.new do |opts|
    opts.on("--or=P", String, "add another pattern to the mix (alias for --pattern)") do |p|
       opt.pattern = Regexp.union(Regexp.new(p, opt.ignore_case), opt.pattern)
    end
+   opts.on("--out=P", String, 'Output pattern for matchdata (\1, \foo)') do |p|
+      opt.output = p
+   end
    opts.on("--pattern=P", String, "Specify the pattern to look for") do |p|
       opt.pattern = Regexp.union(Regexp.new(p, opt.ignore_case))
    end
@@ -29,11 +33,30 @@ opts = OptionParser.new do |opts|
 end.parse!
 
 while line=ARGF.gets
-   if line =~ opt.pattern
-      puts $&
+   m = opt.pattern.match(line)
+   if m
+      if opt.output
+         if m.names.empty?
+            out = opt.output
+            m.captures.length.times do |n|
+               out = out.gsub(/\\#{n+1}/, m[n+1])
+            end
+            puts out
+         else
+            out = opt.output
+            m.names.each do |n|
+               out = out.gsub(/\\#{n}/, m[n])
+            end
+            puts out
+         end
+      else
+         if m.captures.empty?
+            puts m.to_s
+         else
+            puts m.captures.join("")
+         end
+      end
    end
 end
-
-
 
 

@@ -1,0 +1,229 @@
+#!/usr/bin/env ruby
+# This script queries CMVC for verify or return defects
+
+require 'builder'
+require 'mail'
+
+ENV["CMVC_FAMILY"] ||= "aix@aix@1500"
+ENV["CMVC_AUTH_METHOD"] ||= "PW"
+ENV["PATH"] += ":/usr/lpp/cmvc/bin"
+ENV["USERS_PATH"] ||= "/home/clord/.local/users"
+
+# Get the users from the users database
+users = []
+File.open(ENV["USERS_PATH"], "r") { |f| users = f.each_line.map { |u| u.strip } }
+
+
+class Numeric
+   def ordinal
+      self.to_s + ((10...20).include?(self) ? 'th' : %w{th st nd rd th th th th th th}[self % 10])
+   end
+end
+
+class Array
+  def to_cmvc
+    return "()" if self.empty? 
+    case self.first.class.to_s
+    when "String"
+      "(#{self.map { |s| "'#{s.chomp}'"}.join(",")})"
+    else
+      "(#{self.map { |s| s.to_s}.join(",")})"
+    end
+  end
+end
+
+def defect_array_to_hash d
+  {
+    id: d[0].to_i,
+    type: d[1].to_sym,
+    prefix: d[2].to_sym,
+    name: d[3],
+    compId: d[4].to_i,
+    envName: d[5],
+    state: d[6].to_sym,
+    severity: d[7],
+    abstract: d[8],
+    reference: d[9],
+    answer: d[10],
+    levelName: d[11],
+    lastUpdate: d[12],
+    addDate: d[13],
+    assignDate: d[14],
+    responseDate: d[15],
+    endDate: d[16],
+    originId: d[17].to_i,
+    ownerId: d[18].to_i,
+    age: d[19].to_i,
+    duplicate: d[20],
+    relieaseId: d[21].to_i,
+    remoteFamilyId: d[22].to_i
+  }
+end
+
+id_by_user = {}
+props_of_item = {}
+user_info = {}
+
+def verify_records(users)
+   `Report -general VerifyView -select dupDefectId,userLogin,type -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.each_line do |q|
+      id,usr,type=q.chomp.split("|")
+      yield id.to_i, usr.to_sym, type
+   end
+end
+
+def returned_defects(users)
+   `Report -general DefectView -select id,originLogin,type -where "originLogin in #{users.to_cmvc} and state in ('returned') order by originLogin`.each_line do |l|
+      id,usr,type = l.chomp.split("|")
+      yield id.to_i, usr.to_sym, type
+   end
+end
+
+def defects_by_id(ids) 
+   `Report -general Defects -where "id in #{ids.to_cmvc} order by type,state"`.each_line do |l| 
+      d = defect_array_to_hash(l.chomp.split(/\|/))
+      yield d
+   end
+end
+
+def email_addresses(users)
+   `Report -view Users -where "login in #{users.to_cmvc}" -raw`.each_line do |l|   
+      uid,name,su,addr = l.chomp.split("|")
+      yield uid.to_sym, name.gsub(/\n/, " "), addr
+   end
+ end
+
+system "ibmlogin 2> /dev/null"
+
+email_addresses(users) do |usr, name, email|
+   user_info[usr] = { email: email, name: name }
+end
+
+verify_records(users) do |id, usr, type|
+   id_by_user[usr] ||= []
+   id_by_user[usr] << id
+   props_of_item[id] = {user: usr, type: type, mode: :verify }
+end
+
+returned_defects(users) do |id, usr, type|
+   id_by_user[usr] ||= []
+   id_by_user[usr] << id
+   props_of_item[id] = { user: usr, type: type, mode: :returned }
+end
+
+emails = ['clord@ca.ibm.com']
+user_info.each do |usr, info| 
+   next unless id_by_user[usr] && id_by_user[usr].length != 0
+   emails << info[:email] 
+end
+emails.sort!
+emails.uniq!
+
+def pres_name(user_info, user)
+   return user_info[user][:name] if user_info && user_info[user]
+   return user
+end
+
+total = 0
+sorted_by_count = []
+id_by_user.each { |u, v| total += v.length; sorted_by_count << [u, v.length] }
+sorted_by_count.sort! { |b,a| a[1] <=> b[1] }
+
+
+exit 0 if total == 0
+
+mail = Mail.new do  
+   from "NagBot XL-3000 <cmvc_nag_noreply@ca.ibm.com>"
+   to emails
+   subject "Action Required: Verify, Re-open, or Cancel #{total} Defects & Features"
+   text_part do
+      output = ""
+      output += "Returned and Verify Defects by Team Member\n\n"
+      sorted_by_count.each do |user,count|
+         ids = id_by_user[user]
+         next if ids.empty?
+         output += "\n#{pres_name(user_info, user)} (#{count}):\n"
+         output += "action".ljust(22) + "name".ljust(20) + "abstract\n"
+         defects_by_id(ids) do |d| 
+            case props_of_item[d[:id]][:mode]
+            when :verify
+               output += "verify #{d[:type]}".ljust(22)
+            when :returned
+               output += "cancel/reopen #{d[:type]}".ljust(22)
+            end 
+            output += d[:name].to_s.ljust(20)
+            output += d[:abstract].to_s + "\n"
+         end
+      end
+      body output
+   end
+   html_part do
+      content_type "text/html; charset=UTF-8"
+      b = Builder::XmlMarkup.new(indent:1)
+      html = b.html do
+         b.head do
+            b.title "Verify or return defects"
+            b.style "tr {margin:0;padding:0;} 
+                     tbody {margin:0;padding:0} 
+                     table {border-collapse:collapse;border:1px solid #ddd;padding:0;margin:0;} 
+                     td {padding:2px 10px;margin:0;border-bottom:1px solid #ddd;} 
+                     th {background-color:#eee;padding:3px 5px;margin:0}
+                     .user {border-top:1px solid #eee;padding-top:20px;font-size:150%;}
+                     .group {margin-left:15px;}
+                     .group h2 {margin-left:-15px;}
+                     .usertab {margin-left:15px;}"
+         end
+         b.body do
+            b.div(class: "group") do
+               b.h2 "Summary for #{[:Sunday,:Monday,:Tuesday,:Wednesday,:Thursday,:Friday,:Saturday][Time.now.wday]} the #{Time.now.mday.ordinal}"
+               b.ol do
+                  sorted_by_count.each do |uid, count|
+                     b.li "#{uid}: #{count}"
+                  end
+               end
+            end
+            b.div(class: "group") do
+               b.h2 "Returned and Verify Defects by Team Member"
+               b.p "After someone fixes a defect you've opened, you have to go in and make sure that the fix is good. 
+                    If every reported problem is now working, Accept the verification record. 
+                    Otherwise, Reject the record to reopen the defect and continue the work."
+                     
+               b.p "Returned defects also need attention. Here, you've opened a defect that someone thinks is not valid.
+                     You need to go in and decide if their reason for returning it is valid. Either cancel the defect, or 
+                     reopen it."                     
+               b.table do
+                  sorted_by_count.each do |user, count|
+                     ids = id_by_user[user]
+                     next if ids.empty?
+                     b.tr { b.td({"colspan" => 3, "class" => "user"}, "#{pres_name(user_info, user)} (#{count}):") }
+                     b.div(class: "usertab") do
+                        b.tr { b.th "action"; b.th "name"; b.th "abstract" }   
+                        defects_by_id(ids) do |d|
+                           b.tr do
+                              case props_of_item[d[:id]][:mode]
+                              when :verify
+                                 b.td "verify #{d[:type]}"
+                              when :returned
+                                 b.td "cancel or reopen #{d[:type]}"
+                              end 
+                              b.td do
+                                 b.a({href:"https://ctweb.torolab.ibm.com/?cat=defects&sec=showdefdetails&id=#{d[:name]}"}, d[:name]) 
+                              end
+                              b.td d[:abstract]
+                           end
+                        end 
+                     end
+                  end
+                  end
+                  b.p "This script's full name is #{$0}"
+            end
+         end
+      end
+      body html.to_s
+   end
+end
+
+mail.delivery_method :sendmail
+mail.deliver
+
+
+
