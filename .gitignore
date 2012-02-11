@@ -1,4 +1,5 @@
 *.swp
+.AppleDouble
 *.o
 vim/view
 *~
