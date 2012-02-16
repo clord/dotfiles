@@ -43,6 +43,7 @@ set shiftround
 set autoread
 set title
 set dictionary=/usr/share/dict/words
+set foldlevelstart=99
 
 " Wildmenu completion {{{
 

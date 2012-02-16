@@ -7,13 +7,13 @@ require 'ostruct'
 
 opt = OpenStruct.new
 opt.pattern = /(?!)/
-opt.output = nil
+opt.output = '\0'
 opt.ignore_case = false
 
 opts = OptionParser.new do |opts|
    opts.banner = "Usage: #{File.basename($0)} [options]"
    opts.on("--scenario", "default pattern that will match scenario files") do
-      opt.pattern = Regexp.union(/(\$[\(\w\)]+|\/tst\w+|\/test)\/([^ ]*)\.scenario\b/, opt.pattern)
+      opt.pattern = Regexp.union(/(\$[\(\w\)]+|\/tst\w+|\/test)(\/(?:[^ ]*?))(\.scenario)\b/, opt.pattern)
    end
    opts.on("--string=S", String, "Specify a string to look for") do |p|
       opt.pattern = Regexp.union(Regexp.new(Regexp.escape(p)), opt.pattern)
@@ -32,30 +32,17 @@ opts = OptionParser.new do |opts|
    end
 end.parse!
 
-while line=ARGF.gets
+while line = ARGF.gets
    m = opt.pattern.match(line)
-   if m
-      if opt.output
-         if m.names.empty?
-            out = opt.output
-            m.captures.length.times do |n|
-               out = out.gsub(/\\#{n+1}/, m[n+1])
-            end
-            puts out
-         else
-            out = opt.output
-            m.names.each do |n|
-               out = out.gsub(/\\#{n}/, m[n])
-            end
-            puts out
-         end
-      else
-         if m.captures.empty?
-            puts m.to_s
-         else
-            puts m.captures.join("")
-         end
-      end
+   next unless m
+   if m.names.empty?
+      out = opt.output
+      (m.captures.length+1).times { |n| out = out.gsub(/\\#{n}\b/, m[n]) }
+      puts out
+   else
+      out = opt.output
+      m.names.each { |n| out = out.gsub(/\\#{n}\b/, m[n]) }
+      puts out
    end
 end
 
