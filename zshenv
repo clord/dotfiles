@@ -33,6 +33,7 @@ prepend_path /usr/linux
 prepend_path /usr/local
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
+prepend_path $HOME/Library/Haskell
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.rbenv
 prepend_path $HOME/.local
