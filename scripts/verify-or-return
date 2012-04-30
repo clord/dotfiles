@@ -2,6 +2,7 @@
 # This script queries CMVC for verify or return defects
 
 require 'builder'
+require 'thread'
 require 'mail'
 
 ENV["CMVC_FAMILY"] ||= "aix@aix@1500"
@@ -64,10 +65,15 @@ id_by_user = {}
 props_of_item = {}
 user_info = {}
 
+
 def verify_records(users)
-   `Report -general VerifyView -select dupDefectId,userLogin,type -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.each_line do |q|
-      id,usr,type=q.chomp.split("|")
-      yield id.to_i, usr.to_sym, type
+   `Report -general VerifyView -select defectId,dupDefectName,userLogin,type -where "userLogin in #{users.to_cmvc} and state = 'ready'"`.each_line do |q|
+      did,ddid,usr,type=q.chomp.split("|")
+      if type == "duplicate"
+         yield did.to_i, usr.to_sym, type.to_sym, ddid.to_i
+      else
+         yield did.to_i, usr.to_sym, type.to_sym
+      end
    end
 end
 
@@ -90,25 +96,51 @@ def email_addresses(users)
       uid,name,su,addr = l.chomp.split("|")
       yield uid.to_sym, name.gsub(/\n/, " "), addr
    end
- end
+end
+ 
+def level_of_track(defs) 
+   `Report -general TrackView -select defectid,actual,state -where "defectid in #{defs.to_cmvc}"`.each_line do |l|
+      id, level, state = l.chomp.split("|")
+      yield id.to_i, level, state
+   end
+end
+ 
+def pres_name(user_info, user)
+   return user_info[user][:name] if user_info && user_info[user]
+   return user
+end
 
 system "ibmlogin 2> /dev/null"
 
-email_addresses(users) do |usr, name, email|
-   user_info[usr] = { email: email, name: name }
+em = Thread.new do
+   email_addresses(users) do |usr, name, email|
+      user_info[usr] = { email: email, name: name }
+   end
 end
 
-verify_records(users) do |id, usr, type|
-   id_by_user[usr] ||= []
-   id_by_user[usr] << id
-   props_of_item[id] = {user: usr, type: type, mode: :verify }
+sem = Mutex.new
+vr = Thread.new do
+   verify_records(users) do |id, usr, type, dup|
+      sem.synchronize do
+         id_by_user[usr] ||= []
+         id_by_user[usr] << id
+         props_of_item[id] = {user: usr, type: type, mode: :verify, duplicate: dup }
+      end
+   end
 end
 
-returned_defects(users) do |id, usr, type|
-   id_by_user[usr] ||= []
-   id_by_user[usr] << id
-   props_of_item[id] = { user: usr, type: type, mode: :returned }
+rd = Thread.new do
+   returned_defects(users) do |id, usr, type|
+      sem.synchronize do
+         id_by_user[usr] ||= []
+         id_by_user[usr] << id
+         props_of_item[id] = { user: usr, type: type, mode: :returned }
+      end
+   end
 end
+rd.join
+em.join
+vr.join
 
 emails = ['clord@ca.ibm.com']
 user_info.each do |usr, info| 
@@ -118,16 +150,10 @@ end
 emails.sort!
 emails.uniq!
 
-def pres_name(user_info, user)
-   return user_info[user][:name] if user_info && user_info[user]
-   return user
-end
-
 total = 0
 sorted_by_count = []
 id_by_user.each { |u, v| total += v.length; sorted_by_count << [u, v.length] }
 sorted_by_count.sort! { |b,a| a[1] <=> b[1] }
-
 
 exit 0 if total == 0
 
@@ -207,6 +233,12 @@ mail = Mail.new do
                               end 
                               b.td do
                                  b.a({href:"https://ctweb.torolab.ibm.com/?cat=defects&sec=showdefdetails&id=#{d[:name]}"}, d[:name]) 
+                                 dup = props_of_item[d[:id]][:duplicate]
+                                 if props_of_item[d[:id]][:type] == :duplicate
+                                    b.span "(via "
+                                    b.a({href:"https://ctweb.torolab.ibm.com/?cat=defects&sec=showdefdetails&id=#{dup}"}, dup) 
+                                    b.span ")"
+                                 end
                               end
                               b.td d[:abstract]
                            end

@@ -3,6 +3,7 @@
 require 'lib/cmvc'
 require 'ostruct'
 require 'optparse'
+require 'thread'
 
 opt = OpenStruct.new
 opt.mode = :makeitso
@@ -34,21 +35,22 @@ end
 ctx = Cmvc::Context.new(opt.name, opt.tool, opt.mode)
 
 if opt.undo
-   ctx.track_view(opt.releases) do |r, tname, empty, state|
-      ctx.track_fix(r) unless state == "fix"
+   ctx.track_view(opt.releases, false) do |r, tname, empty, state|
+      ctx.track_fix(r) if state != "fix"
    end
 end
 
-ctx.fix_view(opt.releases) do |name, r, component, fstate, fix_owner|
+ctx.fix_view(opt.releases, false) do |name, r, component, fstate, fix_owner|
    ctx.activate_fix(component.to_sym, r) if opt.undo && fstate != "active"
    ctx.assign_fix(opt.to, component.to_sym, r) if fix_owner != opt.to
    ctx.complete_fix(component.to_sym, r) unless opt.undo || fstate == "complete"
 end
 
 unless opt.undo
-   ctx.track_view(opt.releases) do |r, tname, empty, state|
-      next if state == "integrate"
-      ctx.track_integrate(r)
-      ctx.track_fix(r) unless state == "fix"
+   ctx.track_view(opt.releases, false) do |r, tname, empty, state|
+      if state != "integrate"
+         ctx.track_integrate(r)
+         ctx.track_fix(r) unless state == "fix"
+      end
    end
 end

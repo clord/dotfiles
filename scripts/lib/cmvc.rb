@@ -1,5 +1,7 @@
 require 'lib/ioopen'
 require 'lib/util'
+require 'thread'
+MEX = Mutex.new
 module Cmvc
    include IOOpen
    CMVC_DIR = "/usr/lpp/cmvc/bin"
@@ -46,7 +48,9 @@ module Cmvc
       statestr = states.collect { |s| "'#{s}'" }.join(', ')
       cmd = "#{CMVC_DIR}/Report -raw -view trackView -where \"releasename in '#{release}' and state in (#{statestr})\""
       erro = ""
-      STDERR.puts cmd
+      MEX.syncronize do
+         STDERR.puts cmd
+      end
       o = o_open(cmd) { |o,e| o = processraw(o, report_keys); erro = e.read; o }
       raise CmvcError.new("Failed to gather tracks", cmd, $?, erro) unless $?.success?
       return o
@@ -63,7 +67,9 @@ module Cmvc
       command = "#{CMVC_DIR}/Release -extract #{cmvc_release} -nokeys -node direct -root #{dest_dir}"
       command += " -component #{comp}" unless comp.nil?
       command += " -become #{become}" unless become.nil?
-      STDERR.puts command
+      MEX.syncronize do
+         STDERR.puts command
+      end
       if defined? yield
          pid = fork { exec command }
          while Process.waitpid(pid, Process::WNOHANG).nil? do
@@ -126,7 +132,9 @@ module Cmvc
       end
 
       def exec
-         puts "% " + to_s
+         MEX.synchronize do
+            puts "% " + to_s
+         end
          system to_s
          raise "Failed to execute #{to_s}" unless $?.success?
       end
@@ -134,7 +142,9 @@ module Cmvc
       # Exec, but captures output as an array of lines
       def exec_read
          lines = []
-         puts "% " + to_s
+         MEX.synchronize do
+            puts "% " + to_s
+         end
          IO.popen(to_s, mode="r") do |cmdout|
             lines = cmdout.readlines
          end
@@ -173,7 +183,9 @@ module Cmvc
             r = action[:thunk].call(action[:command])
             action[:handler].call(r) if action[:handler]
          else
-            puts "## #{action[:command]}"
+            MEX.synchronize do
+               puts "## #{action[:command]}"
+            end
          end
       end
    end
@@ -181,11 +193,19 @@ module Cmvc
    module View
       include ExecAction
 
-      def view(view, where, &handler)
+      def view(view, where, ordered, &handler)
+         ts = []
          exec_action command: Command.new(:report, view: view, where: where, raw: true),
                      thunk: proc { |c| c.exec_read.map { |i| i.split '|' } },
                      safe: true,
-                     handler: proc { |a| a.each { |x| handler.call(*x) } }
+                     handler: proc { |a| a.each { |x| 
+                                          if ordered
+                                             handler.call(*x) 
+                                          else
+                                             ts << Thread.new { handler.call(*x) }
+                                          end
+                                         } }
+         ts.each {|t| t.join } 
       end
 
       def level(action, where, &handler)
@@ -229,9 +249,9 @@ module Cmvc
                      safe: true,
                      handler: handler
       end
-      def last_levels release, n, &handler
+      def last_levels release, n, ordered=true, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
-         view 'LevelView', "releaseName in (#{releases}) and state = 'complete' order by commitDate desc fetch first #{n} rows only", &handler
+         view 'LevelView', "releaseName in (#{releases}) and state = 'complete' order by commitDate desc fetch first #{n} rows only", ordered, &handler
       end
 
    end
@@ -285,17 +305,17 @@ module Cmvc
          return self
       end
 
-      def changed_view  release, &handler
+      def changed_view  release, ordered=true, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
-         view 'ChangeView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+         view 'ChangeView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", ordered, &handler
       end
-      def track_view release, &handler
+      def track_view release, ordered=true, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
-         view 'TrackView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+         view 'TrackView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", ordered, &handler
       end
-      def fix_view release, &handler
+      def fix_view release, ordered, &handler
          releases = [*release].map { |a| "'#{a}'" }.join(", ")
-         view 'fixView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", &handler
+         view 'fixView', "releaseName in (#{releases}) and #{@tool.downcase}Name='#{@name}'", ordered, &handler
       end
 
       def create_track(for_release)
