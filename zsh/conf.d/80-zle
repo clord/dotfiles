@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 zle -N concat-with-ampersand
+zle -N filter-files
 
 # Concat the previous two commands with ampersand, and
 # if there is text in the current buffer, concat it too
@@ -27,5 +28,28 @@ function concat-with-ampersand {
    fi
 }
 
+
+# Concat all files in the buffer that exist as files, filtering out all else.
+# leaves the cursor at the start of the line for command insertion.
+function filter-files {
+   local b
+   local i
+   local newout
+   b=${${=BUFFER}[2,-1]}
+   if [[ ! -z $b ]]
+   then
+      CURSOR=0
+      newout=""
+      for i in $b; do
+         if [[ -e $i ]]
+         then
+            newout="$newout $i"
+         fi
+      done
+      BUFFER="$newout"
+   fi
+}
+
+bindkey '^e' filter-files
 bindkey '^u' concat-with-ampersand
 

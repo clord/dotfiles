@@ -24,9 +24,9 @@
 	staged = diff --cached
 	last = log -1 HEAD
 	graph = log --graph --oneline --decorate
-	s = status
+	s = status -s
    p = push
-	d = diff -w
+	d = diff -w --patience
 	c = commit
 	co = checkout
 	cm = commit -m
