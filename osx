@@ -4,8 +4,8 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 # Enable subpixel font rendering on non-Apple LCDs
 defaults write NSGlobalDomain AppleFontSmoothing -int 2
 
-# Enable the 2D Dock
-defaults write com.apple.dock no-glass -bool true
+# the 2D Dock
+defaults write com.apple.dock no-glass -bool false
 
 # Disable menu bar transparency
 defaults write -g AppleEnableMenuBarTransparency -bool false
@@ -23,10 +23,10 @@ defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
 defaults write -g PMPrintingExpandedStateForPrint -bool true
 
 # Set a blazingly fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 0.005
+defaults write NSGlobalDomain KeyRepeat -int 0.02
 
 # Set a shorter Delay until key repeat
-defaults write NSGlobalDomain InitialKeyRepeat -int 12
+defaults write NSGlobalDomain InitialKeyRepeat -int 20
 
 # Disable auto-correct
 defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
