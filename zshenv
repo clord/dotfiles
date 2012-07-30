@@ -33,6 +33,7 @@ prepend_path /usr/linux
 prepend_path /usr/local
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
+prepend_path $HOME/Library/Haskell
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.rbenv
 prepend_path $HOME/.local
@@ -67,3 +68,7 @@ export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 # Cap some silly things I don't need
 ulimit -c 0
 
+
+# Some IBM Cruft
+export CMVC_FAMILY="aix@aix@1500"
+export CMVC_AUTH_METHOD="PW"
