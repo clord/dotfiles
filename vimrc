@@ -1,11 +1,24 @@
 set nocompatible
-syntax enable
-
 filetype off
-" Use pathogen to easily modify the runtime path to include all plugins under
-" the ~/.vim/bundle directory
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
+syntax enable
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+" required: manage vundle with vundle
+Bundle 'gmarik/vundle'
+
+" Load bundles up:
+Bundle 'tpope/vim-fugitive'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Bundle 'scrooloose/syntastic'
+Bundle 'msanders/snipmate.vim'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'tomasr/molokai'
+Bundle 'kana/vim-textobj-user'
+
+
+
 filetype plugin indent on
 
 set encoding=utf-8
