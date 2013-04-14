@@ -108,7 +108,7 @@ let maplocalleader = "\\"
 " Color scheme {{{
 
 set background=dark
-colorscheme molokai
+colorscheme tomorrow-night-eighties
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
