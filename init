@@ -28,5 +28,5 @@ touch ~/tmp/user.vim
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
 # install ack
-wget http://betterthangrep.com/ack-standalone -O ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
+curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
 
