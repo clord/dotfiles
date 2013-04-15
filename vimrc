@@ -1,6 +1,5 @@
 set nocompatible
 filetype off
-syntax enable
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 " required: manage vundle with vundle
@@ -15,10 +14,17 @@ Bundle 'scrooloose/syntastic'
 Bundle 'msanders/snipmate.vim'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'tomasr/molokai'
+Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
 
+" My own bundles
+Bundle 'clord/vim-insfile'
+Bundle 'clord/vim-bookmaster'
+Bundle 'clord/vim-scenario'
 
+" :BundleInstall will ensure these are all installed, if vundle is available
 
+syntax enable
 filetype plugin indent on
 
 set encoding=utf-8
