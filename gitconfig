@@ -51,6 +51,7 @@
 	default = tracking
 [merge]
 	stat = true
+   conflictstyle = diff3
 [difftool "Kaleidoscope"]
 	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
 [difftool]
