@@ -17,8 +17,8 @@ Bundle 'tomasr/molokai'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
 
-Bundle 'desert-warm-256'
-colorscheme 'desert-warm-256'
+Bundle 'altercation/vim-colors-solarized'
+colorscheme solarized
 
 " My own bundles
 Bundle 'clord/vim-insfile'
