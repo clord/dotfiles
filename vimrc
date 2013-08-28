@@ -17,6 +17,9 @@ Bundle 'tomasr/molokai'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
 
+Bundle 'desert-warm-256'
+colorscheme 'desert-warm-256'
+
 " My own bundles
 Bundle 'clord/vim-insfile'
 Bundle 'clord/vim-bookmaster'
@@ -119,15 +122,6 @@ set backup                       " enable backups
 
 let mapleader = ","
 let maplocalleader = "\\"
-
-" }}}
-" Color scheme {{{
-
-set background=dark
-colorscheme tomorrow-night-eighties
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " }}}
 " Status line ------------------------------------------------------------- {{{

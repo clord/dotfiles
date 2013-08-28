@@ -42,6 +42,7 @@
 	mnemonicprefix = true
 	tool = Kaleidoscope
 	renamed = copy
+	algorithm = patience
 
 [advice]
 	statusHints = false
