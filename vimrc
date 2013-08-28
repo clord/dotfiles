@@ -16,9 +16,8 @@ Bundle 'Valloric/YouCompleteMe'
 Bundle 'tomasr/molokai'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
-
 Bundle 'altercation/vim-colors-solarized'
-colorscheme solarized
+
 
 " My own bundles
 Bundle 'clord/vim-insfile'
@@ -565,5 +564,6 @@ endif
 " Machine specific -------------------------------------------------------- {{{
 
 source ~/tmp/user.vim
+colorscheme solarized
 
 " }}}
