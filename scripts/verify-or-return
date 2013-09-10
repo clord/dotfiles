@@ -165,7 +165,7 @@ sorted_by_count.sort! { |b,a| a[1] <=> b[1] }
 File.open(ENV["LOG_FILE"], File::APPEND|File::WRONLY) do |f|
    f.puts "\n--ts: #{Time.now.to_i.to_s}"
    sorted_by_count.each do |user, count|
-      f.puts "#{email_addr(user_info, user).gsub(/@ca\.ibm\.com$/, "")}: #{count}"
+      f.puts "#{email_addr(user_info, user).gsub(/@\w\w\.ibm\.com$/, "")}: #{count}"
    end
 end
 
