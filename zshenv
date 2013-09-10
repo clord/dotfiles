@@ -45,17 +45,17 @@ if [[ $OSTYPE == darwin* ]]; then
    append_path /usr/local/Cellar/ruby/1.9.2-p180
    append_path /usr/local/Cellar/python/2.7.2
    path=($path /usr/local/texlive/2011/bin/x86_64-darwin)
+else
+   # Eclipse has no bin directory (bad bad bad)
+   path=(/gsa/tlbgsa/projects/x/xlcmpbld/bld_env/aix/jbe-3.0.1.0/jazz/scmtools/eclipse $path)
 fi
-
 
 # look in ./.local, too. This lets subprojects override things
 path=(./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
 
-
 typeset -U path
 typeset -U manpath
-
 
 fpath=(~/.zsh/{func.d,comp.d} $fpath)
 typeset -U fpath
