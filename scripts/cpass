@@ -21,7 +21,7 @@ def readpw(prompt="Password")
    system "stty -echo"
    inp = STDIN.gets
    raise "Password required" unless inp
-   inp.strip
+   inp.chomp.strip
 ensure
    system "stty echo"
 end
@@ -52,7 +52,7 @@ when "-add"
    STDOUT.print "Section: "
    rec = STDIN.gets.strip
    raise "Already exists" if pws[rec]
-   pws[rec] = addpw
+   pws[rec].merge addpw
    File.open(F_PWD, "w") { |out| YAML::dump(pws, out) }
 when "-chpass"
    pwd = pws[section]
