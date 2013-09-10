@@ -35,19 +35,14 @@ function filter-files {
    local b
    local i
    local newout
-   b=${${=BUFFER}[2,-1]}
-   if [[ ! -z $b ]]
-   then
-      CURSOR=0
-      newout=""
-      for i in $b; do
-         if [[ -e $i ]]
-         then
-            newout="$newout $i"
-         fi
-      done
-      BUFFER="$newout"
-   fi
+   b=(${(z)BUFFER})
+   BUFFER=""
+   for i in $b; do
+      if [[ -f "$i" ]]; then
+         BUFFER="$BUFFER $i"
+      fi
+   done
+   CURSOR=0
 }
 
 bindkey '^e' filter-files

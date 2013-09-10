@@ -6,17 +6,6 @@ set_window_title_default() { set_window_title "%l: %n@%m: %~" }
 
 # cd {{{1
 
-# Go to parent directory $1 times
-..()
-{
-    local num=${1:-1}
-    local dir
-    while (( $num > 0 )); do
-        dir=../$dir
-        num=$(($num - 1))
-    done
-    cd $dir &>/dev/null
-}
 
 # Execute a command in a given directory
 # Usage: cdrun DIR CMD [ARG...]
@@ -54,25 +43,6 @@ cdR() { cdr ${1:-$PWD}(:h) }
 
 # vim {{{1
 
-compdef v=vim
-
-# Make sure the file is executable, then edit
-vx() { touch $@; chmod +x $@; v $@ }
-
-# Edit executable in path
-vw() { v $(whence -p $@) }; compdef vw=whence
-
-# Edit regular files
-vf() { v ${1:-$PWD}/**/*${2}(.) }; compdef '_files -/' vf
-
-# Edit any recognizable source code
-vc() { ack -lr --print0 $2 . ${1:-$PWD}/* | xargs -0 v }; compdef '_files -/' vc
-
-# Edit source code of various types
-vsh() { vc ${1:-$PWD} --shell  }; compdef vsh=vc
-vpy() { vc ${1:-$PWD} --python }; compdef vpy=vc
-vrb() { vc ${1:-$PWD} --ruby   }; compdef vrb=vc
-vpl() { vc ${1:-$PWD} --perl   }; compdef vpl=vc
 
 # zsh widgets {{{1
 
