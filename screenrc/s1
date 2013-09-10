@@ -5,7 +5,7 @@ defutf8 on
 nonblock on
 defscrollback 8096
 escape ^zz
-shell -/usr/bin/zsh
+shell -/usr/local/bin/zsh
 zombie "^["
 sessionname "s1"
 altscreen on
