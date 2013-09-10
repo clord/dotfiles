@@ -26,7 +26,7 @@
 	graph = log --graph --oneline --decorate
 	s = status -s
    p = push
-	d = diff -w --patience
+   d = diff -w --minimal --word-diff=color --patience
 	c = commit
 	co = checkout
 	cm = commit -m
@@ -37,16 +37,12 @@
 	a = add
 	ai = add --interactive
 	r = reset
-	r1 = reset HEAD^
-	r2 = reset HEAD^^
-	rh = reset --hard
-	rh1 = reset HEAD^ --hard
-	rh2 = reset HEAD^^ --hard
 
 [diff]
 	mnemonicprefix = true
 	tool = Kaleidoscope
 	renamed = copy
+	algorithm = patience
 
 [advice]
 	statusHints = false

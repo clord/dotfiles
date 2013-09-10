@@ -24,7 +24,7 @@ ca = counts.to_a.sort do |a,b|
    a[1] <=> b[1]
 end
 ca.each do |k,v|
-   next if v <= 1
+   next if v <= 0.5
    printf("%13.1f  %s\n", v, k)
 end
 

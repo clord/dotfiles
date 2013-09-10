@@ -42,9 +42,9 @@ prepend_path $HOME/.local/`uname -s`/gems
 
 if [[ $OSTYPE == darwin* ]]; then
    # add some least-common-denominator scripting engines
-   append_path /usr/local/Cellar/ruby/1.9.2-p180
+   append_path /usr/local/Cellar/ruby/1.9.3-p374
    append_path /usr/local/Cellar/python/2.7.2
-   path=($path /usr/local/texlive/2011/bin/x86_64-darwin)
+   path=($path /usr/texbin)
 else
    # Eclipse has no bin directory (bad bad bad)
    path=(/gsa/tlbgsa/projects/x/xlcmpbld/bld_env/aix/jbe-3.0.1.0/jazz/scmtools/eclipse $path)
