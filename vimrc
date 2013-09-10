@@ -12,7 +12,6 @@ Bundle 'Lokaltog/vim-powerline'
 Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'scrooloose/syntastic'
 Bundle 'msanders/snipmate.vim'
-Bundle 'Valloric/YouCompleteMe'
 Bundle 'tomasr/molokai'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
