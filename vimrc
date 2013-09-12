@@ -1,11 +1,31 @@
 set nocompatible
-syntax enable
-
 filetype off
-" Use pathogen to easily modify the runtime path to include all plugins under
-" the ~/.vim/bundle directory
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+" required: manage vundle with vundle
+Bundle 'gmarik/vundle'
+
+" Load bundles up:
+Bundle 'tpope/vim-fugitive'
+Bundle 'Lokaltog/vim-easymotion'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Bundle 'scrooloose/syntastic'
+Bundle 'msanders/snipmate.vim'
+Bundle 'tomasr/molokai'
+Bundle 'airblade/vim-gitgutter'
+Bundle 'kana/vim-textobj-user'
+Bundle 'noah/vim256-color'
+
+
+" My own bundles
+Bundle 'clord/vim-insfile'
+Bundle 'clord/vim-bookmaster'
+Bundle 'clord/vim-scenario'
+
+" :BundleInstall will ensure these are all installed, if vundle is available
+
+syntax enable
 filetype plugin indent on
 
 set encoding=utf-8
@@ -100,15 +120,6 @@ set backup                       " enable backups
 
 let mapleader = ","
 let maplocalleader = "\\"
-
-" }}}
-" Color scheme {{{
-
-set background=dark
-colorscheme molokai
-
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " }}}
 " Status line ------------------------------------------------------------- {{{
@@ -550,6 +561,8 @@ else
 endif
 
 " }}}
+"
+colorscheme beauty256
 " Machine specific -------------------------------------------------------- {{{
 
 source ~/tmp/user.vim

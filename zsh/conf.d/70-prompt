@@ -43,7 +43,7 @@ case $colors in
     256)
         str_a=$(color $str_a  4    )
         str_b=$(color $str_b 72 214)
-        str_d=$(color $str_d 84 226)
+        str_d=$(color $str_d 14 126)
         str_m=$(color $str_m 54 196)
         str_n=$(color $str_n 60 202)
         str_s=$(color $str_s 10    )

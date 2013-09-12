@@ -14,7 +14,7 @@ ARGF.each_line do  |l|
    next if c.start_with? scriptname
    k = c.strip.to_sym
    weeks = (now - times[1].to_i).to_f / 604800.0
-   amount = 1.0 / (2.0 ** weeks)
+   amount = 1.0 / (1.2 ** weeks)
    counts[k] ||= 0.0
    counts[k] += amount
 

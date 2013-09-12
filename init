@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 # The files that we are going to replace
-files=(irbrc vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)
+files=(irbrc ghci vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)
 
 # use the working directory as the place to link into
 wdir=`pwd`
@@ -28,5 +28,10 @@ touch ~/tmp/user.vim
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
 # install ack
-wget http://betterthangrep.com/ack-standalone -O ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
+curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
 
+# install vundle:
+rm -rf ~/.vim/bundle/vundle
+mkdir -p ~/.vim/bundle
+git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+vim +BundleInstall +qall
