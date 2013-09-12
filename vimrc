@@ -470,7 +470,8 @@ nnoremap <leader>S ^vg_y:execute @@<cr>
 set completeopt=longest,menuone,preview
 
 " Sudo to write
-cmap w!! w !sudo tee % >/dev/null
+" cmap w!! w !sudo tee % >/dev/null
+cmap w!! w !sudo tee > /dev/null %
 
 " Toggle paste
 set pastetoggle=<F8>
