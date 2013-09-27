@@ -10,6 +10,19 @@ zombie "^["
 sessionname "s4"
 altscreen on
 
+bufferfile "$HOME/.screen/exchange.s4"
+hardcopydir "$HOME/.screen/hardcopy.s4"
+sorendition dY
+
+# allow bold colors - necessary for some reason
+attrcolor b ".I"
+# tell screen how to set colors. AB = background, AF=foreground
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+# erase background with current bg color
+defbce "on"
+
+term xterm-256color
+
 bind k
 bind K
 bind ^K
