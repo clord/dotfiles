@@ -41,8 +41,9 @@ READNULLCMD=${PAGER:-/usr/bin/pager}
 REPORTTIME=2  # Report time if exec exceeds secs
 
 if (( $EUID != 0 )); then
-   # Per-screen-session history file.
-    HISTFILE=~/.zsh/history.${STY:e}
+    # Per-screen-session history file.
+    HOSTNAME=`uname -n`
+    HISTFILE=~/.zsh/history.${HOSTNAME}.${STY:e}
     HISTSIZE=15500
     SAVEHIST=15000
 fi
