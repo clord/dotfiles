@@ -17,7 +17,7 @@ else
 end
 
 def readpw(prompt="Password")
-   STDOUT.print "#{prompt}: "
+   STDERR.print "#{prompt}: "
    system "stty -echo"
    inp = STDIN.gets
    raise "Password required" unless inp
@@ -56,7 +56,14 @@ when "-add"
    File.open(F_PWD, "w") { |out| YAML::dump(pws, out) }
 when "-chpass"
    pwd = pws[section]
-   raise "can't find anything for #{section}" unless pwd
+ #  raise "can't find anything for #{section}" unless pwd
+   pwd = {"username" => ENV['USER']} if !pwd
+   if pwd["oldpassword"]
+      pwd["oldoldpassword"] = pwd["oldpassword"]
+   end
+   if pwd["password"]
+      pwd["oldpassword"] = pwd["password"]
+   end
    pwd["password"] = readpw "New Password"
    pws[section] = pwd
    File.open(F_PWD, "w") { |out| YAML::dump(pws, out) }
