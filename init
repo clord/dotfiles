@@ -27,8 +27,13 @@ touch ~/tmp/user.vim
 # Non-destructively create the ~/.local namespace, where user installed stuff will live
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
-# install ack
-curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
+echo <<EOF
+#!/bin/sh
+echo "Use ag: faster, shorter, better"
+echo "   https://github.com/ggreer/the_silver_searcher"
+exit 1
+EOF > ~/.local/bin/ack
+chomod u+x ~/.local/bin/ack 
 
 # install vundle:
 rm -rf ~/.vim/bundle/vundle
