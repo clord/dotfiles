@@ -6,10 +6,6 @@ files=(irbrc ghci vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig 
 # use the working directory as the place to link into
 wdir=`pwd`
 
-# Update submodules
-git submodule init
-git submodule update
-
 # Remove old files, and symlink the new ones into place
 for f in $files; do
    echo "-> " $f
@@ -34,9 +30,9 @@ echo "   https://github.com/ggreer/the_silver_searcher"
 exit 1
 EOF > ~/.local/bin/ack
 chomod u+x ~/.local/bin/ack 
-
-# install vundle:
+# Install vundle for vim
 rm -rf ~/.vim/bundle/vundle
 mkdir -p ~/.vim/bundle
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 vim +BundleInstall +qall
+
