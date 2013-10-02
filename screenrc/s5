@@ -7,11 +7,11 @@ defscrollback 8096
 escape ^zz
 shell -/usr/bin/zsh
 zombie "^["
-sessionname "s2"
+sessionname "s5"
 altscreen on
 
-bufferfile "$HOME/.screen/exchange.s2"
-hardcopydir "$HOME/.screen/hardcopy.s2"
+bufferfile "$HOME/.screen/exchange.s5"
+hardcopydir "$HOME/.screen/hardcopy.s5"
 sorendition dY
 
 # allow bold colors - necessary for some reason

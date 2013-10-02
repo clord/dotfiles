@@ -6,17 +6,6 @@ set_window_title_default() { set_window_title "%l: %n@%m: %~" }
 
 # cd {{{1
 
-# Go to parent directory $1 times
-..()
-{
-    local num=${1:-1}
-    local dir
-    while (( $num > 0 )); do
-        dir=../$dir
-        num=$(($num - 1))
-    done
-    cd $dir &>/dev/null
-}
 
 # Execute a command in a given directory
 # Usage: cdrun DIR CMD [ARG...]
@@ -54,28 +43,6 @@ cdR() { cdr ${1:-$PWD}(:h) }
 
 # vim {{{1
 
-compdef v=vim
-
-# Generate file using a template, then edit
-tv() { temple $@; v $@ }
-
-# Make sure the file is executable, then edit
-vx() { touch $@; chmod +x $@; v $@ }
-
-# Edit executable in path
-vw() { v $(whence -p $@) }; compdef vw=whence
-
-# Edit regular files
-vf() { v ${1:-$PWD}/**/*${2}(.) }; compdef '_files -/' vf
-
-# Edit any recognizable source code
-vc() { ack -lr --print0 $2 . ${1:-$PWD}/* | xargs -0 v }; compdef '_files -/' vc
-
-# Edit source code of various types
-vsh() { vc ${1:-$PWD} --shell  }; compdef vsh=vc
-vpy() { vc ${1:-$PWD} --python }; compdef vpy=vc
-vrb() { vc ${1:-$PWD} --ruby   }; compdef vrb=vc
-vpl() { vc ${1:-$PWD} --perl   }; compdef vpl=vc
 
 # zsh widgets {{{1
 
@@ -98,27 +65,6 @@ toggle-suspend()
 }
 
 
-# finder {{{1
-
-# Change directory to the current finder location
-# Intended to complement fdc which changes finder to $PWD
-cdf() { cd $(posd) }
-
-# Change directory in terminal and finder.
-cdd() { cd $@; fdc }
-
-# Commands performed in finder location
-grepf() { grep -iIrn $@ $(posd) }; compdef grepf=grep
-findf() { find $(posd) $@       }; compdef findf=find
-
-# Copy finder path to clipboard
-cpf() { quote $(posd) | pbcopy }
-
-# Open file/path in finder
-o() { open ${@:-.} }
-
-#}}}
-
 # Show frequencies of words in text
 freq()
 {
@@ -137,27 +83,6 @@ mine()
     chmod -R u=rwX,go=rX $@
 }
 
-hide()
-{
-    local f
-    for f in $@; do
-        mv -v $f $(dirname $f)/.$(basename $f)
-    done
-}
-
-unhide()
-{
-    local f
-    for f in $@; do
-        mv -v $f $(dirname $f)/$(basename $f | sed 's/^\.\+//')
-    done
-}
-
-# Lookup words in the system dictionary
-dict()
-{
-    grep $@ /usr/share/dict/words
-}
 
 # Show a ruler that spans the width of the terminal
 ruler()
@@ -170,33 +95,6 @@ ruler()
     done
 }
 
-# Show samples of date formats
-dateh()
-{
-    # Valid flags:
-    #   -  Do not pad
-    #   _  Pad
-    #   0  Pad with zeros
-    #   ^  Use upper case
-    #   #  Use opposite case
-
-    local f
-    for f in {a-z} {A-Z} :z ::z :::z; do
-        printf "%-5s %s\n" "$f:" "$(date +%$1$f)"
-    done | grep -v '%' | grep -v '[[:space:]]$'
-}
-
-dut() # dut == du top (top disk usage offenders)
-{
-    du -sb .* * | sort -nr | head |
-    awk -F'\t' '{print $2}' | xargs du -sh
-}
-
-# Download jQuery (latest or requested version)
-latest_jquery()
-{
-    curl -s http://code.jquery.com/jquery${1:+-$1}.min.js >jquery.js
-}
 
 # Download latest completion file from zsh dev
 latest_completion()
@@ -205,18 +103,6 @@ latest_completion()
     for name in $@; do
         curl -s http://zsh.cvs.sourceforge.net/viewvc/zsh/zsh/Completion/Unix/Command/_$name >~/.zsh/comp.d/_$name
     done
-}
-
-# Dropbox notes
-
-function n {
-vim "$HOME/Dropbox/Notes/$@.txt"
-}
-function nall {
-ls -c $HOME/Dropbox/Notes
-}
-function ns {
-ls -c $HOME/Dropbox/Notes | grep -i "$@"
 }
 
 

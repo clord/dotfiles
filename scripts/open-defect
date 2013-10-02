@@ -17,6 +17,10 @@ scriptname = File.basename($0).split /-/
 if scriptname.count == 3
    comp = scriptname[1]
    case comp
+      when "montana"
+         opt.severity = 2
+         opt.component = "C++.fe"
+         opt.product = "z/OSC/C++v2r1"
       when "wcode"
          opt.prefixes << "WCODE"
          opt.severity = 2

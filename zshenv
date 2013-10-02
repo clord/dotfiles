@@ -30,9 +30,11 @@ append_path() {
 
 prepend_path /usr
 prepend_path /usr/linux
+prepend_path /opt/local
 prepend_path /usr/local
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
+prepend_path $HOME/Library/Haskell
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.rbenv
 prepend_path $HOME/.local
@@ -41,20 +43,20 @@ prepend_path $HOME/.local/`uname -s`/gems
 
 if [[ $OSTYPE == darwin* ]]; then
    # add some least-common-denominator scripting engines
-   append_path /usr/local/Cellar/ruby/1.9.2-p180
+   append_path /usr/local/Cellar/ruby/1.9.3-p374
    append_path /usr/local/Cellar/python/2.7.2
-   path=($path /usr/local/texlive/2011/bin/x86_64-darwin)
+   path=($path /usr/texbin)
+else
+   # Eclipse has no bin directory (bad bad bad)
+   path=(/gsa/tlbgsa/projects/x/xlcmpbld/bld_env/aix/jbe-3.0.1.0/jazz/scmtools/eclipse $path)
 fi
-
 
 # look in ./.local, too. This lets subprojects override things
 path=(./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
 
-
 typeset -U path
 typeset -U manpath
-
 
 fpath=(~/.zsh/{func.d,comp.d} $fpath)
 typeset -U fpath
@@ -67,3 +69,7 @@ export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 # Cap some silly things I don't need
 ulimit -c 0
 
+
+# Some IBM Cruft
+export CMVC_FAMILY="aix@aix@1500"
+export CMVC_AUTH_METHOD="PW"

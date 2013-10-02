@@ -9,6 +9,8 @@ ENV["CMVC_FAMILY"] ||= "aix@aix@1500"
 ENV["CMVC_AUTH_METHOD"] ||= "PW"
 ENV["PATH"] += ":/usr/lpp/cmvc/bin"
 ENV["USERS_PATH"] ||= "/home/clord/.local/users"
+ENV["LOG_FILE"] ||= "/home/clord/var/log/return-verify.history"
+
 
 # Get the users from the users database
 users = []
@@ -105,12 +107,16 @@ def level_of_track(defs)
    end
 end
  
+def email_addr(user_info, user)
+   return user_info[user][:email] if user_info && user_info[user]
+   return user
+end
 def pres_name(user_info, user)
    return user_info[user][:name] if user_info && user_info[user]
    return user
 end
 
-system "ibmlogin 2> /dev/null"
+`ibmlogin 2> /dev/null`
 
 em = Thread.new do
    email_addresses(users) do |usr, name, email|
@@ -142,24 +148,33 @@ rd.join
 em.join
 vr.join
 
-emails = ['clord@ca.ibm.com']
+offenders = ['clord@ca.ibm.com']
 user_info.each do |usr, info| 
    next unless id_by_user[usr] && id_by_user[usr].length != 0
-   emails << info[:email] 
+   offenders << info[:email] 
 end
-emails.sort!
-emails.uniq!
+offenders.sort!
+offenders.uniq!
 
 total = 0
 sorted_by_count = []
 id_by_user.each { |u, v| total += v.length; sorted_by_count << [u, v.length] }
 sorted_by_count.sort! { |b,a| a[1] <=> b[1] }
 
+
+File.open(ENV["LOG_FILE"], File::APPEND|File::WRONLY) do |f|
+   f.puts "\n--ts: #{Time.now.to_i.to_s}"
+   sorted_by_count.each do |user, count|
+      f.puts "#{email_addr(user_info, user).gsub(/@\w\w\.ibm\.com$/, "")}: #{count}"
+   end
+end
+
+
 exit 0 if total == 0
 
 mail = Mail.new do  
    from "NagBot XL-3000 <cmvc_nag_noreply@ca.ibm.com>"
-   to emails
+   to offenders
    subject "Action Required: Verify, Re-open, or Cancel #{total} Defects & Features"
    text_part do
       output = ""
@@ -216,6 +231,8 @@ mail = Mail.new do
                b.p "Returned defects also need attention. Here, you've opened a defect that someone thinks is not valid.
                      You need to go in and decide if their reason for returning it is valid. Either cancel the defect, or 
                      reopen it."                     
+               b.p "Human companions, note: if (#{total} == 0) then NagBot is very pleased."
+               b.p "Pleased NagBot may produce a Doughnut-like substance for human companions to consume."
                b.table do
                   sorted_by_count.each do |user, count|
                      ids = id_by_user[user]
