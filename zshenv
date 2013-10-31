@@ -31,6 +31,7 @@ append_path() {
 
 prepend_path /usr
 prepend_path /usr/linux
+prepend_path /opt/local
 prepend_path /usr/local
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
