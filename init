@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 # The files that we are going to replace
 files=(irbrc ghci vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)

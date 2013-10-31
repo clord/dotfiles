@@ -51,7 +51,7 @@ set cpoptions+=J
 set shell=/bin/bash
 set lazyredraw
 set matchtime=3
-set showbreak=↪
+set showbreak=▸
 set splitbelow
 set splitright
 set fillchars=diff:⣿
