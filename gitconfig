@@ -35,6 +35,7 @@
 	caa = commit -a --amend -C HEAD
 	cma = commit -a -m
 	a = add
+	ap = add --patch
 	ai = add --interactive
 	r = reset
 	praise = blame
