@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 setopt noglobalrcs
 if [[ $OSTYPE != aix* ]]; then

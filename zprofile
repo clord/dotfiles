@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 # For mac, present environment variables to GUI applications. 
 # remove the plist file and it will be regenerated on login.
