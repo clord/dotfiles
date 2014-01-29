@@ -52,7 +52,7 @@ class Reducer
 
    def makeCandidates(best)
       curbest = best.clone
-      (curbest.length / (1 + 50 * Math.log(curbest.length.to_f) ** 2).to_i).times do |i|
+      (curbest.length / (1 + 9 * Math.log(curbest.length.to_f) ** 2).to_i).times do |i|
          red = makeCandidate(curbest, i)
          curbest = (yield red).clone
       end
@@ -68,16 +68,17 @@ end
 
 
 class LineScanner < Reducer
-   attr_accessor :n
+   attr_accessor :n, :replacement
    
-   def initialize(n)
+   def initialize(n, p = "")
       @n = n
+      @replacement = p
    end
    
    def makeCandidates(best)
       curbest = best.clone
-      (curbest.count / n).times do |i|
-         red = makeCandidate(curbest, i * n)
+      (curbest.count).times do |i|
+         red = makeCandidate(curbest, i)
          curbest = (yield red).clone
       end
       return curbest
@@ -85,6 +86,7 @@ class LineScanner < Reducer
    
    def makeCandidate(lines, start)
       lines.slice!(start, n)
+      lines = lines.insert(start, replacement) if (replacement != "")
       lines
    end
    
@@ -92,6 +94,7 @@ end
 
 
 class LinePairs < Reducer
+
 
    def makeCandidates(best)
       curbest = best.clone
@@ -143,24 +146,33 @@ class Chunks < Reducer
    
    def makeCandidate(lines, i)
       srand(i * lines.length)
-      start = (rand * lines.length).to_i - (lines.length * p).to_i
+      start = (rand * lines.length).to_i
       lines.slice!(start, (lines.length * p).to_i)
       lines
    end
    
 end
 
-phases = [ [Chunks.new(0.1),
-            Chunks.new(0.05),
-            LineGroup.new(500)],
-           [Chunks.new(0.01),
+phases = [ [Chunks.new(0.25),
+            Chunks.new(0.15),
+            Chunks.new(0.05)],
+           [Chunks.new(0.1),
+            Chunks.new(0.01),
             Chunks.new(0.001),
-            LineGroup.new(50)],
+            Chunks.new(0.0001),
+            LineGroup.new(500),
+            LineGroup.new(50),
+            LineGroup.new(30),
+            LineGroup.new(3),
+            LineGroup.new(2)],
            [LineScanner.new(20),
             LineScanner.new(5),
             LineScanner.new(1),
             LineScanner.new(2),
-            LinePairs.new]
+            LineScanner.new(3),
+            LineScanner.new(2, ";\n"),
+            LineScanner.new(3, ";\n"),
+            LinePairs.new ]
            ]
 
 
@@ -173,16 +185,15 @@ def fixpoint(reducers, originalLen, condition, bestName, bestIterName, currentNa
       shrunk = false
       reducers.each do |reducer|
          lines = IO.readlines(bestName)
+         ## puts "Using #{reducer.class.name}"
          reducer.makeCandidates(lines) do |redlines|
             this_shrunk = lines
-            if lines.count > redlines.count
-               reducer.writeCandidate(redlines, currentName)
-               if system(condition, currentName)
-                  lines = redlines
-                  cp currentName, bestName
-                  shrunk = true
-                  this_shrunk = redlines
-               end
+            reducer.writeCandidate(redlines, currentName)
+            if system(condition, currentName)
+               lines = redlines
+               cp currentName, bestName
+               shrunk = true
+               this_shrunk = redlines
             end
             this_shrunk
          end
