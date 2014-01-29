@@ -91,6 +91,29 @@ class LineScanner < Reducer
 end
 
 
+class LinePairs < Reducer
+
+   def makeCandidates(best)
+      curbest = best.clone
+      ((curbest.count ** 1.4).to_i).times do |i|
+         red = makeCandidate(curbest, i)
+         curbest = (yield red).clone
+      end
+      return curbest
+   end
+   
+   def makeCandidate(lines, i)
+      srand(i * lines.length)
+      2.times do
+         idx = (rand * lines.length).to_i
+         lines.delete_at(idx)
+      end
+      lines
+   end
+   
+end
+
+
 class LineGroup < Reducer
    attr_accessor :n
    
@@ -135,8 +158,11 @@ phases = [ [Chunks.new(0.1),
             LineGroup.new(50)],
            [LineScanner.new(20),
             LineScanner.new(5),
-            LineScanner.new(1)]
+            LineScanner.new(1),
+            LineScanner.new(2),
+            LinePairs.new]
            ]
+
 
 originalLen = File.stat(original).size
 
