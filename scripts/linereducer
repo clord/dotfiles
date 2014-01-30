@@ -193,6 +193,7 @@ originalLen = File.stat(original).size
 def fixpoint(reducers, originalLen, condition, bestName, bestIterName, currentName)
    cp bestName, bestIterName
    while true do
+      did_reduce = false
       start = File.stat(bestName).size
       reducers.each do |reducer|
          lines = IO.readlines(bestName)
@@ -203,13 +204,14 @@ def fixpoint(reducers, originalLen, condition, bestName, bestIterName, currentNa
                lines = redlines
                cp currentName, bestName
                this_shrunk = redlines
+               did_reduce = true
             end
             this_shrunk
          end
       end
       endsize = File.stat(bestName).size
       puts "  Shrunk by #{start - endsize} bytes (to #{endsize}: #{(1000*((endsize * 1.0)/originalLen)).to_i/10.0}% of original size)"
-      break if (start - endsize) == 0
+      break unless did_reduce
    end
    compare_file(bestIterName, bestName)
 ensure
