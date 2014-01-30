@@ -58,7 +58,7 @@ class Reducer
             lines.each do |l|
                f.write l
             end
-            f.fdatasync
+            f.fsync
          end
          return lines
       ensure
