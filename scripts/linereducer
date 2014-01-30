@@ -2,14 +2,16 @@
 
 # Do a line-based reduction of a file, using an external script as the condition
 
+# Yes this is like a really crappy creduce, but it's portable and predictable, making it more useful to me. 
+# I prefer doing semantic-aware reductions manually, anyway.
 
-# ARGV[0] is the input file being reduced, and ARGV[1] is the condition script This tool does not modify the input files, but instead produces "best.#{f}" and "current.#{f}". the later is passed as an argument to the condition script, which decides whether the that file is "interesting" or not. exit code zero indicate interesting. If the script returns zero, this script (the reducer) will update 'best' and then produce a new candidate.
-# This script proceeds as a fixpoint algorithm, trying to remove all permutations of  lines. 
-# Also, the initial run of the script is used to determine a 'runtime' for the condition script. If any particular invocation of it takes more than twice the original runtime, it will be terminated as uninteresting. this helps avoid introducing infinite loops. 
 require 'fileutils'
 include FileUtils
 
-raise "Argument expected" if ARGV.length != 2
+# ARGV[0] is the input file being reduced, and ARGV[1] is the condition script This tool does not modify the input files, but instead produces "best.#{f}" and "current.#{f}". the later is passed as an argument to the condition script, which decides whether the that file is "interesting" or not. exit code zero indicate interesting. If the script returns zero, this script (the reducer) will update 'best' and then produce a new candidate.
+
+raise "Arguments expected" if ARGV.length != 2
+
 original  = ARGV[0]
 condition = ARGV[1]
 
@@ -23,16 +25,17 @@ oname = File.basename(original)
 currentName = "current.#{oname}"
 bestName = "best.#{oname}"
 bestIterName = "best.iter.#{oname}"
+
+raise "#{bestName} already exists. aborting." if File.exist? bestName
+
+# Since we're starting, declare the original file to also be the current best
 cp original, bestName
 
-# Start with groups of filelines/10 lines. This takes out the bulk of crap that we don't actually need. 
-# Then, try replacing blocks ({}) with semicolons. 
-# Then, try groups of n lines (n from 20 to 1 in sequence)
-# If we've not changed the file since the last loop, break
 
+# The base reducer type (just uses 'best' as the candidate)
 class Reducer
 
-   def makeCandidate(best, i)
+   def candidate(best, i)
       best # Just copy in the default path
    end
 
@@ -49,11 +52,15 @@ class Reducer
          mv "#{cand}.tmp", cand
       end
    end
+   
+   def iterations(curbest)
+      curbest.length / (1 + 9 * Math.log(curbest.length.to_f) ** 2).to_i
+   end
 
-   def makeCandidates(best)
+   def candidates(best)
       curbest = best.clone
-      (curbest.length / (1 + 9 * Math.log(curbest.length.to_f) ** 2).to_i).times do |i|
-         red = makeCandidate(curbest, i)
+      iterations(curbest).times do |i|
+         red = candidate(curbest, i)
          curbest = (yield red).clone
       end
       return curbest
@@ -67,6 +74,7 @@ class Blocks < Reducer
 end
 
 
+# Takes out n lines at an index, with an optional replacement string
 class LineScanner < Reducer
    attr_accessor :n, :replacement
    
@@ -75,42 +83,13 @@ class LineScanner < Reducer
       @replacement = p
    end
    
-   def makeCandidates(best)
-      curbest = best.clone
-      (curbest.count).times do |i|
-         red = makeCandidate(curbest, i)
-         curbest = (yield red).clone
-      end
-      return curbest
+   def iterations(curbest)
+      curbest.count
    end
    
-   def makeCandidate(lines, start)
+   def candidate(lines, start)
       lines.slice!(start, n)
       lines = lines.insert(start, replacement) if (replacement != "")
-      lines
-   end
-   
-end
-
-
-class LinePairs < Reducer
-
-
-   def makeCandidates(best)
-      curbest = best.clone
-      ((curbest.count ** 1.4).to_i).times do |i|
-         red = makeCandidate(curbest, i)
-         curbest = (yield red).clone
-      end
-      return curbest
-   end
-   
-   def makeCandidate(lines, i)
-      srand(i * lines.length)
-      2.times do
-         idx = (rand * lines.length).to_i
-         lines.delete_at(idx)
-      end
       lines
    end
    
@@ -124,7 +103,11 @@ class LineGroup < Reducer
       @n = n
    end
    
-   def makeCandidate(lines, i)
+   def iterations(curbest)
+      (curbest.count ** 1.3).to_i
+   end
+   
+   def candidate(lines, i)
       srand(i * lines.length)
       n.times do
          idx = (rand * lines.length).to_i
@@ -144,80 +127,109 @@ class Chunks < Reducer
       @p = p
    end
    
-   def makeCandidate(lines, i)
+   def iterations(curbest)
+      (5 / p).to_i
+   end
+   
+   def candidate(lines, i)
       srand(i * lines.length)
       start = (rand * lines.length).to_i
       lines.slice!(start, (lines.length * p).to_i)
       lines
    end
-   
 end
+
+
+
+# Remove  random characters from a every line
+class RandomChar < Reducer
+   attr_reader :n
+   def initialize(n)
+      @n = n
+      srand(Time.now.to_f * 1000 * n).to_i
+   end
+
+   def iterations(curbest)
+      curbest.count * n
+   end
+
+   def candidate(lines, ldex)
+      idx = ldex % lines.length
+      str = lines[idx].clone
+      deldex = (rand * str.length).to_i;
+      str[deldex] = ""
+      lines[idx] = str
+      lines
+   end
+
+end
+
 
 phases = [ [Chunks.new(0.25),
             Chunks.new(0.15),
             Chunks.new(0.05)],
            [Chunks.new(0.1),
             Chunks.new(0.01),
-            Chunks.new(0.001),
-            Chunks.new(0.0001),
-            LineGroup.new(500),
-            LineGroup.new(50),
-            LineGroup.new(30),
+            LineGroup.new(6),
+            LineGroup.new(5),
+            LineGroup.new(4),
             LineGroup.new(3),
-            LineGroup.new(2)],
-           [LineScanner.new(20),
-            LineScanner.new(5),
+            LineGroup.new(2),
+            LineScanner.new(20)
+         ],
+           [LineScanner.new(5),
             LineScanner.new(1),
             LineScanner.new(2),
             LineScanner.new(3),
             LineScanner.new(2, ";\n"),
             LineScanner.new(3, ";\n"),
-            LinePairs.new ]
+            RandomChar.new(10),
+            LineScanner.new(1)]
            ]
 
 
 originalLen = File.stat(original).size
 
 def fixpoint(reducers, originalLen, condition, bestName, bestIterName, currentName)
+   cp bestName, bestIterName
    while true do
-      cp bestName, bestIterName
       start = File.stat(bestName).size
-      shrunk = false
       reducers.each do |reducer|
          lines = IO.readlines(bestName)
-         ## puts "Using #{reducer.class.name}"
-         reducer.makeCandidates(lines) do |redlines|
+         reducer.candidates(lines) do |redlines|
             this_shrunk = lines
             reducer.writeCandidate(redlines, currentName)
             if system(condition, currentName)
                lines = redlines
                cp currentName, bestName
-               shrunk = true
                this_shrunk = redlines
             end
             this_shrunk
          end
       end
       endsize = File.stat(bestName).size
-      puts "  Shrunk by #{start - endsize} bytes (to #{endsize}: #{(100*((endsize * 1.0)/originalLen)).to_i}% of original size)"
-      break unless shrunk
+      puts "  Shrunk by #{start - endsize} bytes (to #{endsize}: #{(1000*((endsize * 1.0)/originalLen)).to_i/10.0}% of original size)"
+      break if (start - endsize) == 0
    end
-   !compare_file(bestIterName, bestName)
+   compare_file(bestIterName, bestName)
+ensure
+   rm bestIterName
 end
 
 # Our outer fixed-point loop
 while true do
-   res = false
    phasenum = 0
-   phases.each do |phase|
+   results = phases.map do |phase|
       phasenum += 1
       puts "Phase #{phasenum}"
-      res = fixpoint(phase, originalLen, condition, bestName, bestIterName, currentName)
+      fixpoint(phase, originalLen, condition, bestName, bestIterName, currentName)
    end
-   break unless res
+   break if results.all?
 end
 
 # Finished, all of the reducers have run, and in theory at least currentName is the minimal file
 # Exit normally.
 
 
+endsize = File.stat(bestName).size
+puts "* Was #{originalLen}, now #{endsize} (#{originalLen - endsize} bytes removed)"
