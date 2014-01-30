@@ -12,24 +12,36 @@ include FileUtils
 
 raise "Arguments expected" if ARGV.length != 2
 
-original  = ARGV[0]
-condition = ARGV[1]
+$original  = ARGV[0]
+$condition = ARGV[1]
 
-raise "Input file must exist and be readable" unless File.readable? original
+raise "Input file must exist and be readable" unless File.readable? $original
 raise "Working directory must be writable" unless File.writable? pwd
-raise "#{condition} must be executable" unless File.executable? condition
-raise "#{condition} must return zero on #{original}" unless system(condition, original)
+raise "#{$condition} must be executable" unless File.executable? $condition
+raise "#{$condition} must return zero on #{$original}" unless system($condition, $original)
 
 # Generate our extension-preserving best/current names
-oname = File.basename(original)
-currentName = "current.#{oname}"
-bestName = "best.#{oname}"
-bestIterName = "best.iter.#{oname}"
+$oname = File.basename($original)
 
-raise "#{bestName} already exists. aborting." if File.exist? bestName
+def bestName
+   "best.#{$oname}"
+end
+
+def bestIterName(i)
+   "best.#{i}.#{$oname}"
+end
+
+def currentName
+   "current.#{$oname}"
+end
+
+def originalLen
+   File.stat($original).size
+end
 
 # Since we're starting, declare the original file to also be the current best
-cp original, bestName
+raise "#{bestName} already exists. aborting." if File.exist? bestName
+cp $original, bestName
 
 
 # The base reducer type (just uses 'best' as the candidate)
@@ -39,7 +51,7 @@ class Reducer
       best # Just copy in the default path
    end
 
-   def writeCandidate(lines, cand)
+   def write(lines, cand)
       begin
          # Write the lines to cand
          File.open("#{cand}.tmp", mode="w") do |f|
@@ -96,6 +108,7 @@ class LineScanner < Reducer
 end
 
 
+# Candidates have n random lines deleted
 class LineGroup < Reducer
    attr_accessor :n
    
@@ -119,7 +132,7 @@ class LineGroup < Reducer
 end
 
 
-# Chunks are portions of a file (argument is the factor to use) for example, p=0.1 means we'll divide the file into 10 parts, and produce one of 10 possible candidates
+# Candidates have chunks of a file removed. for example, p=0.1 means we'll remove a random 1/10 of the file. 
 class Chunks < Reducer
    attr_accessor :p
    
@@ -141,12 +154,12 @@ end
 
 
 
-# Remove  random characters from a every line
+# Remove random characters from every line, n times over
 class RandomChar < Reducer
    attr_reader :n
    def initialize(n)
       @n = n
-      srand(Time.now.to_f * 1000 * n).to_i
+      srand(n)
    end
 
    def iterations(curbest)
@@ -167,55 +180,57 @@ end
 
 phases = [ [Chunks.new(0.25),
             Chunks.new(0.15),
-            Chunks.new(0.05)],
-           [Chunks.new(0.1),
-            Chunks.new(0.01),
-            LineGroup.new(6),
+            Chunks.new(0.05),
+            Chunks.new(0.1),
+            Chunks.new(0.01)
+           ],
+           [LineGroup.new(6),
             LineGroup.new(5),
             LineGroup.new(4),
             LineGroup.new(3),
-            LineGroup.new(2),
-            LineScanner.new(20)
-         ],
-           [LineScanner.new(5),
+            LineGroup.new(2)
+           ],
+           [LineScanner.new(20),
+            LineScanner.new(5),
             LineScanner.new(1),
             LineScanner.new(2),
             LineScanner.new(3),
             LineScanner.new(2, ";\n"),
             LineScanner.new(3, ";\n"),
-            RandomChar.new(10),
-            LineScanner.new(1)]
+            RandomChar.new(20),
+            LineScanner.new(1)
            ]
+         ]
 
 
-originalLen = File.stat(original).size
 
-def fixpoint(reducers, originalLen, condition, bestName, bestIterName, currentName)
-   cp bestName, bestIterName
+def fixpoint(reducers)
+   cp bestName, bestIterName(0)
    while true do
-      did_reduce = false
-      start = File.stat(bestName).size
+      cp bestName, bestIterName(1)
       reducers.each do |reducer|
          lines = IO.readlines(bestName)
          reducer.candidates(lines) do |redlines|
             this_shrunk = lines
-            reducer.writeCandidate(redlines, currentName)
-            if system(condition, currentName)
+            reducer.write(redlines, currentName)
+            if system($condition, currentName)
                lines = redlines
                cp currentName, bestName
                this_shrunk = redlines
-               did_reduce = true
             end
             this_shrunk
          end
       end
+      start = File.stat(bestIterName(1)).size
       endsize = File.stat(bestName).size
-      puts "  Shrunk by #{start - endsize} bytes (to #{endsize}: #{(1000*((endsize * 1.0)/originalLen)).to_i/10.0}% of original size)"
-      break unless did_reduce
+      puts "   Shrunk by #{start - endsize} bytes (to #{endsize}: #{(1000*((endsize * 1.0)/originalLen)).to_i/10.0}% of original size)"
+      break if compare_file(bestIterName(1), bestName)
    end
-   compare_file(bestIterName, bestName)
+   compare_file(bestIterName(0), bestName)
 ensure
-   rm bestIterName
+   rm bestIterName(0)
+   rm bestIterName(1)
+   rm currentName
 end
 
 # Our outer fixed-point loop
@@ -224,7 +239,7 @@ while true do
    results = phases.map do |phase|
       phasenum += 1
       puts "Phase #{phasenum}"
-      fixpoint(phase, originalLen, condition, bestName, bestIterName, currentName)
+      fixpoint(phase)
    end
    break if results.all?
 end
@@ -232,6 +247,5 @@ end
 # Finished, all of the reducers have run, and in theory at least currentName is the minimal file
 # Exit normally.
 
-
 endsize = File.stat(bestName).size
-puts "* Was #{originalLen}, now #{endsize} (#{originalLen - endsize} bytes removed)"
+puts "** Was #{originalLen}, now #{endsize} (#{originalLen - endsize} bytes removed)"
