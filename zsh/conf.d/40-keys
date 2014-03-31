@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 autoload -U history-search-end
 autoload -U edit-command-line

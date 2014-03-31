@@ -106,4 +106,32 @@ latest_completion()
 }
 
 
+# case $# in 
+d()
+{
+   case "$#" in
+      0)
+      dwc -lw10000 > decomp.wcode 
+      ;;
+      1)
+         case $1 in
+            -)
+            dwc -lw10000
+            ;;
+            *)
+            dwc -lw10000 > $1
+            ;;
+         esac
+         ;;
+      *)
+         output=$1
+         shift
+         dwc "$@" -lw10000 > $output
+         ;;
+      esac
+
+
+}  
+
+
 # vim: set ft=zsh:
