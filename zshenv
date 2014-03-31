@@ -32,6 +32,7 @@ prepend_path /usr
 prepend_path /usr/linux
 prepend_path /opt/local
 prepend_path /usr/local
+prepend_path /opt/gcc-4.8.1
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
 prepend_path $HOME/Library/Haskell
