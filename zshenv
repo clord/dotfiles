@@ -12,6 +12,8 @@ export USER_EMAIL=christopherlord@gmail.com
 export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
+export GOROOT="/opt/go"
+export GOPATH="/opt/gopath"
 
 prepend_path() {
    [ -d $1/sbin ] && path=($1/sbin $path)
@@ -29,10 +31,12 @@ append_path() {
    [ -d $1/share/man ] && manpath+=($1/share/man)
 }
 
+
 prepend_path /usr
 prepend_path /usr/linux
 prepend_path /opt/local
 prepend_path /usr/local
+prepend_path /opt/gcc-4.8.1
 prepend_path /C++/montana
 prepend_path $HOME/.cabal
 prepend_path $HOME/Library/Haskell
@@ -41,6 +45,9 @@ prepend_path $HOME/.rbenv
 prepend_path $HOME/.local
 prepend_path $HOME/.local/`uname -s`
 prepend_path $HOME/.local/`uname -s`/gems
+
+append_path $GOROOT
+append_path $GOPATH
 
 if [[ $OSTYPE == darwin* ]]; then
    # add some least-common-denominator scripting engines
