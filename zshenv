@@ -49,7 +49,10 @@ if [[ $OSTYPE == darwin* ]]; then
    path=($path /usr/texbin)
 else
    # Eclipse has no bin directory (bad bad bad)
-   path=(/gsa/tlbgsa/projects/x/xlcmpbld/bld_env/aix/jbe-3.0.1.0/jazz/scmtools/eclipse $path)
+   path=(~/.local/`uname -s`/RTC-4.0.6/jazz/scmtools/eclipse $path)
+
+   # also cttools is bad. 
+   path=(/gsa/tlbgsa/projects/c/cttools/latest/common $path)
 fi
 
 # look in ./.local, too. This lets subprojects override things

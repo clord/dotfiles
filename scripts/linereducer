@@ -8,12 +8,12 @@
 require 'fileutils'
 include FileUtils
 
-# ARGV[0] is the input file being reduced, and ARGV[1] is the condition script This tool does not modify the input files, but instead produces "best.#{f}" and "current.#{f}". the later is passed as an argument to the condition script, which decides whether the that file is "interesting" or not. exit code zero indicate interesting. If the script returns zero, this script (the reducer) will update 'best' and then produce a new candidate.
+# ARGV[1] is the input file being reduced, and ARGV[0] is the condition script This tool does not modify the input files, but instead produces "best.#{f}" and "current.#{f}". the later is passed as an argument to the condition script, which decides whether the that file is "interesting" or not. exit code zero indicate interesting. If the script returns zero, this script (the reducer) will update 'best' and then produce a new candidate.
 
 raise "Arguments expected" if ARGV.length != 2
 
-$original  = ARGV[0]
-$condition = ARGV[1]
+$condition = ARGV[0]
+$original  = ARGV[1]
 
 raise "Input file must exist and be readable" unless File.readable? $original
 raise "Working directory must be writable" unless File.writable? pwd
@@ -118,7 +118,7 @@ class LineGroup < Reducer
    end
    
    def iterations(curbest)
-      (curbest.count ** 1.3).to_i
+      (curbest.count ** 1.1).to_i
    end
    
    def candidate(lines, i)
@@ -169,8 +169,9 @@ class RandomChar < Reducer
 
    def candidate(lines, ldex)
       idx = ldex % lines.length
+      return lines if lines[idx].length == 0
       str = lines[idx].clone
-      deldex = (rand * str.length).to_i;
+      deldex = (rand * (str.length - 1)).to_i;
       str[deldex] = ""
       lines[idx] = str
       lines
@@ -192,7 +193,6 @@ phases = [ [Chunks.new(0.25),
             LineGroup.new(2)
            ],
            [LineScanner.new(20),
-            LineScanner.new(5),
             LineScanner.new(1),
             LineScanner.new(2),
             LineScanner.new(3),
