@@ -6,10 +6,19 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Load bundles up:
-Bundle 'tpope/vim-fugitive'
+
+" Git wrapper (git-from-vim)
+Bundle 'tpope/vim-fugitive' 
+
+" jump to certain spots with leader-leader-w
 Bundle 'Lokaltog/vim-easymotion'
+
+" statusline util
 Bundle 'Lokaltog/vim-powerline'
+" HTML creation (type css queries)
 Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+
+" Automatic Syntax Checking
 Bundle 'scrooloose/syntastic'
 Bundle 'msanders/snipmate.vim'
 Bundle 'tomasr/molokai'
@@ -51,7 +60,7 @@ set cpoptions+=J
 set shell=/bin/bash
 set lazyredraw
 set matchtime=3
-set showbreak=↪
+set showbreak=▸
 set splitbelow
 set splitright
 set fillchars=diff:⣿

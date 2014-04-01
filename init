@@ -1,14 +1,11 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 # The files that we are going to replace
 files=(irbrc ghci vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)
 
 # use the working directory as the place to link into
 wdir=`pwd`
-
-# Update submodules
-git submodule init
-git submodule update
 
 # Remove old files, and symlink the new ones into place
 for f in $files; do
@@ -27,11 +24,16 @@ touch ~/tmp/user.vim
 # Non-destructively create the ~/.local namespace, where user installed stuff will live
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
-# install ack
-curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod 0755 ~/.local/bin/ack
-
-# install vundle:
+echo <<EOF
+#!/bin/sh
+echo "Use ag: faster, shorter, better"
+echo "   https://github.com/ggreer/the_silver_searcher"
+exit 1
+EOF > ~/.local/bin/ack
+chomod u+x ~/.local/bin/ack 
+# Install vundle for vim
 rm -rf ~/.vim/bundle/vundle
 mkdir -p ~/.vim/bundle
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 vim +BundleInstall +qall
+

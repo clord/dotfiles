@@ -35,8 +35,15 @@
 	caa = commit -a --amend -C HEAD
 	cma = commit -a -m
 	a = add
+	ap = add --patch
 	ai = add --interactive
 	r = reset
+	praise = blame
+	unstaged = diff
+	both = diff HEAD
+	oneline = log --oneline
+	undo = reset --hard HEAD^
+	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
 
 [diff]
 	mnemonicprefix = true
@@ -57,3 +64,10 @@
 	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
 [difftool]
 	prompt = false
+[log]
+	decorate = short
+[pager]
+	status = true
+	show-branch = true
+[format]
+	numbered = auto

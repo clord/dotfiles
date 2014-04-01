@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+IFS=$'\n\t'
 
 
 #alias cp='cp -rv'
@@ -86,6 +87,7 @@ alias llabig='lla -S *(D.OL[1,10])'          # Show biggest files
 
 alias g='git'
 alias ga='g add'
+alias gap='g add --patch'
 alias gP='g push'
 alias gc='g commit'
 alias gd='g diff'
