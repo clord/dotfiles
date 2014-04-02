@@ -63,7 +63,7 @@ else
 fi
 
 # look in ./.local, too. This lets subprojects override things
-path=(./.local/bin ./.local/scripts $path)
+path=(./bin ./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
 
 typeset -U path
