@@ -26,10 +26,8 @@ def print_clear(str)
 end
 
 def scan_dir(db, d, &block)
-  c = 0
   d.children.each do |path|
     print_clear(path)
-    c += 1
     if path.directory?
       scan_dir(db, path, &block)
       next
@@ -38,7 +36,6 @@ def scan_dir(db, d, &block)
     next if db.execute("SELECT 1 FROM files WHERE path = ?", path.realpath.to_s).length > 0
     block.call(path)
   end
-  print_clear("  done (#{c} files)")
 end
 
 c = 0
