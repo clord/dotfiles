@@ -60,7 +60,7 @@ end
 
 # iterate POSSIBLE duplicates (first n bytes match) and do a full hash to confirm
 STDERR.puts "Identify exact matches..."
-db.execute("SELECT path FROM files WHERE full_digest is not null GROUP BY init_digest HAVING count(init_digest) > 1").each do |row|
+db.execute("SELECT path FROM files WHERE init_digest is not null GROUP BY init_digest HAVING count(init_digest) > 1").each do |row|
   full_digest = Digest::SHA1.new
   file = row[0]
   c += 1
