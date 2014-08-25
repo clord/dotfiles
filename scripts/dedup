@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'digest/sha1'
 require 'pathname'
 require 'sqlite3'
@@ -6,15 +6,15 @@ require 'fileutils'
 include FileUtils
 
 db = nil
-if File.exist? "~/tmp/dedup_files.db"
-  db = SQLite3::Database.new("~/tmp/dedup_files.db")
-else
-  db = SQLite3::Database.new("~/tmp/dedup_files.db")
-  db.execute("create table files(init_digest varchar(40) not null, full_digest varchar(40), path varchar(4096) not null)")
-  db.execute("create        index init_index on files (init_digest)")
-  db.execute("create unique index path_index on files (path)")
-  db.execute("create unique index full_index on files (full_digest)")
+if File.exist? "#{ENV['HOME']}/tmp/dedup_files.db"
+   # TODO: Prompt to reuse the file
+   rm "#{ENV['HOME']}/tmp/dedup_files.db"
 end
+db = SQLite3::Database.new("#{ENV['HOME']}/tmp/dedup_files.db")
+db.execute("create table files(filesize integer not null, init_digest varchar(40) null, full_digest varchar(40), path varchar(4096) not null)")
+db.execute("create        index filesize_index on files (filesize)")
+db.execute("create        index init_index on files (init_digest)")
+db.execute("create unique index path_index on files (path)")
 
 CLEAR = `tput el`
 
@@ -24,20 +24,18 @@ def print_clear(str)
   STDERR.print "\r#{CLEAR}#{str}"
 end
 
-def scan_dir(db, d)
+def scan_dir(db, d, &block)
   c = 0
   d.children.each do |path|
     print_clear(path)
     c += 1
     if path.directory?
-      scan_dir(db, path)
+      scan_dir(db, path, &block)
       next
     end
     next unless (path.exist? && path.file? && path.readable?)
     next if db.execute("SELECT 1 FROM files WHERE path = ?", path.realpath.to_s).length > 0
-    init_digest = Digest::SHA1.new
-    init_digest << (File.read(path.to_s, 512) || "")
-    db.execute("INSERT INTO files VALUES(?, null, ?)", init_digest.digest, path.realpath.to_s)
+    block.call(path)
   end
   print_clear("  done (#{c} files)")
 end
@@ -53,8 +51,19 @@ else
 end
 
 roots.each do |root_path|
-  STDERR.puts "Pre-scan for matches in '#{root_path}'"
-  scan_dir(db, root_path)
+  STDERR.puts "Gather filesizes in '#{root_path}'"
+  scan_dir(db, root_path) do |path|
+    db.execute("INSERT INTO files VALUES(?, null, null, ?)", path.size, path.realpath.to_s)
+  end
+  STDERR.puts ""
+  STDERR.puts "Hash initial parts of files with same size in #{root_path}..."
+   db.execute("SELECT path FROM files WHERE filesize is not null GROUP BY filesize HAVING count(filesize) > 1").each do |row| 
+      path = row[0]
+      # Files with exactly the same filesize are candidate duplicates. everything else is different
+      init_digest = Digest::SHA1.new
+      init_digest << (File.read(path, 512) || "")
+      db.execute("UPDATE files SET init_digest = ? WHERE path = ?", init_digest.digest, path)
+   end
   STDERR.puts ""
 end
 
