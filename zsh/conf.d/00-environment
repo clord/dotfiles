@@ -1,8 +1,3 @@
-if [[ $OSTYPE == darwin* ]]; then
-	export GOROOT=`brew --cellar`/go/HEAD
-	export GOARCH=amd64
-	export GOOS=darwin
-fi
 
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node
 

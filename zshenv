@@ -12,6 +12,8 @@ export USER_EMAIL=christopherlord@gmail.com
 export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
+export GOROOT="/opt/go"
+export GOPATH="/opt/gopath"
 
 prepend_path() {
    [ -d $1/sbin ] && path=($1/sbin $path)
@@ -29,6 +31,7 @@ append_path() {
    [ -d $1/share/man ] && manpath+=($1/share/man)
 }
 
+
 prepend_path /usr
 prepend_path /usr/linux
 prepend_path /opt/local
@@ -43,6 +46,9 @@ prepend_path $HOME/.local
 prepend_path $HOME/.local/`uname -s`
 prepend_path $HOME/.local/`uname -s`/gems
 
+append_path $GOROOT
+append_path $GOPATH
+
 if [[ $OSTYPE == darwin* ]]; then
    # add some least-common-denominator scripting engines
    append_path /usr/local/Cellar/ruby/1.9.3-p374
@@ -50,11 +56,14 @@ if [[ $OSTYPE == darwin* ]]; then
    path=($path /usr/texbin)
 else
    # Eclipse has no bin directory (bad bad bad)
-   path=(/gsa/tlbgsa/projects/x/xlcmpbld/bld_env/aix/jbe-3.0.1.0/jazz/scmtools/eclipse $path)
+   path=(~/.local/`uname -s`/RTC-4.0.6/jazz/scmtools/eclipse $path)
+
+   # also cttools is bad. 
+   path=(/gsa/tlbgsa/projects/c/cttools/latest/common $path)
 fi
 
 # look in ./.local, too. This lets subprojects override things
-path=(./.local/bin ./.local/scripts $path)
+path=(./bin ./.local/bin ./.local/scripts $path)
 manpath=(./.local/share/man $manpath)
 
 typeset -U path
