@@ -3,6 +3,7 @@ require 'digest/sha1'
 require 'pathname'
 require 'sqlite3'
 require 'fileutils'
+require 'base64'
 include FileUtils
 
 db = nil
@@ -56,35 +57,49 @@ roots.each do |root_path|
     db.execute("INSERT INTO files VALUES(?, null, null, ?)", path.size, path.realpath.to_s)
   end
   STDERR.puts ""
-  STDERR.puts "Hash initial parts of files with same size in #{root_path}..."
-   db.execute("SELECT path FROM files WHERE filesize is not null GROUP BY filesize HAVING count(filesize) > 1").each do |row| 
-      path = row[0]
-      # Files with exactly the same filesize are candidate duplicates. everything else is different
-      init_digest = Digest::SHA1.new
-      init_digest << (File.read(path, 512) || "")
-      db.execute("UPDATE files SET init_digest = ? WHERE path = ?", init_digest.digest, path)
-   end
-  STDERR.puts ""
 end
 
-# iterate POSSIBLE duplicates (first n bytes match) and do a full hash to confirm
+c = 0
+STDERR.puts "Hash initial parts of files with same size..."
+db.execute("SELECT filesize FROM files GROUP BY filesize HAVING count(filesize) > 1").each do |row| 
+   db.execute("SELECT path FROM files where filesize = ?", row[0]).each do |pathrow|
+      path = pathrow[0]
+      c += 1
+      print_clear(path)
+      # Files with exactly the same filesize are candidate duplicates. everything else is different
+      init_digest = Digest::SHA1.new
+      init_digest << (File.read(path, 4096) || "")
+      db.execute("UPDATE files SET init_digest = ? WHERE path = ?", init_digest.digest, path)
+   end
+end
+print_clear("  done (#{c} files)")
+STDERR.puts ""
+
+# iterate POSSIBLE duplicates (lengths match, initial hash matches) and do a full hash to confirm
 STDERR.puts "Identify exact matches..."
-db.execute("SELECT path FROM files WHERE init_digest is not null GROUP BY init_digest HAVING count(init_digest) > 1").each do |row|
-  full_digest = Digest::SHA1.new
-  file = row[0]
-  c += 1
-  print_clear(file)
-  File.open(file, 'r') do |h|
-    while buffer = h.read(4096)
-      full_digest << buffer
-    end
+db.execute("SELECT init_digest FROM files WHERE init_digest is not null GROUP BY init_digest HAVING count(init_digest) > 1").each do |row|
+  db.execute("SELECT path FROM files WHERE init_digest = ?", row[0]).each do |frow|
+     file = frow[0]
+     full_digest = Digest::SHA1.new
+     c += 1
+     print_clear(file)
+     File.open(file, 'r') do |h|
+        while buffer = h.read(4096)
+           full_digest << buffer
+        end
+     end
+     db.execute("UPDATE files SET full_digest = ? WHERE path = ?", full_digest.digest, file)
   end
-  db.execute("UPDATE files SET full_digest = ? WHERE path = ?", full_digest.digest, file)
 end
 print_clear("done (#{c} possible duplicates checked)")
 STDERR.puts "\n Output Duplicates"
 
 # Now we can query for exact matches, which will go to stdout
-db.execute("SELECT path FROM files WHERE full_digest IS NOT null GROUP BY full_digest HAVING count(full_digest) > 1 ").each do |row|
-  puts row[0]
+db.execute("SELECT full_digest FROM files WHERE full_digest IS NOT null GROUP BY full_digest HAVING count(full_digest) > 1 ").each do |row|
+
+  puts(":: " + Base64.encode64(row[0]))
+  db.execute("SELECT path FROM files WHERE full_digest = ?", row[0]).each do |f|
+      puts f[0]
+  end
+  puts ""
 end
