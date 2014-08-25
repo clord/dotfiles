@@ -1,0 +1,81 @@
+#!/usr/bin/ruby
+require 'digest/sha1'
+require 'pathname'
+require 'sqlite3'
+require 'fileutils'
+include FileUtils
+
+db = nil
+if File.exist? "~/tmp/dedup_files.db"
+  db = SQLite3::Database.new("~/tmp/dedup_files.db")
+else
+  db = SQLite3::Database.new("~/tmp/dedup_files.db")
+  db.execute("create table files(init_digest varchar(40) not null, full_digest varchar(40), path varchar(4096) not null)")
+  db.execute("create        index init_index on files (init_digest)")
+  db.execute("create unique index path_index on files (path)")
+  db.execute("create unique index full_index on files (full_digest)")
+end
+
+CLEAR = `tput el`
+
+def print_clear(str)
+  str = str.to_s
+  str = ("..." + str[-80..-1]) if str.length >= 80
+  STDERR.print "\r#{CLEAR}#{str}"
+end
+
+def scan_dir(db, d)
+  c = 0
+  d.children.each do |path|
+    print_clear(path)
+    c += 1
+    if path.directory?
+      scan_dir(db, path)
+      next
+    end
+    next unless (path.exist? && path.file? && path.readable?)
+    next if db.execute("SELECT 1 FROM files WHERE path = ?", path.realpath.to_s).length > 0
+    init_digest = Digest::SHA1.new
+    init_digest << (File.read(path.to_s, 512) || "")
+    db.execute("INSERT INTO files VALUES(?, null, ?)", init_digest.digest, path.realpath.to_s)
+  end
+  print_clear("  done (#{c} files)")
+end
+
+c = 0
+roots = []
+if ARGV.count == 0
+  roots = [Pathname.new(".")]
+else
+  ARGV.each do |v|
+    roots << Pathname.new(v)
+  end
+end
+
+roots.each do |root_path|
+  STDERR.puts "Pre-scan for matches in '#{root_path}'"
+  scan_dir(db, root_path)
+  STDERR.puts ""
+end
+
+# iterate POSSIBLE duplicates (first n bytes match) and do a full hash to confirm
+STDERR.puts "Identify exact matches..."
+db.execute("SELECT path FROM files WHERE full_digest is not null GROUP BY init_digest HAVING count(init_digest) > 1").each do |row|
+  full_digest = Digest::SHA1.new
+  file = row[0]
+  c += 1
+  print_clear(file)
+  File.open(file, 'r') do |h|
+    while buffer = h.read(4096)
+      full_digest << buffer
+    end
+  end
+  db.execute("UPDATE files SET full_digest = ? WHERE path = ?", full_digest.digest, file)
+end
+print_clear("done (#{c} possible duplicates checked)")
+STDERR.puts "\n Output Duplicates"
+
+# Now we can query for exact matches, which will go to stdout
+db.execute("SELECT path FROM files WHERE full_digest IS NOT null GROUP BY full_digest HAVING count(full_digest) > 1 ").each do |row|
+  puts row[0]
+end
