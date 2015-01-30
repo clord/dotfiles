@@ -13,9 +13,9 @@ for f in $files; do
    ln -s $wdir/$f ~/.$f
 done
 
-mkdir -p ~/.config/fish
-ln -s config.fish ~/.config/fish
-ln -s fish_functions/* ~/.config/fish/functions
+mkdir -p ~/.config/fish/functions
+ln -s ~/dotfiles/config.fish ~/.config/fish
+ln -s ~/dotfiles/fish_functions/* ~/.config/fish/functions/
 
 echo 'Create per-machine storage and configuration:'
 mkdir -p ~/tmp/undo
