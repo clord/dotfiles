@@ -5,7 +5,7 @@ import XMonad.StackSet as W
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Config.Desktop(desktopConfig)
-import XMonad.Actions.SpawnOn(spawnHere, mkSpawner, Spawner)
+import XMonad.Actions.SpawnOn(spawnHere,  Spawner)
 import XMonad.Hooks.SetWMName(setWMName)
 import XMonad.Layout.PerWorkspace as PW
 import XMonad.Layout.Tabbed
@@ -44,11 +44,8 @@ localLayoutHook = smartBorders
 -- Primary entrypoint
 main :: IO ()
 main = do
-          sp <- mkSpawner
-          spawn "/usr/bin/gnome-settings-daemon"
           xmobar <- spawnPipe "xmobar ~/.xmobarrc"
           spawn "empathy"
-          spawn "/home/clord/.dropbox-dist/dropboxd"
           xmonad $ desktopConfig {
                  borderWidth        = 1
                , normalBorderColor  = "grey10"
@@ -63,8 +60,8 @@ main = do
                                                   ppOutput = hPutStrLn xmobar,
                                                   ppTitle = xmobarColor "green" "" . shorten 90 }
              } `additionalKeys`
-              ([m4  xK_a  $ spawnEditorIn sp "Asti" "/media/bloor/asti"
-               ,m4  xK_r  $ spawnEditorIn sp "Root" "/media/bloor"
+              ([m4  xK_a  $ spawnEditorIn "Asti" "/media/bloor/asti"
+               ,m4  xK_r  $ spawnEditorIn "Root" "/media/bloor"
                ,m4  xK_n  $ spawn "/opt/ibm/lotus/notes/notes"
                ,m4  xK_v  $ spawn "/usr/bin/nvidia-settings"
                ,m4  xK_g  $ spawn "/usr/bin/google-chrome"
@@ -72,35 +69,35 @@ main = do
                ,m4  xK_h  $ spawn "/usr/bin/cmvc-client-gui"
                ,m1  xK_w  kill
                ]
-               ++ (term_launchers sp Sparky   [xK_F1, xK_F2, xK_F3, xK_F4])
-               ++ (term_launchers sp Bloor    [xK_F5, xK_F6, xK_F7, xK_F8])
-               ++ (term_launchers sp Brimley  [xK_F9, xK_F10, xK_F11, xK_F12])
+               ++ (term_launchers Sparky   [xK_F1, xK_F2, xK_F3, xK_F4])
+               ++ (term_launchers Bloor    [xK_F5, xK_F6, xK_F7, xK_F8])
+               ++ (term_launchers Brimley  [xK_F9, xK_F10, xK_F11, xK_F12])
         --       ++ (term_launchers sp Terran   )
               )
          where m4 a = (,) (mod4Mask, a)
                m1 a = (,) (mod1Mask, a)
                m4s a = (,) ((mod4Mask .|. shiftMask), a)
-               rta sp machine font tid = runInXTerm sp color font cmd
+               rta machine font tid = runInXTerm color font cmd
                                  where cmd = screenOn machine tid
                                        color = csForMachine machine $ tid - 1
-               term_launchers sp machine keys = [makepair kb md | md <- idxkeys, kb <- keyfnt]
+               term_launchers machine keys = [makepair kb md | md <- idxkeys, kb <- keyfnt]
                                           where idxkeys = zip keys [1..]
                                                 keyfnt = zip [smlFont,  bigFont]
                                                              [mod4Mask, mod4Mask .|. shiftMask]
                                                 makepair kb md = ((snd kb, fst md),
-                                                                  rta sp machine (fst kb) (snd md))
+                                                                  rta machine (fst kb) (snd md))
 
 
 
 
 
 -- given a command and some customizations, launches a terminal
-runInXTerm :: Spawner -> BgColor -> FontSpec -> String -> X ()
-runInXTerm sp color font e = spawnHere sp $ (getColoredTerm color font) ++ " -e \"" ++ e ++ "\""
+runInXTerm :: BgColor -> FontSpec -> String -> X ()
+runInXTerm color font e = spawnHere $ (getColoredTerm color font) ++ " -e \"" ++ e ++ "\""
 
 -- wrapper that spawns an editor in a given directory
-spawnEditorIn :: Spawner -> String -> String -> X ()
-spawnEditorIn sp e s = spawnHere sp $ wrapAndJoin [notifyCmd (e ++ "Editor") ("in " ++ s),
+spawnEditorIn :: String -> String -> X ()
+spawnEditorIn e s = spawnHere $ wrapAndJoin [notifyCmd (e ++ "Editor") ("in " ++ s),
                                                    "cd " ++ s, "gvim"]
 
 -- Customizations to various window types and classes
