@@ -1,8 +1,7 @@
-#!/usr/bin/env zsh
-IFS=$'\n\t'
-
+#!/bin/bash
+#
 # The files that we are going to replace
-files=(irbrc ghci vim zsh vimrc gitconfig)
+files="irbrc ghci vim zsh vimrc gitconfig"
 
 # use the working directory as the place to link into
 wdir=`pwd`
@@ -27,13 +26,6 @@ touch ~/tmp/user.vim
 echo 'Non-destructively create the ~/.local namespace, where user installed stuff will live'
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
-echo <<EOF
-#!/bin/sh
-echo "Use ag: faster, shorter, better"
-echo "   https://github.com/ggreer/the_silver_searcher"
-exit 1
-EOF > ~/.local/bin/ack
-chomod u+x ~/.local/bin/ack 
 # Install vundle for vim
 rm -rf ~/.vim/bundle/vundle
 mkdir -p ~/.vim/bundle
