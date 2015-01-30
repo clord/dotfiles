@@ -2,7 +2,7 @@
 IFS=$'\n\t'
 
 # The files that we are going to replace
-files=(irbrc ghci vim zshrc zshenv zprofile zsh vimrc xmobarrc xmonad gitconfig tmux.conf Xresources)
+files=(irbrc ghci vim zsh vimrc gitconfig)
 
 # use the working directory as the place to link into
 wdir=`pwd`
@@ -14,14 +14,17 @@ for f in $files; do
    ln -s $wdir/$f ~/.$f
 done
 
-# Create a per-machine configuration file.
+mkdir -p ~/.config/fish
+ln -s config.fish ~/.config/fish
+
+echo 'Create per-machine storage and configuration:'
 mkdir -p ~/tmp/undo
 mkdir -p ~/tmp/backup
 mkdir -p ~/tmp/swap
 
 touch ~/tmp/user.vim
 
-# Non-destructively create the ~/.local namespace, where user installed stuff will live
+echo 'Non-destructively create the ~/.local namespace, where user installed stuff will live'
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
 echo <<EOF
@@ -35,5 +38,5 @@ chomod u+x ~/.local/bin/ack
 rm -rf ~/.vim/bundle/vundle
 mkdir -p ~/.vim/bundle
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-vim +BundleInstall +qall
+echo 'in vim, run :BundleInstall'
 

@@ -12,8 +12,7 @@ export USER_EMAIL=christopherlord@gmail.com
 export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
-export GOROOT="/opt/go"
-export GOPATH="/opt/gopath"
+export GOROOT="/usr/local/opt/go/libexec/bin"
 
 prepend_path() {
    [ -d $1/sbin ] && path=($1/sbin $path)

@@ -26,6 +26,10 @@ Bundle 'airblade/vim-gitgutter'
 Bundle 'kana/vim-textobj-user'
 Bundle 'noah/vim256-color'
 
+Bundle 'pangloss/vim-javascript'
+Bundle 'mxw/vim-jsx'
+
+
 
 " My own bundles
 Bundle 'clord/vim-insfile'
