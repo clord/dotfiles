@@ -40,6 +40,31 @@ cdr()
 # Same as cdr, but don't look at the current directory
 cdR() { cdr ${1:-$PWD}(:h) }
 
+# do a blog post
+blog() {
+(
+   DIR=~/src/c.lord.ac/posts
+   AUTHOR="Christopher Lord"
+   TITLE="${(j: :)@}"
+   SLUG="${(j:-:)@}"
+   DATE=`date +"%Y-%m-%d"`
+   TIME=`date +"%Y-%m-%d %H:%M:%S:%Z"`
+   FILE=_$DATE-$SLUG.markdown
+   cd $DIR
+   echo creating $FILE
+   cat <<EOF >>$FILE && vim $FILE
+---
+title:        $TITLE
+tags:         NOTAG
+author:       $AUTHOR
+published:    $TIME
+---
+
+
+EOF
+)
+}
+
 
 # vim {{{1
 
