@@ -15,6 +15,7 @@ done
 
 mkdir -p ~/.config/fish
 ln -s config.fish ~/.config/fish
+ln -s fish_functions/* ~/.config/fish/functions
 
 echo 'Create per-machine storage and configuration:'
 mkdir -p ~/tmp/undo
