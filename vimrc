@@ -1,42 +1,48 @@
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-" required: manage vundle with vundle
-Bundle 'gmarik/vundle'
+call plug#begin('~/.vim/plugged')
+Plug 'junegunn/seoul256.vim'
 
-" Load bundles up:
-
-" Git wrapper (git-from-vim)
-Bundle 'tpope/vim-fugitive' 
+" Align stuff. select, <enter><space>. cycle with <enter>
+Plug 'junegunn/vim-easy-align'
 
 " jump to certain spots with leader-leader-w
-Bundle 'Lokaltog/vim-easymotion'
+Plug 'Lokaltog/vim-easymotion'
 
 " statusline util
-Bundle 'Lokaltog/vim-powerline'
-" HTML creation (type css queries)
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plug 'Lokaltog/vim-powerline'
+
+" Git wrapper (git-from-vim)
+Plug 'tpope/vim-fugitive'
 
 " Automatic Syntax Checking
-Bundle 'scrooloose/syntastic'
-Bundle 'msanders/snipmate.vim'
-Bundle 'tomasr/molokai'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'kana/vim-textobj-user'
-Bundle 'noah/vim256-color'
+Plug 'scrooloose/syntastic'
+Plug 'msanders/snipmate.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'kana/vim-textobj-user'
 
-Bundle 'pangloss/vim-javascript'
-Bundle 'mxw/vim-jsx'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+
+" quick file picker. don't forget to
+" cd .vim/plugged/vimproc.vim && make
+" Use <space><space> to pick a file
+Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/unite.vim'
+
+" Ag command, <space>/ to search files
+Plug 'rking/ag.vim'
+
+" Adds :FixWhitespace
+Plug 'bronson/vim-trailing-whitespace'
 
 
+" --- Haskell
+" Don't forget to install ghc-mod with:
+" cabal install ghc-mod
+Plug 'yogsototh/haskell-vim'            " syntax indentation / highlight
+Plug 'enomsg/vim-haskellConcealPlus'    " unicode for haskell operators
+Plug 'eagletmt/ghcmod-vim'
 
-" My own bundles
-Bundle 'clord/vim-insfile'
-Bundle 'clord/vim-bookmaster'
-Bundle 'clord/vim-scenario'
-
-" :BundleInstall will ensure these are all installed, if vundle is available
+call plug#end()
 
 syntax enable
 filetype plugin indent on
@@ -118,7 +124,16 @@ set expandtab
 set nowrap
 set textwidth=110
 set formatoptions=qrn1
-"set colorcolumn=+1
+" Unified color scheme (default: dark)
+colo seoul256
+
+" Light color scheme
+"colo seoul256-light
+
+" Switch
+set background=dark
+"set background=light
+
 
 " }}}
 " Backups {{{
@@ -242,12 +257,6 @@ noremap <leader>v <C-w>v
 
 " }}}
 
-" Highlight word {{{
-nnoremap <silent> <leader>hh :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h1 :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h2 :execute '2match InterestingWord2 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h3 :execute '3match InterestingWord3 /\<<c-r><c-w>\>/'<cr>
-" }}}
 
 " Visual Mode */# from Scrooloose {{{
 function! s:VSetSearch()
@@ -284,99 +293,6 @@ nnoremap <leader>z zMzvzz
 augroup ft_c
     au!
     au FileType c setlocal foldmethod=syntax
-augroup END
-
-" }}}
-" Clojure {{{
-
-let g:slimv_leader = '\'
-let g:slimv_keybindings = 2
-
-augroup ft_clojure
-    au!
-
-    au FileType clojure call TurnOnClojureFolding()
-    au FileType clojure compiler clojure
-    au FileType clojure setlocal report=100000
-    au FileType clojure nnoremap <buffer> o jI<cr><esc>kA
-    au FileType clojure nnoremap <buffer> O I<cr><esc>kA
-
-    au BufWinEnter        Slimv.REPL.clj setlocal winfixwidth
-    au BufNewFile,BufRead Slimv.REPL.clj setlocal nowrap
-    au BufNewFile,BufRead Slimv.REPL.clj setlocal foldlevel=99
-    au BufNewFile,BufRead Slimv.REPL.clj nnoremap <buffer> A GA
-    au BufNewFile,BufRead Slimv.REPL.clj nnoremap <buffer> <localleader>R :emenu REPL.<Tab>
-
-    " Fix the eval mapping.
-    au FileType clojure nmap <buffer> \ee \ed
-
-    " Indent top-level form.
-    au FileType clojure nmap <buffer> <localleader>= v((((((((((((=%
-
-    " Use a swank command that works, and doesn't require new app windows.
-    au FileType clojure let g:slimv_swank_cmd='!dtach -n /tmp/dtach-swank.sock -r winch lein swank'
-augroup END
-
-" }}}
-" CSS and LessCSS {{{
-
-augroup ft_css
-    au!
-
-    au BufNewFile,BufRead *.less setlocal filetype=less
-
-    au Filetype less,css setlocal foldmethod=marker
-    au Filetype less,css setlocal foldmarker={,}
-    au Filetype less,css setlocal omnifunc=csscomplete#CompleteCSS
-    au Filetype less,css setlocal iskeyword+=-
-
-    " Use <leader>S to sort properties.  Turns this:
-    "
-    "     p {
-    "         width: 200px;
-    "         height: 100px;
-    "         background: red;
-    "
-    "         ...
-    "     }
-    "
-    " into this:
-
-    "     p {
-    "         background: red;
-    "         height: 100px;
-    "         width: 200px;
-    "
-    "         ...
-    "     }
-    au BufNewFile,BufRead *.less,*.css nnoremap <buffer> <localleader>S ?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>
-
-    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
-    " positioned inside of them AND the following code doesn't get unfolded.
-    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
-augroup END
-
-" }}}
-" HTML {{{
-
-augroup ft_html
-    au!
-
-    au BufNewFile,BufRead *.html setlocal filetype=html
-    au FileType html,jinja,htmldjango setlocal foldmethod=manual
-
-    " Use <localleader>f to fold the current tag.
-    au FileType html,jinja,htmldjango nnoremap <buffer> <localleader>f Vatzf
-
-    " Use Shift-Return to turn this:
-    "     <tag>|</tag>
-    "
-    " into this:
-    "     <tag>
-    "         |
-    "     </tag>
-    au FileType html,jinja,htmldjango nnoremap <buffer> <s-cr> vit<esc>a<cr><esc>vito<esc>i<cr><esc>
-
 augroup END
 
 " }}}
@@ -475,21 +391,15 @@ nnoremap <leader>! :Shell
 " }}}
 " Convenience mappings ---------------------------------------------------- {{{
 
-" Clean whitespace
-map <leader>W  :%s/\s\+$//<cr>:let @/=''<CR>
-
-" Easier linewise reselection
-nnoremap <leader>V V`]
+" Move visual block
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 " Less chording
 nnoremap ; :
 
 " Faster Esc
 inoremap jk <esc>
-
-" Source
-vnoremap <leader>S y:execute @@<cr>
-nnoremap <leader>S ^vg_y:execute @@<cr>
 
 set completeopt=longest,menuone,preview
 
@@ -501,23 +411,38 @@ cmap w!! w !sudo tee > /dev/null %
 set pastetoggle=<F8>
 
 
+let g:unite_source_history_yank_enable = 1
+try
+  let g:unite_source_rec_async_command='ag --nocolor --nogroup -g ""'
+  call unite#filters#matcher_default#use(['matcher_fuzzy'])
+catch
+endtry
+" search a file in the filetree
+nnoremap <space><space> :split<cr> :<C-u>Unite -start-insert file_rec/async<cr>
+" reset not it is <C-l> normally
+:nnoremap <space>r <Plug>(unite_restart)
 
-" }}}
-" Plugin settings --------------------------------------------------------- {{{
+" --- type & to search the word in all files in the current dir
+nmap & :Ag <c-r>=expand("<cword>")<cr><cr>
+nnoremap <space>/ :Ag 
 
-" Ack {{{
+" Easy align interactive
+vnoremap <silent> <Enter> :EasyAlign<cr>
 
-map <leader>a :Ack!
 
-" }}}
-"
-" Lisp (built-in) {{{
+" -------------------
+"       Haskell
+" -------------------
+set tm=2000
+nmap <silent> <leader>ht :GhcModType<CR>
+nmap <silent> <leader>hh :GhcModTypeClear<CR>
+nmap <silent> <leader>hT :GhcModTypeInsert<CR>
+nmap <silent> <leader>hc :SyntasticCheck ghc_mod<CR>:lopen<CR>
 
-let g:lisp_rainbow = 1
+" Auto-checking on writing
+" autocmd BufWritePost *.hs,*.lhs GhcModCheckAndLintAsync
 
-" }}}
 
-" }}}
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
 if has('gui_running')
@@ -573,11 +498,5 @@ else
     " Console Vim
 endif
 
-" }}}
-"
-colorscheme beauty256
-" Machine specific -------------------------------------------------------- {{{
-
 source ~/tmp/user.vim
 
-" }}}
