@@ -8,7 +8,6 @@ vim/view
 vim/.netrwhist
 vim/plugged
 vim/bundle
-vim/autoload
 xmonad/xmonad-*
 xmonad/*.hi
 xmonad/lib/*.hi
