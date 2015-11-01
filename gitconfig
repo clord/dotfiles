@@ -27,6 +27,7 @@
 	s = status -s
    p = push
    d = diff -w --minimal --word-diff=color --patience
+   dt = difftool
 	c = commit
 	co = checkout
 	cm = commit -m
@@ -44,10 +45,12 @@
 	oneline = log --oneline
 	undo = reset --hard HEAD^
 	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	add-commit = !git add -A && git commit
+	ctags = !.git/hooks/ctags
 
 [diff]
 	mnemonicprefix = true
-	tool = Kaleidoscope
+	tool = vimdiff
 	renamed = copy
 	algorithm = patience
 
@@ -71,3 +74,5 @@
 	show-branch = true
 [format]
 	numbered = auto
+[init]
+	templatedir = ~/.git_template

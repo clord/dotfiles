@@ -1,5 +1,10 @@
 call plug#begin('~/.vim/plugged')
-Plug 'junegunn/seoul256.vim'
+
+" Colors
+"Plug 'junegunn/seoul256.vim'
+"Plug 'bruschill/madeofcode'
+Plug 'NLKNguyen/papercolor-theme'
+"Plug 'erezsh/erezvim'
 
 " Align stuff. select, <enter><space>. cycle with <enter>
 Plug 'junegunn/vim-easy-align'
@@ -7,88 +12,151 @@ Plug 'junegunn/vim-easy-align'
 " jump to certain spots with leader-leader-w
 Plug 'Lokaltog/vim-easymotion'
 
-" statusline util
-Plug 'Lokaltog/vim-powerline'
+" Ruby text objects (car to change a ruby block)
+"Plug 'rhysd/vim-textobj-ruby'
 
 " Git wrapper (git-from-vim)
 Plug 'tpope/vim-fugitive'
 
-" Automatic Syntax Checking
-Plug 'scrooloose/syntastic'
-Plug 'msanders/snipmate.vim'
+" surround: s motion: cs
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+
+" cml to comment out line, cmip to comment block
+Plug 'tpope/vim-commentary'
+
+" Really awesome way to quickly spit out boilerplate.
+Plug 'garbas/vim-snipmate'
+Plug 'tomtom/tlib_vim'
+Plug 'MarcWeber/vim-addon-mw-utils'
+" Plus some actual snippets
+Plug 'honza/vim-snippets'
+
+" Hard to live without git change markers
 Plug 'airblade/vim-gitgutter'
+
+Plug 'vim-ruby/vim-ruby'
+
+" User defined textobjs, typically required by other plugins
 Plug 'kana/vim-textobj-user'
 
+" Silver Search. :Ag to find things in cwd
+Plug 'rking/ag.vim'
+
+" Just some nice things for JS
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
-
-" quick file picker. don't forget to
-" cd .vim/plugged/vimproc.vim && make
-" Use <space><space> to pick a file
-Plug 'Shougo/vimproc.vim'
-Plug 'Shougo/unite.vim'
-
-" Ag command, <space>/ to search files
-Plug 'rking/ag.vim'
 
 " Adds :FixWhitespace
 Plug 'bronson/vim-trailing-whitespace'
 
+" Control-p is a fuzzy finder
+Plug 'ctrlpvim/ctrlp.vim'
 
-" --- Haskell
-" Don't forget to install ghc-mod with:
-" cabal install ghc-mod
-Plug 'yogsototh/haskell-vim'            " syntax indentation / highlight
-Plug 'enomsg/vim-haskellConcealPlus'    " unicode for haskell operators
-Plug 'eagletmt/ghcmod-vim'
+" Move through camelCase words with <leader><motion>
+Plug 'bkad/CamelCaseMotion'
+
+" Control-n to select current word and put a virtual cursor. keep hitting.
+"Plug 'terryma/vim-multiple-cursors'
 
 call plug#end()
 
 syntax enable
 filetype plugin indent on
 
+" Yup.
 set encoding=utf-8
+
+" Disable modelines since i dont use them and they can do crazy things
 set modelines=0
+
+" Yea it works for me
 set autoindent
+
+" Like seeing '-- INSERT --' at the bottom
 set showmode
+
+" mostly for explaining things to people
 set showcmd
+
+" hide files when opening another
 set hidden
+
+" No 'beep' when the kids are asleep
 set visualbell
-"set cursorline
+
+" Smooth scrolling with multiple panes on tty
 set ttyfast
-set ruler
-set backspace=indent,eol,start
-set nonumber
-set norelativenumber
-set laststatus=2
-set history=1000
-set undofile
-set undoreload=10000
-set cpoptions+=J
-"set list
-"set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
-set shell=/bin/bash
 set lazyredraw
+
+
+" Line and col info on cmdline info bar
+set ruler
+
+"
+set backspace=indent,eol,start
+
+" Line numbers in gutter are relative to current location (great for motions)
+set relativenumber
+set number " Will show the absolute number!
+
+" Always show statusline
+set laststatus=2
+
+"
+set cpoptions+=J
+
+" Which shell to use
+set shell=/bin/bash
+
+" Don't redraw during macros etc
+set lazyredraw
+
+" Match parens, and wait for some tenths of seconds
+set showmatch
 set matchtime=3
-set showbreak=▸
-set splitbelow
-set splitright
+
+" Split windows below
+set splitbelow " set splitright
+
+"
 set fillchars=diff:⣿
+
+" Leader {{{
+let mapleader = ","
+let maplocalleader = "\\"
+" }}}
+
+"
 set ttimeout
 set notimeout
 set nottimeout
-set autowrite
+
+" Round to the indent col
 set shiftround
+
+" Re-read a file if it is open and not changed in vim, but changed outside
 set autoread
+
+" Set the window title to file
 set title
+
+" Spelling
 set dictionary=/usr/share/dict/words
+
 set foldlevelstart=99
 
-" Wildmenu completion {{{
+" ControlP
+"let g:ctrlp_map = '<c-p>'
+let g:ctrlp_working_path_mode = 'ra'
+nmap <leader>p :CtrlP<cr>
+nmap <leader>b :CtrlPBuffer<cr>
+nmap <leader>t :CtrlPTag<cr>
 
+
+" Wildmenu completion {{{
 set wildmenu
 set wildmode=list:longest
-
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -97,13 +165,11 @@ set wildignore+=*.u,*.d                          " make dependency files
 set wildignore+=*.spl                            " compiled spelling word lists
 set wildignore+=*.sw?                            " Vim swap files
 set wildignore+=*.DS_Store                       " OSX
-
 set wildignore+=*.luac                           " Lua byte code
-
 set wildignore+=migrations                       " Django migrations
 set wildignore+=*.pyc                            " Python byte code
-
-
+set wildignore+=*.jsbundle                       " JS Bundle from react-native
+set wildignore+=node_modules,.bundle             " locally installed packages
 " }}}
 
 " Make Vim able to edit crontab files again.
@@ -116,7 +182,6 @@ set backupskip=/tmp/*,/private/tmp/*"
 au VimResized * exe "normal! \<c-w>="
 
 " Tabs, spaces, wrapping {{{
-
 set tabstop=3
 set shiftwidth=3
 set softtabstop=3
@@ -124,32 +189,33 @@ set expandtab
 set nowrap
 set textwidth=110
 set formatoptions=qrn1
-" Unified color scheme (default: dark)
-colo seoul256
-
-" Light color scheme
-"colo seoul256-light
-
-" Switch
-set background=dark
-"set background=light
-
-
 " }}}
-" Backups {{{
 
+" Unified color scheme (default: dark)
+"colo seoul256
+"colo erezvim
+
+set background=light
+colorscheme PaperColor
+
+" Backups, Undo {{{
 set undodir=~/tmp/undo/     " undo files
 set backupdir=~/tmp/backup/ " backups
 set directory=~/tmp/swap/   " swap files
 set backup                       " enable backups
 
-" }}}
-" Leader {{{
+"
+set history=1000
 
-let mapleader = ","
-let maplocalleader = "\\"
+"
+set undofile
 
+"
+set undoreload=10000
 " }}}
+
+
+
 " Status line ------------------------------------------------------------- {{{
 
 "augroup ft_statuslinecolor
@@ -199,6 +265,7 @@ call MakeSpacelessIabbrev('gh/',  'http://github.com/clord/')
 call MakeSpacelessIabbrev('fsc/', 'http://www.freshslowcooking.com/')
 
 iabbrev cl@ christopher@lord.ac
+iabbrev clp@ christopher@pliosoft.com
 iabbrev clg@ christopherlord@gmail.com
 
 " }}}
@@ -207,7 +274,6 @@ iabbrev clg@ christopherlord@gmail.com
 set ignorecase
 set smartcase
 set incsearch
-set showmatch
 set hlsearch
 set gdefault
 
@@ -225,26 +291,9 @@ nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 " Ack for the last search.
 nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
 
-" Error navigation {{{
-"
-"             Location List     QuickFix Window
-"            (e.g. Syntastic)     (e.g. Ack)
-"            ----------------------------------
-" Next      |     M-k               M-Down     |
-" Previous  |     M-l                M-Up      |
-"            ----------------------------------
-"
-nnoremap ˚ :lnext<cr>zvzz
-nnoremap ¬ :lprevious<cr>zvzz
-inoremap ˚ <esc>:lnext<cr>zvzz
-inoremap ¬ <esc>:lprevious<cr>zvzz
-nnoremap <m-Down> :cnext<cr>zvzz
-nnoremap <m-Up> :cprevious<cr>zvzz
-" }}}
-
 " Directional Keys {{{
 
-" It's 2011.
+" It's the future
 noremap j gj
 noremap k gk
 
@@ -346,7 +395,7 @@ augroup END
 
 augroup ft_ruby
     au!
-    au Filetype ruby setlocal foldmethod=syntax
+    au Filetype ruby setlocal foldmethod=marker
 augroup END
 
 " }}}
@@ -361,7 +410,7 @@ augroup ft_vim
 augroup END
 
 " }}}
-
+"
 " }}}
 " Quick editing ----------------------------------------------------------- {{{
 
@@ -410,43 +459,20 @@ cmap w!! w !sudo tee > /dev/null %
 " Toggle paste
 set pastetoggle=<F8>
 
-
-let g:unite_source_history_yank_enable = 1
-try
-  let g:unite_source_rec_async_command='ag --nocolor --nogroup -g ""'
-  call unite#filters#matcher_default#use(['matcher_fuzzy'])
-catch
-endtry
-" search a file in the filetree
-nnoremap <space><space> :split<cr> :<C-u>Unite -start-insert file_rec/async<cr>
-" reset not it is <C-l> normally
-:nnoremap <space>r <Plug>(unite_restart)
-
 " --- type & to search the word in all files in the current dir
 nmap & :Ag <c-r>=expand("<cword>")<cr><cr>
-nnoremap <space>/ :Ag 
+nnoremap <space>/ :Ag
 
 " Easy align interactive
 vnoremap <silent> <Enter> :EasyAlign<cr>
-
-
-" -------------------
-"       Haskell
-" -------------------
-set tm=2000
-nmap <silent> <leader>ht :GhcModType<CR>
-nmap <silent> <leader>hh :GhcModTypeClear<CR>
-nmap <silent> <leader>hT :GhcModTypeInsert<CR>
-nmap <silent> <leader>hc :SyntasticCheck ghc_mod<CR>:lopen<CR>
-
-" Auto-checking on writing
-" autocmd BufWritePost *.hs,*.lhs GhcModCheckAndLintAsync
+" gaip=<enter> to easyalign a vim paragraph
+nmap ga <Plug>(EasyAlign)
 
 
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
 if has('gui_running')
-    set guifont=Liberation\ Mono:h14
+    set guifont=Hack:h10 "" https://github.com/chrissimpkins/Hack
 
     " Remove all the UI cruft
     set go-=T
@@ -458,12 +484,12 @@ if has('gui_running')
     highlight SpellBad term=underline gui=undercurl guisp=Orange
 
     " Use a line-drawing char for pretty vertical splits.
-    set fillchars+=vert:│
+    set fillchars+=vert:╏ "❚
 
     " Different cursors for different modes.
     set guicursor=n-c:block-Cursor-blinkon0
     set guicursor+=v:block-vCursor-blinkon0
-   " set guicursor+=i-ci:ver20-iCursor
+    "set guicursor+=i-ci:ver20-iCursor
 
     if has("gui_macvim")
         " Full screen means FULL screen
