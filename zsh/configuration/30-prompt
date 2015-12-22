@@ -1,6 +1,4 @@
 #!/usr/bin/env zsh
-IFS=$'\n\t'
 
 autoload -U promptinit && promptinit
 prompt pure
-

@@ -1,39 +1,5 @@
 #!/usr/bin/env zsh
-IFS=$'\n\t'
 
-
-#alias cp='cp -rv'
-alias cp='cp -r'
-#alias mv='mv -v'
-alias mkdir='mkdir -p'
-alias mmv='noglob zmv -W'
-alias grep='grep '
-alias myip='curl http://ifconfig.me/ip'
-alias po=popd
-alias pu=pushd
-alias tree='tree --noreport --dirsfirst -F'
-alias t='ctags -R'
-alias v='vim'
-alias vt='v -t'
-alias vv='v -c "EditConfig"'
-
-# Make head/tail output fill screen
-alias head='head -n $((LINES-2))'
-alias tail='tail -n $((LINES-2))'
-
-# global {{{1
-
-alias -g L="|less"
-alias -g T="|tail"
-alias -g H="|head"
-alias -g G="|grep"
-alias -g S="|sort"
-alias -g U="|sort -u"
-alias -g N="&>/dev/null"
-
-# ls {{{1
-
-#alias ls='ls -Ch --color=auto'
 alias lsh='ls -d .*'                       # Show hidden files
 alias lsd='ls -d *(/)'                     # Show directories
 alias lse='ls -d *(/^F)'                   # Show empty directories
@@ -95,10 +61,6 @@ alias gp='g pull'
 alias gs='g status'
 alias gl='g log --oneline'
 
-# zmv {{{1
-
-alias zcp='zmv -C'
-alias zln='zmv -L'
 
 # du {{{1
 
@@ -107,16 +69,4 @@ alias dub='du -slb'                 # Bytes
 alias duk='du -slk'                 # Kilobytes
 alias dum='du -slm'                 # Megabytes
 alias dug='du -sl --block-size=1G'  # Gigabytes
-
-# df {{{1
-
-alias dfh='df -PTh'                 # Human-readable
-alias dfb='df -PT --block-size=1'   # Bytes
-alias dfk='df -PTk'                 # Kilobytes
-alias dfm='df -PTm'                 # Megabytes
-alias dfg='df -PT --block-size=1G'  # Gigabytes
-
-# virtualenv {{{1
-
-alias workoff=deactivate
 

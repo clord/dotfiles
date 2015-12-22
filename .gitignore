@@ -6,8 +6,10 @@ vim/bundle
 vim/view
 *~
 vim/.netrwhist
+vim/plugged
+vim/bundle
 xmonad/xmonad-*
 xmonad/*.hi
 xmonad/lib/*.hi
 xmonad/*.errors
-
+vim/sessions/__LAST__

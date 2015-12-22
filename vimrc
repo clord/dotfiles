@@ -1,84 +1,165 @@
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-" required: manage vundle with vundle
-Bundle 'gmarik/vundle'
+call plug#begin('~/.vim/plugged')
 
-" Load bundles up:
+" Show a nice startup screen
+Plug 'mhinz/vim-startify'
 
-" Git wrapper (git-from-vim)
-Bundle 'tpope/vim-fugitive' 
+" Colors
+"Plug 'junegunn/seoul256.vim'
+"Plug 'bruschill/madeofcode'
+Plug 'NLKNguyen/papercolor-theme'
+"Plug 'erezsh/erezvim'
+
+" Align stuff. select, <enter><space>. cycle with <enter>
+Plug 'junegunn/vim-easy-align'
 
 " jump to certain spots with leader-leader-w
-Bundle 'Lokaltog/vim-easymotion'
+Plug 'Lokaltog/vim-easymotion'
 
-" statusline util
-Bundle 'Lokaltog/vim-powerline'
-" HTML creation (type css queries)
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Ruby text objects (car to change a ruby block)
+"Plug 'rhysd/vim-textobj-ruby'
 
-" Automatic Syntax Checking
-Bundle 'scrooloose/syntastic'
-Bundle 'msanders/snipmate.vim'
-Bundle 'tomasr/molokai'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'kana/vim-textobj-user'
-Bundle 'noah/vim256-color'
+" Git wrapper (git-from-vim)
+Plug 'tpope/vim-fugitive'
 
+" surround: s motion: cs
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
-" My own bundles
-Bundle 'clord/vim-insfile'
-Bundle 'clord/vim-bookmaster'
-Bundle 'clord/vim-scenario'
+" cml to comment out line, cmip to comment block
+Plug 'tpope/vim-commentary'
 
-" :BundleInstall will ensure these are all installed, if vundle is available
+" Really awesome way to quickly spit out boilerplate.
+Plug 'garbas/vim-snipmate'
+Plug 'tomtom/tlib_vim'
+Plug 'MarcWeber/vim-addon-mw-utils'
+" Plus some actual snippets
+Plug 'honza/vim-snippets'
+
+" Hard to live without git change markers
+Plug 'airblade/vim-gitgutter'
+
+Plug 'vim-ruby/vim-ruby'
+
+" User defined textobjs, typically required by other plugins
+Plug 'kana/vim-textobj-user'
+
+" Silver Search. :Ag to find things in cwd
+Plug 'rking/ag.vim'
+
+" Just some nice things for JS
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+
+" Adds :FixWhitespace
+Plug 'bronson/vim-trailing-whitespace'
+
+" Control-p is a fuzzy finder
+Plug 'ctrlpvim/ctrlp.vim'
+
+" Move through camelCase words with <leader><motion>
+Plug 'bkad/CamelCaseMotion'
+
+" Control-n to select current word and put a virtual cursor. keep hitting.
+"Plug 'terryma/vim-multiple-cursors'
+
+call plug#end()
 
 syntax enable
 filetype plugin indent on
 
+" Yup.
 set encoding=utf-8
+
+" Disable modelines since i dont use them and they can do crazy things
 set modelines=0
+
+" Yea it works for me
 set autoindent
+
+" Like seeing '-- INSERT --' at the bottom
 set showmode
+
+" mostly for explaining things to people
 set showcmd
+
+" hide files when opening another
 set hidden
+
+" No 'beep' when the kids are asleep
 set visualbell
-"set cursorline
+
+" Smooth scrolling with multiple panes on tty
 set ttyfast
-set ruler
-set backspace=indent,eol,start
-set nonumber
-set norelativenumber
-set laststatus=2
-set history=1000
-set undofile
-set undoreload=10000
-set cpoptions+=J
-"set list
-"set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
-set shell=/bin/bash
 set lazyredraw
+
+
+" Line and col info on cmdline info bar
+set ruler
+
+"
+set backspace=indent,eol,start
+
+" Line numbers in gutter are relative to current location (great for motions)
+set relativenumber
+set number " Will show the absolute number!
+
+" Always show statusline
+set laststatus=2
+
+"
+set cpoptions+=J
+
+" Which shell to use
+set shell=/bin/bash
+
+" Don't redraw during macros etc
+set lazyredraw
+
+" Match parens, and wait for some tenths of seconds
+set showmatch
 set matchtime=3
-set showbreak=▸
-set splitbelow
-set splitright
+
+" Split windows below
+set splitbelow " set splitright
+
+"
 set fillchars=diff:⣿
+
+" Leader {{{
+let mapleader = ","
+let maplocalleader = "\\"
+" }}}
+
+"
 set ttimeout
 set notimeout
 set nottimeout
-set autowrite
+
+" Round to the indent col
 set shiftround
+
+" Re-read a file if it is open and not changed in vim, but changed outside
 set autoread
+
+" Set the window title to file
 set title
+
+" Spelling
 set dictionary=/usr/share/dict/words
+
 set foldlevelstart=99
 
-" Wildmenu completion {{{
+" ControlP
+"let g:ctrlp_map = '<c-p>'
+let g:ctrlp_working_path_mode = 'ra'
+nmap <leader>p :CtrlP<cr>
+nmap <leader>b :CtrlPBuffer<cr>
+nmap <leader>t :CtrlPTag<cr>
 
+
+" Wildmenu completion {{{
 set wildmenu
 set wildmode=list:longest
-
 set wildignore+=.hg,.git,.svn                    " Version control
 set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
 set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
@@ -87,13 +168,11 @@ set wildignore+=*.u,*.d                          " make dependency files
 set wildignore+=*.spl                            " compiled spelling word lists
 set wildignore+=*.sw?                            " Vim swap files
 set wildignore+=*.DS_Store                       " OSX
-
 set wildignore+=*.luac                           " Lua byte code
-
 set wildignore+=migrations                       " Django migrations
 set wildignore+=*.pyc                            " Python byte code
-
-
+set wildignore+=*.jsbundle                       " JS Bundle from react-native
+set wildignore+=node_modules,.bundle             " locally installed packages
 " }}}
 
 " Make Vim able to edit crontab files again.
@@ -106,7 +185,6 @@ set backupskip=/tmp/*,/private/tmp/*"
 au VimResized * exe "normal! \<c-w>="
 
 " Tabs, spaces, wrapping {{{
-
 set tabstop=3
 set shiftwidth=3
 set softtabstop=3
@@ -114,23 +192,33 @@ set expandtab
 set nowrap
 set textwidth=110
 set formatoptions=qrn1
-"set colorcolumn=+1
-
 " }}}
-" Backups {{{
 
+" Unified color scheme (default: dark)
+"colo seoul256
+"colo erezvim
+
+set background=light
+colorscheme PaperColor
+
+" Backups, Undo {{{
 set undodir=~/tmp/undo/     " undo files
 set backupdir=~/tmp/backup/ " backups
 set directory=~/tmp/swap/   " swap files
 set backup                       " enable backups
 
-" }}}
-" Leader {{{
+"
+set history=1000
 
-let mapleader = ","
-let maplocalleader = "\\"
+"
+set undofile
 
+"
+set undoreload=10000
 " }}}
+
+
+
 " Status line ------------------------------------------------------------- {{{
 
 "augroup ft_statuslinecolor
@@ -180,6 +268,7 @@ call MakeSpacelessIabbrev('gh/',  'http://github.com/clord/')
 call MakeSpacelessIabbrev('fsc/', 'http://www.freshslowcooking.com/')
 
 iabbrev cl@ christopher@lord.ac
+iabbrev clp@ christopher@pliosoft.com
 iabbrev clg@ christopherlord@gmail.com
 
 " }}}
@@ -188,7 +277,6 @@ iabbrev clg@ christopherlord@gmail.com
 set ignorecase
 set smartcase
 set incsearch
-set showmatch
 set hlsearch
 set gdefault
 
@@ -204,28 +292,17 @@ noremap <leader><space> :noh<cr>:call clearmatches()<cr>
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
 " Ack for the last search.
-nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
+nnoremap <silent> <leader>? :execute "Ag '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
 
-" Error navigation {{{
-"
-"             Location List     QuickFix Window
-"            (e.g. Syntastic)     (e.g. Ack)
-"            ----------------------------------
-" Next      |     M-k               M-Down     |
-" Previous  |     M-l                M-Up      |
-"            ----------------------------------
-"
-nnoremap ˚ :lnext<cr>zvzz
-nnoremap ¬ :lprevious<cr>zvzz
-inoremap ˚ <esc>:lnext<cr>zvzz
-inoremap ¬ <esc>:lprevious<cr>zvzz
-nnoremap <m-Down> :cnext<cr>zvzz
-nnoremap <m-Up> :cprevious<cr>zvzz
-" }}}
+" We make q a special macro register, which we can replay via backspace
+nnoremap <bs> @q
+
+" Also allow backsapce in visual mode to replay macro q
+vnoremap <silent> <bs> :norm @q<cr>
 
 " Directional Keys {{{
 
-" It's 2011.
+" It's the future
 noremap j gj
 noremap k gk
 
@@ -238,12 +315,6 @@ noremap <leader>v <C-w>v
 
 " }}}
 
-" Highlight word {{{
-nnoremap <silent> <leader>hh :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h1 :execute 'match InterestingWord1 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h2 :execute '2match InterestingWord2 /\<<c-r><c-w>\>/'<cr>
-nnoremap <silent> <leader>h3 :execute '3match InterestingWord3 /\<<c-r><c-w>\>/'<cr>
-" }}}
 
 " Visual Mode */# from Scrooloose {{{
 function! s:VSetSearch()
@@ -280,99 +351,6 @@ nnoremap <leader>z zMzvzz
 augroup ft_c
     au!
     au FileType c setlocal foldmethod=syntax
-augroup END
-
-" }}}
-" Clojure {{{
-
-let g:slimv_leader = '\'
-let g:slimv_keybindings = 2
-
-augroup ft_clojure
-    au!
-
-    au FileType clojure call TurnOnClojureFolding()
-    au FileType clojure compiler clojure
-    au FileType clojure setlocal report=100000
-    au FileType clojure nnoremap <buffer> o jI<cr><esc>kA
-    au FileType clojure nnoremap <buffer> O I<cr><esc>kA
-
-    au BufWinEnter        Slimv.REPL.clj setlocal winfixwidth
-    au BufNewFile,BufRead Slimv.REPL.clj setlocal nowrap
-    au BufNewFile,BufRead Slimv.REPL.clj setlocal foldlevel=99
-    au BufNewFile,BufRead Slimv.REPL.clj nnoremap <buffer> A GA
-    au BufNewFile,BufRead Slimv.REPL.clj nnoremap <buffer> <localleader>R :emenu REPL.<Tab>
-
-    " Fix the eval mapping.
-    au FileType clojure nmap <buffer> \ee \ed
-
-    " Indent top-level form.
-    au FileType clojure nmap <buffer> <localleader>= v((((((((((((=%
-
-    " Use a swank command that works, and doesn't require new app windows.
-    au FileType clojure let g:slimv_swank_cmd='!dtach -n /tmp/dtach-swank.sock -r winch lein swank'
-augroup END
-
-" }}}
-" CSS and LessCSS {{{
-
-augroup ft_css
-    au!
-
-    au BufNewFile,BufRead *.less setlocal filetype=less
-
-    au Filetype less,css setlocal foldmethod=marker
-    au Filetype less,css setlocal foldmarker={,}
-    au Filetype less,css setlocal omnifunc=csscomplete#CompleteCSS
-    au Filetype less,css setlocal iskeyword+=-
-
-    " Use <leader>S to sort properties.  Turns this:
-    "
-    "     p {
-    "         width: 200px;
-    "         height: 100px;
-    "         background: red;
-    "
-    "         ...
-    "     }
-    "
-    " into this:
-
-    "     p {
-    "         background: red;
-    "         height: 100px;
-    "         width: 200px;
-    "
-    "         ...
-    "     }
-    au BufNewFile,BufRead *.less,*.css nnoremap <buffer> <localleader>S ?{<CR>jV/\v^\s*\}?$<CR>k:sort<CR>:noh<CR>
-
-    " Make {<cr> insert a pair of brackets in such a way that the cursor is correctly
-    " positioned inside of them AND the following code doesn't get unfolded.
-    au BufNewFile,BufRead *.less,*.css inoremap <buffer> {<cr> {}<left><cr><space><space><space><space>.<cr><esc>kA<bs>
-augroup END
-
-" }}}
-" HTML {{{
-
-augroup ft_html
-    au!
-
-    au BufNewFile,BufRead *.html setlocal filetype=html
-    au FileType html,jinja,htmldjango setlocal foldmethod=manual
-
-    " Use <localleader>f to fold the current tag.
-    au FileType html,jinja,htmldjango nnoremap <buffer> <localleader>f Vatzf
-
-    " Use Shift-Return to turn this:
-    "     <tag>|</tag>
-    "
-    " into this:
-    "     <tag>
-    "         |
-    "     </tag>
-    au FileType html,jinja,htmldjango nnoremap <buffer> <s-cr> vit<esc>a<cr><esc>vito<esc>i<cr><esc>
-
 augroup END
 
 " }}}
@@ -426,7 +404,7 @@ augroup END
 
 augroup ft_ruby
     au!
-    au Filetype ruby setlocal foldmethod=syntax
+    au Filetype ruby setlocal foldmethod=marker
 augroup END
 
 " }}}
@@ -441,7 +419,7 @@ augroup ft_vim
 augroup END
 
 " }}}
-
+"
 " }}}
 " Quick editing ----------------------------------------------------------- {{{
 
@@ -471,21 +449,15 @@ nnoremap <leader>! :Shell
 " }}}
 " Convenience mappings ---------------------------------------------------- {{{
 
-" Clean whitespace
-map <leader>W  :%s/\s\+$//<cr>:let @/=''<CR>
-
-" Easier linewise reselection
-nnoremap <leader>V V`]
+" Move visual block
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 " Less chording
 nnoremap ; :
 
 " Faster Esc
 inoremap jk <esc>
-
-" Source
-vnoremap <leader>S y:execute @@<cr>
-nnoremap <leader>S ^vg_y:execute @@<cr>
 
 set completeopt=longest,menuone,preview
 
@@ -496,28 +468,49 @@ cmap w!! w !sudo tee > /dev/null %
 " Toggle paste
 set pastetoggle=<F8>
 
+" --- type & to search the word in all files in the current dir
+nmap & :Ag <c-r>=expand("<cword>")<cr><cr>
+nnoremap <space>/ :Ag
 
+" Easy align interactive
+vnoremap <silent> <Enter> :EasyAlign<cr>
+" gaip=<enter> to easyalign a vim paragraph
+nmap ga <Plug>(EasyAlign)
 
-" }}}
-" Plugin settings --------------------------------------------------------- {{{
+" Startify
+let g:startify_list_order = [
+      \ ['   Sessions '],  'sessions',
+      \ ['   MRU '],       'files' ,
+      \ ['   MRU DIR '],   'dir',
+      \ ['   Bookmarks '], 'bookmarks',
+      \ ]
 
-" Ack {{{
+let g:startify_skiplist = [
+      \ 'COMMIT_EDITMSG',
+      \ 'bundle/.*/doc',
+      \ ]
 
-map <leader>a :Ack!
+let g:startify_bookmarks              = [ {'v': '~/.vimrc'} ]
+let g:startify_change_to_dir          = 0
+let g:startify_enable_special         = 0
+let g:startify_files_number           = 8
+let g:startify_session_autoload       = 1
+let g:startify_session_delete_buffers = 1
+let g:startify_session_persistence    = 1
 
-" }}}
-"
-" Lisp (built-in) {{{
+function! s:center_header(lines) abort
+  let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+  let centered_lines = map(copy(a:lines), 'repeat(" ", (&columns / 2) - (longest_line / 2)) . v:val')
+  return centered_lines
+endfunction
 
-let g:lisp_rainbow = 1
+let g:startify_session_dir = "~/.vim/sessions"
+let g:startify_custom_header = s:center_header(split("Hello", '\n'))
 
-" }}}
-
-" }}}
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
 if has('gui_running')
-    set guifont=Liberation\ Mono:h14
+    set guifont=Hack:h10 "" https://github.com/chrissimpkins/Hack
 
     " Remove all the UI cruft
     set go-=T
@@ -529,12 +522,13 @@ if has('gui_running')
     highlight SpellBad term=underline gui=undercurl guisp=Orange
 
     " Use a line-drawing char for pretty vertical splits.
-    set fillchars+=vert:│
+    set fillchars+=vert:╏ "❚
 
     " Different cursors for different modes.
     set guicursor=n-c:block-Cursor-blinkon0
     set guicursor+=v:block-vCursor-blinkon0
-   " set guicursor+=i-ci:ver20-iCursor
+    highlight Cursor guifg=white guibg=black
+    highlight iCursor guifg=white guibg=green
 
     if has("gui_macvim")
         " Full screen means FULL screen
@@ -569,11 +563,5 @@ else
     " Console Vim
 endif
 
-" }}}
-"
-colorscheme beauty256
-" Machine specific -------------------------------------------------------- {{{
-
 source ~/tmp/user.vim
 
-" }}}

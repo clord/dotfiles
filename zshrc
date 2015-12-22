@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
-IFS=$'\n\t'
 
 # Invoke startup scripts for every interactive session
+for conf (~/.zsh/configuration/*(N.)) source $conf
+for func (~/.zsh/functions/*(N.)) autoload -U ${func:t}
 
-for conf (~/.zsh/conf.d/*(N.)) source $conf
-for func (~/.zsh/func.d/*(N.)) autoload -U ${func:t}

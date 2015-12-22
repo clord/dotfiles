@@ -1,3 +1,0 @@
-#compdef wo
-
-_values 'virtualenvs' $WORKON_HOME/*/bin/activate(.:h:h:t)

@@ -1,0 +1,8 @@
+
+if (( $EUID != 0 )); then
+    # Per-screen-session history file.
+    HOSTNAME=`uname -n`
+    HISTFILE=~/.zsh/history.${HOSTNAME}.${STY:e}
+    HISTSIZE=15500
+    SAVEHIST=15000
+fi
