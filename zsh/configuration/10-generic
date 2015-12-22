@@ -1,12 +1,9 @@
 #!/usr/bin/env zsh
-IFS=$'\n\t'
 
-autoload -U zargs
-autoload -U zmv
-autoload -U colors ; colors 
+autoload -U colors zsh-mime-setup zargs
+colors
+zsh-mime-setup
 
-unalias run-help
-autoload -U run-help
 
 # Automatically quote pasted URLs
 autoload -U url-quote-magic

@@ -1,3 +1,0 @@
-#compdef pyir pyrmr
-
-_values 'pip requirements' $WORKON_HOME/requirements/*(.:t)

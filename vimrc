@@ -1,5 +1,8 @@
 call plug#begin('~/.vim/plugged')
 
+" Show a nice startup screen
+Plug 'mhinz/vim-startify'
+
 " Colors
 "Plug 'junegunn/seoul256.vim'
 "Plug 'bruschill/madeofcode'
@@ -289,7 +292,13 @@ noremap <leader><space> :noh<cr>:call clearmatches()<cr>
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 
 " Ack for the last search.
-nnoremap <silent> <leader>? :execute "Ack! '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
+nnoremap <silent> <leader>? :execute "Ag '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
+
+" We make q a special macro register, which we can replay via backspace
+nnoremap <bs> @q
+
+" Also allow backsapce in visual mode to replay macro q
+vnoremap <silent> <bs> :norm @q<cr>
 
 " Directional Keys {{{
 
@@ -468,6 +477,35 @@ vnoremap <silent> <Enter> :EasyAlign<cr>
 " gaip=<enter> to easyalign a vim paragraph
 nmap ga <Plug>(EasyAlign)
 
+" Startify
+let g:startify_list_order = [
+      \ ['   Sessions '],  'sessions',
+      \ ['   MRU '],       'files' ,
+      \ ['   MRU DIR '],   'dir',
+      \ ['   Bookmarks '], 'bookmarks',
+      \ ]
+
+let g:startify_skiplist = [
+      \ 'COMMIT_EDITMSG',
+      \ 'bundle/.*/doc',
+      \ ]
+
+let g:startify_bookmarks              = [ {'v': '~/.vimrc'} ]
+let g:startify_change_to_dir          = 0
+let g:startify_enable_special         = 0
+let g:startify_files_number           = 8
+let g:startify_session_autoload       = 1
+let g:startify_session_delete_buffers = 1
+let g:startify_session_persistence    = 1
+
+function! s:center_header(lines) abort
+  let longest_line   = max(map(copy(a:lines), 'len(v:val)'))
+  let centered_lines = map(copy(a:lines), 'repeat(" ", (&columns / 2) - (longest_line / 2)) . v:val')
+  return centered_lines
+endfunction
+
+let g:startify_session_dir = "~/.vim/sessions"
+let g:startify_custom_header = s:center_header(split("Hello", '\n'))
 
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
@@ -489,7 +527,8 @@ if has('gui_running')
     " Different cursors for different modes.
     set guicursor=n-c:block-Cursor-blinkon0
     set guicursor+=v:block-vCursor-blinkon0
-    "set guicursor+=i-ci:ver20-iCursor
+    highlight Cursor guifg=white guibg=black
+    highlight iCursor guifg=white guibg=green
 
     if has("gui_macvim")
         " Full screen means FULL screen

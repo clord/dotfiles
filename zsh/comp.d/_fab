@@ -1,3 +1,0 @@
-#compdef fab
-
-_values 'tasks' $(fab --shortlist)

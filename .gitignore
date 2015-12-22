@@ -12,4 +12,4 @@ xmonad/xmonad-*
 xmonad/*.hi
 xmonad/lib/*.hi
 xmonad/*.errors
-
+vim/sessions/__LAST__

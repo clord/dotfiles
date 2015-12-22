@@ -1,3 +1,0 @@
-#compdef pyi
-
-[[ -n $PREFIX ]] && _values 'pypi packages' $(pys $PREFIX)

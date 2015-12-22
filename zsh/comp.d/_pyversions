@@ -1,3 +1,0 @@
-#compdef setup_python
-
-_values 'python versions' /Library/Frameworks/Python.framework/Versions/*(:t)
