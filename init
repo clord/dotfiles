@@ -28,8 +28,8 @@ echo 'Non-destructively create the ~/.local namespace, where user installed stuf
 mkdir -p ~/.local{,/`uname -s`}/{{,s}bin,share{,/man},etc,var,lib}
 
 # Install vundle for vim
-rm -rf ~/.vim/bundle/vundle
-mkdir -p ~/.vim/bundle
-git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-echo 'in vim, run :BundleInstall'
+# rm -rf ~/.vim/bundle/vundle
+#mkdir -p ~/.vim/bundle
+#git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+#echo 'in vim, run :BundleInstall'
 
