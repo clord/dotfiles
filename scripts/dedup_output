@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+require 'digest/sha1'
+require 'pathname'
+require 'sqlite3'
+require 'fileutils'
+require 'base64'
+include FileUtils
+
+db = nil
+if File.exist? "#{ENV['HOME']}/tmp/dedup_files.db"
+   db = SQLite3::Database.new("#{ENV['HOME']}/tmp/dedup_files.db")
+else
+   STDERR.puts "no database"
+   exit 1
+end
+
+# Now we can query for exact matches, which will go to stdout
+db.execute("SELECT full_digest FROM files WHERE full_digest IS NOT null GROUP BY full_digest HAVING count(full_digest) > 1 ").each do |row|
+
+  puts(":: " + Base64.encode64(row[0]))
+  db.execute("SELECT path FROM files WHERE full_digest = ?", row[0]).each do |f|
+      puts f[0]
+  end
+  puts ""
+end
+

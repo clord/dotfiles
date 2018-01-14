@@ -29,7 +29,7 @@
 [core]
 	editor = nvim
 	whitespace = trailing-space,space-before-tab,cr-at-eol
-   pager = diff-highlight | diff-so-fancy | less -r
+   pager = less -r
 
 [apply]
 	whitespace = fix

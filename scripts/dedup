@@ -9,13 +9,15 @@ include FileUtils
 db = nil
 if File.exist? "#{ENV['HOME']}/tmp/dedup_files.db"
    # TODO: Prompt to reuse the file
-   rm "#{ENV['HOME']}/tmp/dedup_files.db"
+ #  rm "#{ENV['HOME']}/tmp/dedup_files.db"
+   db = SQLite3::Database.new("#{ENV['HOME']}/tmp/dedup_files.db")
+else
+   db = SQLite3::Database.new("#{ENV['HOME']}/tmp/dedup_files.db")
+   db.execute("create table files(filesize integer not null, init_digest varchar(40) null, full_digest varchar(40), path varchar(4096) not null)")
+   db.execute("create        index filesize_index on files (filesize)")
+   db.execute("create        index init_index on files (init_digest)")
+   db.execute("create unique index path_index on files (path)")
 end
-db = SQLite3::Database.new("#{ENV['HOME']}/tmp/dedup_files.db")
-db.execute("create table files(filesize integer not null, init_digest varchar(40) null, full_digest varchar(40), path varchar(4096) not null)")
-db.execute("create        index filesize_index on files (filesize)")
-db.execute("create        index init_index on files (init_digest)")
-db.execute("create unique index path_index on files (path)")
 
 CLEAR = `tput el`
 
@@ -58,7 +60,7 @@ end
 
 c = 0
 STDERR.puts "Hash initial parts of files with same size..."
-db.execute("SELECT filesize FROM files GROUP BY filesize HAVING count(filesize) > 1").each do |row| 
+db.execute("SELECT filesize FROM files GROUP BY filesize HAVING count(filesize) > 1").each do |row|
    db.execute("SELECT path FROM files where filesize = ?", row[0]).each do |pathrow|
       path = pathrow[0]
       c += 1

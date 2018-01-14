@@ -10,7 +10,8 @@ export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
-. ~/.nix-profile/etc/profile.d/nix.sh
+
+[ -d ~/.nix-profile ] && source ~/.nix-profile/etc/profile.d/nix.sh
 
 prepend_path() {
    [ -d $1/sbin ] && path=($1/sbin $path)
