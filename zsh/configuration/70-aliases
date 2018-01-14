@@ -12,7 +12,7 @@ alias lsnew='ls -t *(.om[1,10])'           # Show newest files
 alias lsold='ls -rt *(.om[1,10])'          # Show oldest files
 alias lsbig='ls -S *(.OL[1,10])'           # Show biggest files
 
-which nvim && alias vim='nvim' # since i always use it anyway
+which nvim > /dev/null && alias vim='nvim' # since i always use it anyway
 
 alias la='ls -A'
 alias lad='la -d *(D/)'                    # Show directories
