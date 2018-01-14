@@ -6,14 +6,18 @@ Plug 'mhinz/vim-startify'
 " Colors
 "Plug 'junegunn/seoul256.vim'
 "Plug 'bruschill/madeofcode'
-Plug 'NLKNguyen/papercolor-theme'
+"Plug 'NLKNguyen/papercolor-theme'
 "Plug 'erezsh/erezvim'
+"Plug 'fcpg/vim-farout'
+Plug 'ajmwagar/vim-deus'
 
 " Align stuff. select, <enter><space>. cycle with <enter>
 Plug 'junegunn/vim-easy-align'
 
 " jump to certain spots with leader-leader-w
 Plug 'Lokaltog/vim-easymotion'
+
+Plug 'hauleth/sad.vim'
 
 " Ruby text objects (car to change a ruby block)
 "Plug 'rhysd/vim-textobj-ruby'
@@ -28,17 +32,40 @@ Plug 'tpope/vim-repeat'
 " cml to comment out line, cmip to comment block
 Plug 'tpope/vim-commentary'
 
+" cmake support for invoking build etc
+Plug 'vhdirk/vim-cmake'
+
 " Really awesome way to quickly spit out boilerplate.
-Plug 'garbas/vim-snipmate'
-Plug 'tomtom/tlib_vim'
-Plug 'MarcWeber/vim-addon-mw-utils'
-" Plus some actual snippets
-Plug 'honza/vim-snippets'
+" Plug 'sirver/ultisnips'
+Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/neosnippet'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'leafgarland/typescript-vim'
+
+" accounting
+Plug 'ledger/vim-ledger'
+
+" Fancy patched font stuff
+" Plug 'ryanoasis/vim-devicons'
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" [count]["x]gr{motion} -> replace motion with register x
+"Plug 'vim-scripts/ReplaceWithRegister'
+
+
+" Syntax checking
+" Plug 'vim-syntastic/syntastic'
+
+" Haskell-specific project features (`cabal install hdevtools`)
+" Plug 'bitc/vim-hdevtools'
 
 " Hard to live without git change markers
-Plug 'airblade/vim-gitgutter'
+"Plug 'airblade/vim-gitgutter'
 
-Plug 'vim-ruby/vim-ruby'
+" Lots of ruby goodness
+"Plug 'vim-ruby/vim-ruby'
 
 " User defined textobjs, typically required by other plugins
 Plug 'kana/vim-textobj-user'
@@ -53,16 +80,28 @@ Plug 'mxw/vim-jsx'
 " Adds :FixWhitespace
 Plug 'bronson/vim-trailing-whitespace'
 
+" fzf.vim is a fuzzy finder (brew install fzf)
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+
+
 " Control-p is a fuzzy finder
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 
 " Move through camelCase words with <leader><motion>
 Plug 'bkad/CamelCaseMotion'
+
+" Rust language support
+Plug 'rust-lang/rust.vim'
 
 " Control-n to select current word and put a virtual cursor. keep hitting.
 "Plug 'terryma/vim-multiple-cursors'
 
 call plug#end()
+
+call camelcasemotion#CreateMotionMappings('<leader>')
+
+let g:deoplete#enable_at_startup = 1
 
 syntax enable
 filetype plugin indent on
@@ -77,10 +116,10 @@ set modelines=0
 set autoindent
 
 " Like seeing '-- INSERT --' at the bottom
-set showmode
+"set showmode
 
 " mostly for explaining things to people
-set showcmd
+"set showcmd
 
 " hide files when opening another
 set hidden
@@ -92,7 +131,6 @@ set visualbell
 set ttyfast
 set lazyredraw
 
-
 " Line and col info on cmdline info bar
 set ruler
 
@@ -103,17 +141,11 @@ set backspace=indent,eol,start
 set relativenumber
 set number " Will show the absolute number!
 
-" Always show statusline
-set laststatus=2
-
 "
 set cpoptions+=J
 
 " Which shell to use
-set shell=/bin/bash
-
-" Don't redraw during macros etc
-set lazyredraw
+set shell=/bin/zsh
 
 " Match parens, and wait for some tenths of seconds
 set showmatch
@@ -151,10 +183,19 @@ set foldlevelstart=99
 
 " ControlP
 "let g:ctrlp_map = '<c-p>'
-let g:ctrlp_working_path_mode = 'ra'
-nmap <leader>p :CtrlP<cr>
-nmap <leader>b :CtrlPBuffer<cr>
-nmap <leader>t :CtrlPTag<cr>
+"let g:ctrlp_working_path_mode = 'ra'
+"nmap <leader>p :CtrlP<cr>
+"nmap <leader>b :CtrlPBuffer<cr>
+"nmap <leader>t :CtrlPTag<cr>
+
+
+nmap <c-p> :GFiles<cr>
+xmap <c-p> :GFiles<cr>
+omap <c-p> :GFiles<cr>
+nmap <leader>p <plug>(fzf-maps-n)
+xmap <leader>p <plug>(fzf-maps-x)
+omap <leader>p <plug>(fzf-maps-o)
+nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
 
 
 " Wildmenu completion {{{
@@ -184,6 +225,8 @@ set backupskip=/tmp/*,/private/tmp/*"
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
 
+
+
 " Tabs, spaces, wrapping {{{
 set tabstop=3
 set shiftwidth=3
@@ -194,12 +237,12 @@ set textwidth=110
 set formatoptions=qrn1
 " }}}
 
-" Unified color scheme (default: dark)
-"colo seoul256
-"colo erezvim
+" Unified color scheme 
+colorscheme deus
 
-set background=light
-colorscheme PaperColor
+if has("gui_vimr")
+set termguicolors
+endif
 
 " Backups, Undo {{{
 set undodir=~/tmp/undo/     " undo files
@@ -218,58 +261,37 @@ set undoreload=10000
 " }}}
 
 
-
 " Status line ------------------------------------------------------------- {{{
 
-"augroup ft_statuslinecolor
-"    au!
-"    au InsertEnter * hi StatusLine ctermfg=196 guifg=#FF3145
-"    au InsertLeave * hi StatusLine ctermfg=130 guifg=#CD5907
-"augroup END
+" Always show statusline
+set laststatus=2
 
-"set statusline=%f    " Path.
-"set statusline+=%m   " Modified flag.
-"set statusline+=%r   " Readonly flag.
-"set statusline+=%w   " Preview window flag.
+set background=dark
+" highlight Normal guibg=black guifg=white
 
-"set statusline+=\    " Space.
+let g:airline_theme = 'molokai'
 
-"set statusline+=%#redbar#                " Highlight the following as a warning.
-"set statusline+=%{SyntasticStatuslineFlag()} " Syntastic errors.
-"set statusline+=%*                           " Reset highlighting.
+let g:airline_powerline_fonts = 1
 
-"set statusline+=%=   " Right align.
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
 
-" File format, encoding and type.  Ex: "(unix/utf-8/python)"
-"set statusline+=(
-"set statusline+=%{&ff}                        " Format (unix/DOS).
-"set statusline+=/
-"set statusline+=%{strlen(&fenc)?&fenc:&enc}   " Encoding (utf-8).
-"set statusline+=/
-"set statusline+=%{&ft}                        " Type (python).
-"set statusline+=)
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
 
-" Line and column position and counts.
-"set statusline+=\ (line\ %l\/%L,\ col\ %03c)
+" Open a new buffer
+map <F1> :enew<CR>
+
+map <F2> :bprevious<CR>
+map <F3> :bnext<CR>
+
+" Close the current buffer and move to the previous one
+map <F4> :bp <BAR> bd #<CR>
+
+
+
 
 " }}}
-" Abbreviations ----------------------------------------------------------- {{{
-function! EatChar(pat)
-    let c = nr2char(getchar(0))
-    return (c =~ a:pat) ? '' : c
-endfunction
-
-function! MakeSpacelessIabbrev(from, to)
-    execute "iabbrev <silent> ".a:from." ".a:to."<C-R>=EatChar('\\s')<CR>"
-endfunction
-
-call MakeSpacelessIabbrev('cl/',  'http://christopher.lord.ac/')
-call MakeSpacelessIabbrev('gh/',  'http://github.com/clord/')
-call MakeSpacelessIabbrev('fsc/', 'http://www.freshslowcooking.com/')
-
-iabbrev cl@ christopher@lord.ac
-iabbrev clp@ christopher@pliosoft.com
-iabbrev clg@ christopherlord@gmail.com
 
 " }}}
 " Searching and movement -------------------------------------------------- {{{
@@ -294,56 +316,37 @@ nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 " Ack for the last search.
 nnoremap <silent> <leader>? :execute "Ag '" . substitute(substitute(substitute(@/, "\\\\<", "\\\\b", ""), "\\\\>", "\\\\b", ""), "\\\\v", "", "") . "'"<CR>
 
-" We make q a special macro register, which we can replay via backspace
-nnoremap <bs> @q
+" ag can be installed in /usr/local/bin
+let $PATH .= ':/usr/local/bin'
+
+" We make q a special macro register, which we can replay via shortcut
+nnoremap <leader><bs> @q
 
 " Also allow backsapce in visual mode to replay macro q
 vnoremap <silent> <bs> :norm @q<cr>
 
+
+
 " Directional Keys {{{
 
 " It's the future
-noremap j gj
-noremap k gk
+"noremap j gj
+"noremap k gk
 
 " Easy buffer navigation
-noremap <C-h>  <C-w>h
-noremap <C-j>  <C-w>j
-noremap <C-k>  <C-w>k
-noremap <C-l>  <C-w>l
 noremap <leader>v <C-w>v
 
 " }}}
 
 
-" Visual Mode */# from Scrooloose {{{
-function! s:VSetSearch()
-  let temp = @@
-  norm! gvy
-  let @/ = '\V' . substitute(escape(@@, '\'), '\n', '\\n', 'g')
-  let @@ = temp
-endfunction
-
-vnoremap * :<C-u>call <SID>VSetSearch()<CR>//<CR><c-o>
-vnoremap # :<C-u>call <SID>VSetSearch()<CR>??<CR><c-o>
-" }}}
 
 " }}}
 " Folding ----------------------------------------------------------------- {{{
 
-" Space to toggle folds.
-nnoremap <Space> za
-vnoremap <Space> za
-
-" Make zO recursively open whatever top level fold we're in, no matter where the
-" cursor happens to be.
-nnoremap zO zCzO
-
-" Use ,z to "focus" the current fold.
-nnoremap <leader>z zMzvzz
 
 
 " }}}
+
 " Various filetype-specific stuff ----------------------------------------- {{{
 
 " C {{{
@@ -354,7 +357,10 @@ augroup ft_c
 augroup END
 
 " }}}
+
 " Javascript {{{
+
+let g:jsx_ext_required = 0
 
 augroup ft_javascript
     au!
@@ -402,6 +408,7 @@ augroup END
 " }}}
 " Ruby {{{
 
+
 augroup ft_ruby
     au!
     au Filetype ruby setlocal foldmethod=marker
@@ -419,34 +426,19 @@ augroup ft_vim
 augroup END
 
 " }}}
-"
+
+
 " }}}
 " Quick editing ----------------------------------------------------------- {{{
 
 nnoremap <leader>ev <C-w>s<C-w>j<C-w>L:e $MYVIMRC<cr>
 nnoremap <leader>es <C-w>s<C-w>j<C-w>L:e ~/.vim/snippets/<cr>
 
-" }}}
-" Shell ------------------------------------------------------------------- {{{
 
-function! s:ExecuteInShell(command) " {{{
-    let command = join(map(split(a:command), 'expand(v:val)'))
-    let winnr = bufwinnr('^' . command . '$')
-    silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
-    setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap nonumber
-    echo 'Execute ' . command . '...'
-    silent! execute 'silent %!'. command
-    silent! redraw
-    silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
-    silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>:AnsiEsc<CR>'
-    silent! execute 'nnoremap <silent> <buffer> q :q<CR>'
-    silent! execute 'AnsiEsc'
-    echo 'Shell command ' . command . ' executed.'
-endfunction " }}}
-command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
-nnoremap <leader>! :Shell
 
 " }}}
+
+
 " Convenience mappings ---------------------------------------------------- {{{
 
 " Move visual block
@@ -456,9 +448,6 @@ vnoremap K :m '<-2<CR>gv=gv
 " Less chording
 nnoremap ; :
 
-" Faster Esc
-inoremap jk <esc>
-
 set completeopt=longest,menuone,preview
 
 " Sudo to write
@@ -466,7 +455,7 @@ set completeopt=longest,menuone,preview
 cmap w!! w !sudo tee > /dev/null %
 
 " Toggle paste
-set pastetoggle=<F8>
+" set pastetoggle=<F8>
 
 " --- type & to search the word in all files in the current dir
 nmap & :Ag <c-r>=expand("<cword>")<cr><cr>
@@ -507,10 +496,38 @@ endfunction
 let g:startify_session_dir = "~/.vim/sessions"
 let g:startify_custom_header = s:center_header(split("Hello", '\n'))
 
+
+let g:cmake_install_prefix = "/usr/local"
+let g:cmake_cxx_compiler = "clang++"
+let g:cmake_c_compiler= "clang"
+
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
 " Environments (GUI/Console) ---------------------------------------------- {{{
 
 if has('gui_running')
-    set guifont=Hack:h10 "" https://github.com/chrissimpkins/Hack
+    "set guifont=Hack:h12 "" https://github.com/chrissimpkins/Hack
+    "set guifont=Iosevka:h15
+    "set guifont=Fira Code:h15
 
     " Remove all the UI cruft
     set go-=T
@@ -562,6 +579,36 @@ if has('gui_running')
 else
     " Console Vim
 endif
+
+
+" Window split settings
+highlight TermCursor ctermfg=red guifg=red
+set splitbelow
+set splitright
+
+" Terminal settings
+tnoremap <Leader><ESC> <C-\><C-n>
+" Window navigation function
+" Make ctrl-h/j/k/l move between windows and auto-insert in terminals
+func! s:mapMoveToWindowInDirection(direction)
+    func! s:maybeInsertMode(direction)
+        stopinsert
+        execute "wincmd" a:direction
+
+        if &buftype == 'terminal'
+            startinsert!
+        endif
+    endfunc
+
+    execute "tnoremap" "<silent>" "<C-" . a:direction . ">"
+                \ "<C-\\><C-n>"
+                \ ":call <SID>maybeInsertMode(\"" . a:direction . "\")<CR>"
+    execute "nnoremap" "<silent>" "<C-" . a:direction . ">"
+                \ ":call <SID>maybeInsertMode(\"" . a:direction . "\")<CR>"
+endfunc
+for dir in ["h", "j", "l", "k"]
+    call s:mapMoveToWindowInDirection(dir)
+endfor
 
 source ~/tmp/user.vim
 

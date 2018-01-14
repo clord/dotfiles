@@ -1,49 +1,68 @@
-
 [user]
 	name = Christopher Lord
-	email = christopherlord@gmail.com
+	email = christopher@pliosoft.com
+	signingkey = 07DAB27421F27573
 
 [color]
-	branch = auto
-	diff = auto
-	interactive = auto
-   pager = true
-	status = auto
-	ui = auto
+   ui = always
+[color "diff"]
+   meta = yellow bold
+   commit = green bold
+   frag = magenta bold
+   old = red bold
+   new = green bold
+   whitespace = red reverse
+[color "diff-highlight"]
+   oldNormal = red bold
+   oldHighlight = "red bold 52"
+   newNormal = "green bold"
+   newHighlight = "green bold 22"
+[color "branch"]
+   current = yellow reverse
+   local = yellow
+   remote = green
+[color "status"]
+   added = yellow
+   changed = green
+   untracked = cyan
 
 [core]
-	editor = vim
+	editor = nvim
 	whitespace = trailing-space,space-before-tab,cr-at-eol
+   pager = diff-highlight | diff-so-fancy | less -r
 
 [apply]
 	whitespace = fix
 
+
+[help]
+   autocorrect = 1
+
+# push easily. http://stackoverflow.com/a/23918418/89484
+[push]
+   default = current
+
+# use separate file for username / github token / etc
+[include]
+  path = ~/.gitconfig.local
+
+
 [alias]
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%Cgreen%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 	unstage = reset HEAD --
 	staged = diff --cached
+	unstaged = diff
 	last = log -1 HEAD
-	graph = log --graph --oneline --decorate
 	s = status -s
-   p = push
-   d = diff -w --minimal --word-diff=color --patience
+   d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
    dt = difftool
-	c = commit
-	co = checkout
-	cm = commit -m
-	ca = commit -a
+	c = commit -am
 	amend = commit --amend
-	caa = commit -a --amend -C HEAD
-	cma = commit -a -m
 	a = add
 	ap = add --patch
 	ai = add --interactive
-	r = reset
 	praise = blame
-	unstaged = diff
 	both = diff HEAD
-	oneline = log --oneline
-	undo = reset --hard HEAD^
 	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
 	add-commit = !git add -A && git commit
 	ctags = !.git/hooks/ctags
@@ -76,3 +95,17 @@
 	numbered = auto
 [init]
 	templatedir = ~/.git_template
+[include]
+	path = ~/.gitconfig.reflow
+[url "git@github.com:"]
+   insteadOf = "gh:"
+   insteadOf = "git://github.com"
+   pushInsteadOf = "github:"
+   pushInsteadOf = "git://github.com/"
+    pushInsteadOf = "https://github.com/"
+[url "git@gist.github.com:"]
+   insteadOf = "gst:"
+   pushInsteadOf = "gist:"
+   pushInsteadOf = "git://gist.github.com/"
+   pushInsteadOf = "https://gist.github.com/"
+

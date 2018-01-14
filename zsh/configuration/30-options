@@ -3,6 +3,7 @@
 setopt auto_cd                  # if command is a path, cd into it
 setopt auto_remove_slash        # self explicit
 setopt chase_links              # resolve symlinks
+setopt share_history            # Shells all share history
 setopt correct                  # try to correct spelling of commands
 setopt extended_glob            # activate complex pattern globbing
 setopt glob_dots                # include dotfiles in globbing

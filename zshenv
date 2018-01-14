@@ -10,6 +10,8 @@ export USER_URL=http://christopher.lord.ac
 export EDITOR="vim"
 export REPLYTO=$USER_EMAIL
 
+. ~/.nix-profile/etc/profile.d/nix.sh
+
 prepend_path() {
    [ -d $1/sbin ] && path=($1/sbin $path)
    [ -d $1/shims ] && path=($1/shims $path)
@@ -32,17 +34,19 @@ prepend_path /usr
 prepend_path /usr/linux
 prepend_path /opt/local
 prepend_path /usr/local
+prepend_path /usr/local/opt/llvm
 prepend_path /opt/gcc-5.1.0  # prepend_path /opt/gcc-4.8.1
 prepend_path $HOME/.cabal
-prepend_path $HOME/Library/Haskell
+prepend_path /usr/local/Cellar/python/2.7.11/Frameworks/Python.framework/Versions/2.7
 prepend_path $HOME/dotfiles
 prepend_path $HOME/.rbenv
 prepend_path $HOME/.local
+prepend_path $HOME/.cargo
 prepend_path $HOME/.local/`uname -s`
 prepend_path $HOME/.local/`uname -s`/gems
 
 if [[ $OSTYPE == darwin* ]]; then
-   path=($path /usr/texbin)
+   path=($path /usr/local/texlive/2015/bin/x86_64-darwin)
 fi
 
 # look in ./.local, too. This lets subprojects override things

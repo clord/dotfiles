@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # The files that we are going to replace
-files="irbrc ghci vim zsh vimrc gitconfig"
+files="irbrc ghci vim zsh sqliterc vimrc gitconfig"
 
 # use the working directory as the place to link into
 wdir=`pwd`
