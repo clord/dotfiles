@@ -51,7 +51,7 @@ if [[ $OSTYPE == darwin* ]]; then
 fi
 
 # look in ./.local, too. This lets subprojects override things
-path=(./bin ./.local/bin ./.local/scripts $path)
+path=(./bin ./.local/bin ./.local/scripts node_modules/.bin $path)
 manpath=(./.local/share/man $manpath)
 
 typeset -U path
