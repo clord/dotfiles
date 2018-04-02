@@ -28,13 +28,11 @@ alias labig='la -S *(D.OL[1,10])'          # Show biggest files
 
 alias ll='ls -l'
 alias llh='ll -d .*'                       # Show hidden files
-alias lld='ll -d *(/)'                     # Show directories
 alias lle='ll -d *(/^F)'                   # Show empty directories
 alias llw='ll -d *(R,W,X.^/)'              # Show world-accessible files
 alias lll='ll -d *(@)'                     # Show symlinks
 alias lls='ll *(s,S,t)'                    # Show setgid/setuid/sticky flag
 alias llx='ll *(*)'                        # Show executables
-alias lldf='ll --group-directories-first'  # Show directories first
 alias llnew='ll -t *(.om[1,10])'           # Show newest files
 alias llold='ll -rt *(.om[1,10])'          # Show oldest files
 alias llbig='ll -S *(.OL[1,10])'           # Show biggest files
