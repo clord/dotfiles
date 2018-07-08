@@ -66,9 +66,13 @@ db.execute("SELECT filesize FROM files GROUP BY filesize HAVING count(filesize) 
       c += 1
       print_clear(path)
       # Files with exactly the same filesize are candidate duplicates. everything else is different
+      begin
       init_digest = Digest::SHA1.new
       init_digest << (File.read(path, 4096) || "")
       db.execute("UPDATE files SET init_digest = ? WHERE path = ?", init_digest.digest, path)
+      rescue Exception => e
+          STDERR.puts "Failed to read #{path}: #{e.message}"
+      end
    end
 end
 print_clear("  done (#{c} files)")
@@ -82,12 +86,16 @@ db.execute("SELECT init_digest FROM files WHERE init_digest is not null GROUP BY
      full_digest = Digest::SHA1.new
      c += 1
      print_clear(file)
-     File.open(file, 'r') do |h|
-        while buffer = h.read(4096)
-           full_digest << buffer
+     begin
+        File.open(file, 'r') do |h|
+            while buffer = h.read(4096)
+            full_digest << buffer
+            end
         end
+        db.execute("UPDATE files SET full_digest = ? WHERE path = ?", full_digest.digest, file)
+     rescue Exception => e
+          STDERR.puts "Failed to read #{file}: #{e.message}"
      end
-     db.execute("UPDATE files SET full_digest = ? WHERE path = ?", full_digest.digest, file)
   end
 end
 print_clear("done (#{c} possible duplicates checked)")

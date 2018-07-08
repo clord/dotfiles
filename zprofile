@@ -12,3 +12,5 @@ if [[ $OSTYPE == darwin* ]]; then
     fi
 fi
 
+
+export PATH="$HOME/.cargo/bin:$PATH"
