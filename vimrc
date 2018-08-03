@@ -11,6 +11,9 @@ Plug 'mhinz/vim-startify'
 "Plug 'fcpg/vim-farout'
 Plug 'ajmwagar/vim-deus'
 
+" Try to automatically delete swap
+Plug 'gioele/vim-autoswap'
+
 " Align stuff. select, <enter><space>. cycle with <enter>
 Plug 'junegunn/vim-easy-align'
 
@@ -56,7 +59,6 @@ Plug 'vim-airline/vim-airline-themes'
 
 " [count]["x]gr{motion} -> replace motion with register x
 "Plug 'vim-scripts/ReplaceWithRegister'
-
 
 " Syntax checking
 " Plug 'vim-syntastic/syntastic'
