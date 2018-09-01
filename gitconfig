@@ -1,22 +1,10 @@
 [user]
-	name = Christopher Lord
-	email = christopher@pliosoft.com
-	signingkey = 07DAB27421F27573
+    name = Christopher Lord
+    email = christopher@pliosoft.com
+    signingkey = 07DAB27421F27573
 
 [color]
    ui = always
-[color "diff"]
-   meta = yellow bold
-   commit = green bold
-   frag = magenta bold
-   old = red bold
-   new = green bold
-   whitespace = red reverse
-[color "diff-highlight"]
-   oldNormal = red bold
-   oldHighlight = "red bold 52"
-   newNormal = "green bold"
-   newHighlight = "green bold 22"
 [color "branch"]
    current = yellow reverse
    local = yellow
@@ -27,12 +15,19 @@
    untracked = cyan
 
 [core]
-	editor = nvim
-	whitespace = trailing-space,space-before-tab,cr-at-eol
-   pager = less -r
+    editor = nvim
+    whitespace = trailing-space,space-before-tab,cr-at-eol
+[pager]
+    status = true
+    show-branch = true
+    diff = /usr/local/bin/diff-so-fancy | less --tabs=1,4 -RFX
+    show = /usr/local/bin/diff-so-fancy | less --tabs=1,4 -RFX
+
+[diff]
+    algorithm = patience
 
 [apply]
-	whitespace = fix
+    whitespace = fix
 
 
 [help]
@@ -48,55 +43,42 @@
 
 
 [alias]
-   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-	unstage = reset HEAD --
-	staged = diff --cached
-	unstaged = diff
-	last = log -1 HEAD
-	s = status -s
-   d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
-   dt = difftool
-	c = commit -am
-	amend = commit --amend
-	a = add
-	ap = add --patch
-	ai = add --interactive
-	praise = blame
-	both = diff HEAD
-	tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	add-commit = !git add -A && git commit
-	ctags = !.git/hooks/ctags
-
-[diff]
-	mnemonicprefix = true
-	tool = vimdiff
-	renamed = copy
-	algorithm = patience
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+    unstage = reset HEAD --
+    staged = diff --cached
+    unstaged = diff
+    last = log -1 HEAD
+    s = status -s
+    d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
+    dt = difftool
+    c = commit -am
+    amend = commit --amend
+    a = add
+    ap = add --patch
+    ai = add --interactive
+    praise = blame
+    both = diff HEAD
+    tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    add-commit = !git add -A && git commit
+    ctags = !.git/hooks/ctags
 
 [advice]
-	statusHints = false
+    statusHints = false
 [branch]
-	autosetupmerge = true
+    autosetupmerge = true
 [push]
-	default = tracking
+    default = tracking
 [merge]
-	stat = true
-	conflictstyle = diff3
-[difftool "Kaleidoscope"]
-	cmd = ksdiff-wrapper git \"$LOCAL\" \"$REMOTE\"
-[difftool]
-	prompt = false
+    stat = true
+    conflictstyle = diff3
 [log]
-	decorate = short
-[pager]
-	status = true
-	show-branch = true
+    decorate = short
 [format]
-	numbered = auto
+    numbered = auto
 [init]
-	templatedir = ~/.git_template
+    templatedir = ~/.git_template
 [include]
-	path = ~/.gitconfig.reflow
+    path = ~/.gitconfig.reflow
 [url "git@github.com:"]
    insteadOf = "gh:"
    insteadOf = "git://github.com"

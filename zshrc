@@ -4,3 +4,5 @@
 for conf (~/.zsh/configuration/*(N.)) source $conf
 for func (~/.zsh/functions/*(N.)) autoload -U ${func:t}
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

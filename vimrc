@@ -46,7 +46,8 @@ Plug 'Shougo/neosnippet-snippets'
 
 " Decent typescript ide features for deoplete
 Plug 'mhartington/nvim-typescript'
-Plug 'tasn/vim-tsx'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
 
 " accounting
 Plug 'ledger/vim-ledger'
@@ -91,6 +92,7 @@ Plug 'bronson/vim-trailing-whitespace'
 " fzf.vim is a fuzzy finder (brew install fzf)
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug '/usr/local/opt/fzf'
 
 
 " Control-p is a fuzzy finder
@@ -206,6 +208,10 @@ omap <leader>p <plug>(fzf-maps-o)
 nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
 
 
+" List
+set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
+set list
+
 " Wildmenu completion {{{
 set wildmenu
 set wildmode=list:longest
@@ -245,7 +251,7 @@ set textwidth=110
 set formatoptions=qrn1
 " }}}
 
-" Unified color scheme 
+" Unified color scheme
 colorscheme deus
 
 if has("gui_vimr")
@@ -404,6 +410,9 @@ augroup ft_lisp
 augroup END
 
 " }}}
+
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.jsx
+
 " Markdown {{{
 
 augroup ft_markdown
