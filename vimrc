@@ -80,7 +80,10 @@ Plug 'kana/vim-textobj-user'
 Plug 'neovimhaskell/haskell-vim'
 
 " Silver Search. :Ag to find things in cwd
-Plug 'rking/ag.vim'
+" Plug 'rking/ag.vim'
+
+" RipGrep (rg) support. :Rg <string|pattern>
+Plug 'jremmen/vim-ripgrep'
 
 " Just some nice things for JS
 Plug 'pangloss/vim-javascript'
@@ -90,9 +93,9 @@ Plug 'mxw/vim-jsx'
 Plug 'bronson/vim-trailing-whitespace'
 
 " fzf.vim is a fuzzy finder (brew install fzf)
+Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug '/usr/local/opt/fzf'
 
 
 " Control-p is a fuzzy finder
@@ -199,17 +202,20 @@ set foldlevelstart=99
 "nmap <leader>t :CtrlPTag<cr>
 
 
-nmap <c-p> :GFiles<cr>
-xmap <c-p> :GFiles<cr>
-omap <c-p> :GFiles<cr>
+nmap <c-p> :Files<cr>
+xmap <c-p> :Files<cr>
+omap <c-p> :Files<cr>
 nmap <leader>p <plug>(fzf-maps-n)
 xmap <leader>p <plug>(fzf-maps-x)
 omap <leader>p <plug>(fzf-maps-o)
 nnoremap <leader>d :call fzf#vim#tags(expand('<cword>'), {'options': '--exact --select-1 --exit-0'})<CR>
 
+" Trigger serach
+noremap <c-f> :Rg<space>
+
 
 " List
-set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
+set listchars=tab:→\ ,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
 set list
 
 " Wildmenu completion {{{
