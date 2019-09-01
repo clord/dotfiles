@@ -9,7 +9,10 @@ Plug 'mhinz/vim-startify'
 "Plug 'NLKNguyen/papercolor-theme'
 "Plug 'erezsh/erezvim'
 "Plug 'fcpg/vim-farout'
-Plug 'ajmwagar/vim-deus'
+"Plug 'ajmwagar/vim-deus'
+Plug 'rakr/vim-one'
+
+Plug 'elixir-editors/vim-elixir'
 
 " Try to automatically delete swap
 Plug 'gioele/vim-autoswap'
@@ -40,14 +43,17 @@ Plug 'vhdirk/vim-cmake'
 
 " Really awesome way to quickly spit out boilerplate.
 " Plug 'sirver/ultisnips'
-Plug 'Shougo/deoplete.nvim'
-Plug 'Shougo/neosnippet'
-Plug 'Shougo/neosnippet-snippets'
+" Plug 'Shougo/deoplete.nvim'
+" Plug 'Shougo/neosnippet'
+" Plug 'Shougo/neosnippet-snippets'
 
-" Decent typescript ide features for deoplete
-Plug 'mhartington/nvim-typescript'
-Plug 'leafgarland/typescript-vim'
+" IDE stuff
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'do': { -> coc#util#install()}}
+
+" Decent typescript stuff
+
 Plug 'peitalin/vim-jsx-typescript'
+Plug 'leafgarland/typescript-vim'
 
 " accounting
 Plug 'ledger/vim-ledger'
@@ -85,6 +91,9 @@ Plug 'neovimhaskell/haskell-vim'
 " RipGrep (rg) support. :Rg <string|pattern>
 Plug 'jremmen/vim-ripgrep'
 
+" Vim-move lets you move selections directly without copy/paste
+Plug 'matze/vim-move'
+
 " Just some nice things for JS
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
@@ -96,7 +105,6 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-
 
 " Control-p is a fuzzy finder
 " Plug 'ctrlpvim/ctrlp.vim'
@@ -114,9 +122,8 @@ call plug#end()
 
 call camelcasemotion#CreateMotionMappings('<leader>')
 
-let g:deoplete#enable_at_startup = 1
+" let g:deoplete#enable_at_startup = 1
 
-syntax enable
 filetype plugin indent on
 
 " Yup.
@@ -147,7 +154,6 @@ set lazyredraw
 " Line and col info on cmdline info bar
 set ruler
 
-"
 set backspace=indent,eol,start
 
 " Line numbers in gutter are relative to current location (great for motions)
@@ -216,7 +222,7 @@ noremap <c-f> :Rg<space>
 
 " List
 set listchars=tab:→\ ,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
-set list
+"set list
 
 " Wildmenu completion {{{
 set wildmenu
@@ -257,9 +263,6 @@ set textwidth=110
 set formatoptions=qrn1
 " }}}
 
-" Unified color scheme
-colorscheme deus
-
 if has("gui_vimr")
 set termguicolors
 endif
@@ -286,12 +289,20 @@ set undoreload=10000
 " Always show statusline
 set laststatus=2
 
+let g:one_allow_italics = 1
 set background=dark
+"set background=light
+if (has("termguicolors"))
+    set termguicolors
+endif
+syntax enable
+
+if has("gui_vimr")
+colorscheme one
 " highlight Normal guibg=black guifg=white
-
-let g:airline_theme = 'molokai'
-
+let g:airline_theme = 'one'
 let g:airline_powerline_fonts = 1
+endif
 
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
@@ -621,6 +632,126 @@ else
     " Console Vim
 endif
 
+" COC config
+"
+" You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" always show signcolumns
+set signcolumn=yes
+
+set cmdheight=2
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" gd - go to definition of word under cursor
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+
+" gi - go to implementation
+nmap <silent> gi <Plug>(coc-implementation)
+
+" gr - find references
+nmap <silent> gr <Plug>(coc-references)
+
+" gh - get hint on whatever's under the cursor
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+nnoremap <silent> <leader>co  :<C-u>CocList outline<cr>
+nnoremap <silent> <leader>cs  :<C-u>CocList -I symbols<cr>
+
+" List errors
+nnoremap <silent> <leader>cl  :<C-u>CocList locationlist<cr>
+
+" list commands available in tsserver (and others)
+nnoremap <silent> <leader>cc  :<C-u>CocList commands<cr>
+
+" restart when tsserver gets wonky
+nnoremap <silent> <leader>cR  :<C-u>CocRestart<CR>
+
+" view all errors
+nnoremap <silent> <leader>cl  :<C-u>CocList locationlist<CR>
+
+" manage extensions
+nnoremap <silent> <leader>cx  :<C-u>CocList extensions<cr>
+
+" rename the current word in the cursor
+nmap <leader>cr  <Plug>(coc-rename)
+nmap <leader>cf  <Plug>(coc-format-selected)
+vmap <leader>cf  <Plug>(coc-format-selected)
+
+" run code actions
+vmap <leader>ca  <Plug>(coc-codeaction-selected)
+nmap <leader>ca  <Plug>(coc-codeaction-selected)
+
+" Use `[c` and `]c` to navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Using CocList
+" Show all diagnostics
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
 " Window split settings
 highlight TermCursor ctermfg=red guifg=red
@@ -629,6 +760,7 @@ set splitright
 
 " Terminal settings
 tnoremap <Leader><ESC> <C-\><C-n>
+
 " Window navigation function
 " Make ctrl-h/j/k/l move between windows and auto-insert in terminals
 func! s:mapMoveToWindowInDirection(direction)
@@ -652,4 +784,5 @@ for dir in ["h", "j", "l", "k"]
 endfor
 
 source ~/tmp/user.vim
+
 

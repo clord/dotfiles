@@ -61,6 +61,7 @@
     tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
     add-commit = !git add -A && git commit
     ctags = !.git/hooks/ctags
+	quick-stats = ! /usr/local/bin/git-quick-stats
 
 [advice]
     statusHints = false
@@ -91,3 +92,5 @@
    pushInsteadOf = "git://gist.github.com/"
    pushInsteadOf = "https://gist.github.com/"
 
+[fetch]
+	prune = true
