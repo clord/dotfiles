@@ -43,6 +43,7 @@ function mcd   ; mkdir -p $argv; and cd $1; end
 
 function a        ; command ag --ignore=.git --ignore=log --ignore=tags --ignore=tmp --ignore=vendor --ignore=spec/vcr $argv ; end
 function g        ; git $argv ; end
+function v        ; nvim $argv ; end
 function ga       ; git add -A $argv; end
 function gc       ; git commit $argv; end
 function gd       ; git diff --patience -w $argv; end
