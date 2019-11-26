@@ -164,7 +164,7 @@ set number " Will show the absolute number!
 set cpoptions+=J
 
 " Which shell to use
-set shell=/bin/zsh
+set shell=/usr/bin/fish
 
 " Match parens, and wait for some tenths of seconds
 set showmatch
@@ -690,8 +690,6 @@ nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
 
 nnoremap <silent> <leader>co  :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>cs  :<C-u>CocList -I symbols<cr>
