@@ -320,6 +320,7 @@ map <F3> :bnext<CR>
 map <F4> :bp <BAR> bd #<CR>
 
 
+let g:move_key_modifier = 'C'
 
 
 " }}}
