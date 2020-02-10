@@ -4,6 +4,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'mhinz/vim-startify'
 
 " Colors
+"Plug 'tomasr/molokai'
 "Plug 'junegunn/seoul256.vim'
 "Plug 'bruschill/madeofcode'
 "Plug 'NLKNguyen/papercolor-theme'
@@ -31,8 +32,23 @@ Plug 'hauleth/sad.vim'
 " Git wrapper (git-from-vim)
 Plug 'tpope/vim-fugitive'
 
-" surround: s motion: cs
-Plug 'tpope/vim-surround'
+" > sa{motion}{addition} to add surround. e.g., saiw( changes foo to (foo)
+" > sd{deletion} to remove surround, e.g., sd( changes (foo) to foo
+" > sr{deletion}{addition} to replace surround, e.g., sr(" makes (foo) to "foo"
+" You can count multiple surrounds, e.g., 4saiw({"+ makes foo +"{(foo)}"+
+" You can repeat with .
+" There are special magics:
+"  - fF: function: arg -> func(arg): saiwf -> foo to func(foo), sdf func(foo) -> foo
+"  - iI: instant: text -> {text}
+"  - tT: html tag: text -> <tag>text</tag>
+"        supports selectors for more expansion!
+"        saiwt div.foo#bar ->  <div class="foo" id="bar">foo</div>
+"
+" Also provides new text objects!
+" > is( is the inside of a pair of braces
+" > iss is bound below to do automatic matching
+Plug 'machakann/vim-sandwich'
+
 Plug 'tpope/vim-repeat'
 
 " cml to comment out line, cmip to comment block
@@ -254,9 +270,9 @@ au VimResized * exe "normal! \<c-w>="
 
 
 " Tabs, spaces, wrapping {{{
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set expandtab
 set nowrap
 set textwidth=110
@@ -297,8 +313,8 @@ if (has("termguicolors"))
 endif
 syntax enable
 
-if has("gui_vimr")
 colorscheme one
+if has("gui_vimr")
 " highlight Normal guibg=black guifg=white
 let g:airline_theme = 'one'
 let g:airline_powerline_fonts = 1
@@ -375,6 +391,13 @@ let g:haskell_indent_do = 3
 let g:haskell_indent_in = 1
 let g:haskell_indent_guard = 2
 let g:haskell_indent_case_alternative = 1
+
+" vim-sandwich
+" {}ass, {}iss, to grab outside/inside as a text object. e.g., dass to delete (foo)
+xmap iss <Plug>(textobj-sandwich-auto-i)
+xmap ass <Plug>(textobj-sandwich-auto-a)
+omap iss <Plug>(textobj-sandwich-auto-i)
+omap ass <Plug>(textobj-sandwich-auto-a)
 
 
 " Directional Keys {{{
@@ -720,8 +743,8 @@ vmap <leader>ca  <Plug>(coc-codeaction-selected)
 nmap <leader>ca  <Plug>(coc-codeaction-selected)
 
 " Use `[c` and `]c` to navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)
+nmap <silent> <leader>] <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)

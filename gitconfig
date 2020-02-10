@@ -62,6 +62,7 @@
     add-commit = !git add -A && git commit
     ctags = !.git/hooks/ctags
 	quick-stats = ! /usr/local/bin/git-quick-stats
+	exec = "!exec "
 
 [advice]
     statusHints = false

@@ -1,5 +1,6 @@
 set fish_greeting
-set -x EDITOR nvim
+
+set -x EDITOR vimr
 set -x LC_ALL en_US.UTF-8
 set -x LANG en_US.UTF-8
 
@@ -12,6 +13,8 @@ set -x GEM_HOME $HOME/.local/(uname -s)/gems
 set -x RUBYLIB $RUBYLIB:$HOME/dotfiles/scripts:$HOME/.local/scripts/ruby
 set -x NODE_PATH $NODE_PATH:/usr/local/lib/node_modules
 
+set -x SPACEFISH_NODE_SHOW false
+
 ulimit -c 0
 
 function prepend_path --argument-names r
@@ -23,46 +26,52 @@ function prepend_path --argument-names r
    end
 end
 
+set -x PLAN9 /usr/local/plan9
+
 prepend_path /
 prepend_path /usr
+# prepend_path $HOME/.nix-profile
+# prepend_path $PLAN9
 prepend_path /opt
 prepend_path /usr/local
 prepend_path /opt/local
 prepend_path $HOME/.cabal
 prepend_path $HOME/.cargo
+prepend_path ~/.local/(uname -s)
+prepend_path ~/.local/(uname -s)/gems
+
+set PATH node_modules/.bin $PATH
 
 function ..    ; cd .. ; end
 function ...   ; cd ../.. ; end
 function ....  ; cd ../../.. ; end
 function ..... ; cd ../../../.. ; end
-function l     ; tree --dirsfirst -aFCNL 1 $argv ; end
-function ll    ; tree --dirsfirst -ChFupDaLg 1 $argv ; end
+
+# How to represent as abbr?
 function mcd   ; mkdir -p $argv; and cd $1; end
+# function cr    ; cd `git rev-parse --show-toplevel`; end
 
+abbr -a g git
+abbr -a vim vimr
+abbr -a v vimr
 
+abbr -a c clear
+abbr -a ga git add -A
+abbr -a gs git switch
+abbr -a s git status
+abbr -a gc git commit
+abbr -a gp git push
+abbr -a gb git branch
+abbr -a gd git diff --patience -w
+abbr -a l tree --dirsfirst -aFCNL 1
+abbr -a ll tree --dirsfirst -ChFupDaLg 1
 
-function a        ; command ag --ignore=.git --ignore=log --ignore=tags --ignore=tmp --ignore=vendor --ignore=spec/vcr $argv ; end
-function g        ; git $argv ; end
-function v        ; nvim $argv ; end
-function ga       ; git add -A $argv; end
-function gc       ; git commit $argv; end
-function gd       ; git diff --patience -w $argv; end
-function gs       ; git status -s $argv; end
-
-
-# Completions
-function make_completion --argument-names alias command
-    echo "
-    function __alias_completion_$alias
-        set -l cmd (commandline -o)
-        set -e cmd[1]
-        complete -C\"$command \$cmd\"
-    end
-    " | .
-    complete -c $alias -a "(__alias_completion_$alias)"
+function t
+    cd (mktemp -d /tmp/$1.XXXX)
 end
 
-make_completion g 'git'
-make_completion ga 'git-add'
-make_completion gd 'git-diff'
-make_completion gs 'git-status'
+
+# Enable vi mode
+fish_vi_key_bindings
+source ~/.asdf/asdf.fish
+set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
