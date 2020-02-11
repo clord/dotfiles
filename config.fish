@@ -1,6 +1,6 @@
 set fish_greeting
 
-set -x EDITOR vimr
+set -x EDITOR vim
 set -x LC_ALL en_US.UTF-8
 set -x LANG en_US.UTF-8
 
@@ -52,8 +52,11 @@ function mcd   ; mkdir -p $argv; and cd $1; end
 # function cr    ; cd `git rev-parse --show-toplevel`; end
 
 abbr -a g git
-abbr -a vim vimr
-abbr -a v vimr
+
+if test -q vimr
+  abbr -a vim vimr
+  abbr -a v vimr
+end
 
 abbr -a c clear
 abbr -a ga git add -A
