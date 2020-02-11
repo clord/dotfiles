@@ -51,14 +51,20 @@ function ..... ; cd ../../../.. ; end
 function mcd   ; mkdir -p $argv; and cd $1; end
 # function cr    ; cd `git rev-parse --show-toplevel`; end
 
-abbr -a g git
 
 if command -s vimr
   abbr -a vim vimr
   abbr -a v vimr
+
+else
+  if command -s nvim
+    abbr -a vim nvim
+    abbr -a v nvim
+  end
 end
 
 abbr -a c clear
+abbr -a g git
 abbr -a ga git add -A
 abbr -a gs git switch
 abbr -a s git status
