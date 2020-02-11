@@ -53,7 +53,7 @@ function mcd   ; mkdir -p $argv; and cd $1; end
 
 abbr -a g git
 
-if test -q vimr
+if command -s vimr
   abbr -a vim vimr
   abbr -a v vimr
 end
