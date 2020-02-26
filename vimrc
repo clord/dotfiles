@@ -180,7 +180,8 @@ set number " Will show the absolute number!
 set cpoptions+=J
 
 " Which shell to use
-set shell=/usr/bin/fish
+set shell=/usr/local/bin/fish
+" set shell=/usr/bin/fish
 
 " Match parens, and wait for some tenths of seconds
 set showmatch

@@ -61,6 +61,7 @@ abbr -a gs git switch
 abbr -a s git status
 abbr -a gc git commit
 abbr -a gp git push
+abbr -a gu git pull
 abbr -a gb git branch
 abbr -a gd git diff --patience -w
 abbr -a l tree --dirsfirst -aFCNL 1
