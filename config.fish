@@ -52,12 +52,12 @@ function mcd   ; mkdir -p $argv; and cd $1; end
 # function cr    ; cd `git rev-parse --show-toplevel`; end
 
 
-if command -s vimr
+if command -s vimr > /dev/null
   abbr -a vim vimr
   abbr -a v vimr
 
 else
-  if command -s nvim
+  if command -s nvim > /dev/null
     abbr -a vim nvim
     abbr -a v nvim
   end
@@ -84,3 +84,4 @@ end
 fish_vi_key_bindings
 source ~/.asdf/asdf.fish
 set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
+
