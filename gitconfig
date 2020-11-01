@@ -17,11 +17,9 @@
 [core]
     editor = nvim
     whitespace = trailing-space,space-before-tab,cr-at-eol
-[pager]
-    status = true
-    show-branch = true
-    diff = /usr/local/bin/diff-so-fancy | less --tabs=1,4 -RFX
-    show = /usr/local/bin/diff-so-fancy | less --tabs=1,4 -RFX
+    pager = delta --plus-color="#012800" --minus-color="#340001"
+[interactive]
+    diffFilter = delta --color-only
 
 [diff]
     algorithm = patience
@@ -97,3 +95,6 @@
 	prune = true
 [rerere]
 	enabled = true
+	autoupdate = true
+[gpg]
+	program = gpg

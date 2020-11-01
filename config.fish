@@ -15,6 +15,10 @@ set -x NODE_PATH $NODE_PATH:/usr/local/lib/node_modules
 
 set -x SPACEFISH_NODE_SHOW false
 
+# Setting fd as the default source for fzf
+set -x FZF_DEFAULT_COMMAND fd --type f --hidden  --follow --exclude .git --exclude node_modules
+set -x FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
+
 ulimit -c 0
 
 function prepend_path --argument-names r
@@ -32,6 +36,12 @@ prepend_path /
 prepend_path /usr
 # prepend_path $HOME/.nix-profile
 # prepend_path $PLAN9
+
+## LLVM
+prepend_path /usr/local/opt/llvm
+set -gx LDFLAGS "-L/usr/local/opt/llvm/lib"
+set -gx CPPFLAGS "-I/usr/local/opt/llvm/include"
+
 prepend_path /opt
 prepend_path /usr/local
 prepend_path /opt/local
@@ -39,6 +49,8 @@ prepend_path $HOME/.cabal
 prepend_path $HOME/.cargo
 prepend_path ~/.local/(uname -s)
 prepend_path ~/.local/(uname -s)/gems
+
+prepend_path /usr/local/opt/gpg
 
 set PATH node_modules/.bin $PATH
 
@@ -73,8 +85,10 @@ abbr -a gp git push
 abbr -a gu git pull
 abbr -a gb git branch
 abbr -a gd git diff --patience -w
-abbr -a l tree --dirsfirst -aFCNL 1
-abbr -a ll tree --dirsfirst -ChFupDaLg 1
+abbr -a l exa
+abbr -a ls exa
+abbr -a ll exa -l
+abbr -a lll exa -bghHliS
 
 function t
     cd (mktemp -d /tmp/$1.XXXX)
@@ -86,3 +100,6 @@ fish_vi_key_bindings
 source ~/.asdf/asdf.fish
 set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/clord/google-cloud-sdk/path.fish.inc' ]; . '/Users/clord/google-cloud-sdk/path.fish.inc'; end
