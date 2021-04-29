@@ -102,7 +102,7 @@ source ~/.local/local_env.fish
 
 # Enable vi mode
 fish_vi_key_bindings
-source ~/.asdf/asdf.fish
+# :source ~/.asdf/asdf.fish
 set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
 
 if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'

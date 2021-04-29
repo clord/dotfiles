@@ -1,1 +1,1 @@
-/Users/clord/.vimrc
+/home/clord/.vimrc
