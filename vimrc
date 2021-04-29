@@ -29,6 +29,7 @@ Plug 'mogelbrod/vim-jsonpath'
 
 " Decent typescript stuff
 Plug 'leafgarland/typescript-vim'
+Plug 'pangloss/vim-javascript'
 Plug 'peitalin/vim-jsx-typescript'
 
 " Git wrapper (git-from-vim)
@@ -64,6 +65,12 @@ Plug 'vhdirk/vim-cmake'
 
 " IDE stuff
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Snippet engine is :CocInstall coc-snippets
+
+" Snippets are separated from the engine
+Plug 'honza/vim-snippets'
+
 
 " - crs (coerce to snake_case)
 " - MixedCase (crm)
@@ -111,6 +118,7 @@ Plug 'bkad/CamelCaseMotion'
 
 " Rust language support
 Plug 'rust-lang/rust.vim'
+
 
 " Control-n to select current word and put a virtual cursor. keep hitting.
 "Plug 'terryma/vim-multiple-cursors'
@@ -308,7 +316,7 @@ let g:move_key_modifier = 'C'
 "
 " Usage:
 "
-" :Bonly / :BOnly / :Bufonly / :BufOnly [buffer] 
+" :Bonly / :BOnly / :Bufonly / :BufOnly [buffer]
 "
 " Without any arguments the current buffer is kept.  With an argument the
 " buffer name/number supplied is kept.
@@ -513,7 +521,21 @@ hi ReduxHooksKeywords ctermfg=204 guifg=#C176A7
 hi WebBrowser ctermfg=204 guifg=#56B6C2
 hi ReactLifeCycleMethods ctermfg=204 guifg=#D19A66
 
-autocmd BufNewFile,BufRead *.ts,*.tsx,*.js,*.jsx set filetype=typescript.tsx
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescriptreact
+
+let g:coc_global_extensions = [
+  \ 'coc-tsserver'
+  \ ]
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
+
 
 let g:typescript_indent_disable = 1
 autocmd FileType typescript :set makeprg=tsc
@@ -556,7 +578,7 @@ augroup END
 
 " Quick editing ----------------------------------------------------------- {{{
 nnoremap <leader>ev <C-w>s<C-w>j<C-w>L:e $MYVIMRC<cr>
-nnoremap <leader>es <C-w>s<C-w>j<C-w>L:e ~/.vim/snippets/<cr>
+nnoremap <leader>es :<C-u>CocCommand snippets.editSnippets<cr>
 " }}}
 
 
@@ -570,6 +592,7 @@ vnoremap K :m '<-2<CR>gv=gv
 nnoremap ; :
 
 set completeopt=longest,menuone,preview
+
 
 " Sudo to write
 " cmap w!! w !sudo tee % >/dev/null
@@ -608,21 +631,25 @@ let g:cmake_install_prefix = "/usr/local"
 let g:cmake_cxx_compiler = "clang++"
 let g:cmake_c_compiler= "clang"
 
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+" Snippet trigger configuration
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-o> for select text for visual placeholder of snippet.
+vmap <C-o> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
 
 " Autoread changed files -------------------------------------------------- {{{
 
@@ -877,7 +904,7 @@ hi ReduxHooksKeywords ctermfg=204 guifg=#C176A7
 hi WebBrowser ctermfg=204 guifg=#56B6C2
 hi ReactLifeCycleMethods ctermfg=204 guifg=#D19A66
 
-autocmd BufNewFile,BufRead *.ts,*.tsx,*.js,*.jsx set filetype=typescript.tsx
+autocmd BufNewFile,BufRead *.ts,*.tsx,*.js,*.jsx set filetype=typescriptreact
 
 let g:typescript_indent_disable = 1
 autocmd FileType typescript :set makeprg=tsc
@@ -886,18 +913,18 @@ autocmd FileType typescript :set makeprg=tsc
 
 " Coc {{{
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 inoremap <silent><expr> <c-space> coc#refresh()
 
@@ -996,7 +1023,7 @@ func! s:mapMoveToWindowInDirection(direction)
             startinsert!
         endif
     endfunc
-    
+
     execute "tnoremap" "<silent>" "<C-" . a:direction . ">"
                 \ "<C-\\><C-n>"
                 \ ":call <SID>maybeInsertMode(\"" . a:direction . "\")<CR>"
@@ -1056,7 +1083,7 @@ augroup END
 
 
 
-command! -bang -nargs=* Rg
+command! -bang -nargs=* Rg 
   \ call fzf#vim#grep(
   \   'rg --column --line-number --hidden --ignore-case  -g "!{node_modules,.git}"  --no-heading --color=always '.shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')

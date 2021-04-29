@@ -68,3 +68,4 @@ export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 # Cap some silly things I don't need
 ulimit -c 0
 
+if [ -e /Users/clord/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/clord/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

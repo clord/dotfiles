@@ -2,6 +2,7 @@
   "prettier.requireConfig": true,
   "tslint.autoFixOnSave": false,
   "coc.preferences.colorSupport": true,
+  "prettier.disableSuccessMessage": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
     "markdown",
