@@ -97,24 +97,35 @@ function t
     cd (mktemp -d /tmp/$1.XXXX)
 end
 
+function wip
+    if git diff --cached --quiet
+      git add .
+    end
+    git commit --no-verify -m "wip $argv"
+end
+
+function move-last-download
+    mv ~/Downloads/(ls -t -A ~/Downloads/ | head -1) .
+end
+
 source ~/.local/local_env.fish
 
 
+# Notificaiton timeout (for `fisher install franciscolourenco/done`)
+set -U __done_min_cmd_duration 15000
+
 # Enable vi mode
 fish_vi_key_bindings
-# :source ~/.asdf/asdf.fish
-set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
 
 if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
   bass source '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
 end
 
-
-
-eval (direnv hook fish)
-
-# The next line updates PATH for the Google Cloud SDK.
-# if [ -f '/Users/clord/google-cloud-sdk/path.fish.inc' ]; . '/Users/clord/google-cloud-sdk/path.fish.inc'; end
+# eval (direnv hook fish)
 
 status --is-interactive; and source (rbenv init -|psub)
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/clord/google-cloud-sdk/path.fish.inc' ]; . '/Users/clord/google-cloud-sdk/path.fish.inc'; end
+
 
