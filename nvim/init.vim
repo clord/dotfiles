@@ -6,7 +6,6 @@ Plug 'ayu-theme/ayu-vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'github/copilot.vim'
 
-
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
@@ -89,7 +88,7 @@ function! SyntaxItem()
 endfunction
 
 
-source plugin-settings.vim
+source ~/.config/nvim/plugin-settings.vim
 lua require'plugin-settings'
 lua require'init'
 

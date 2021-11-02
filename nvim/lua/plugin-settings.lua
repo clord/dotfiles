@@ -1,5 +1,10 @@
 -- vim:foldmethod=marker
 
+-- hop {{{
+require'hop'.setup()
+vim.api.nvim_set_keymap('n', 'f', "<cmd>:HopWord<cr>", {})
+--- }}}
+
 -- nvim-cmp {{{
 local cmp = require("cmp")
 

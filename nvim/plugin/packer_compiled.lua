@@ -89,6 +89,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/clord/.local/share/nvim/site/pack/packer/start/gitsigns.nvim"
   },
+  ["hop.nvim"] = {
+    loaded = true,
+    path = "/Users/clord/.local/share/nvim/site/pack/packer/start/hop.nvim"
+  },
   ["lazygit.nvim"] = {
     loaded = true,
     path = "/Users/clord/.local/share/nvim/site/pack/packer/start/lazygit.nvim"

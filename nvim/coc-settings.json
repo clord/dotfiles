@@ -1,6 +1,7 @@
 {
   "prettier.requireConfig": true,
   "tslint.autoFixOnSave": false,
+  "eslint.autoFixOnSave": true,
   "coc.preferences.colorSupport": true,
   "prettier.disableSuccessMessage": true,
   "coc.preferences.formatOnSaveFiletypes": [
