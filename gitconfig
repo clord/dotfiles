@@ -18,8 +18,12 @@
     editor = nvim
     whitespace = trailing-space,space-before-tab,cr-at-eol
     pager = delta --plus-color="#012800" --minus-color="#340001"
+
 [interactive]
     diffFilter = delta --color-only
+
+[pull]
+    twohead = ort
 
 [diff]
     algorithm = patience
