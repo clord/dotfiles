@@ -66,11 +66,9 @@ function ..... ; cd ../../../.. ; end
 function mcd   ; mkdir -p $argv; and cd $1; end
 # function cr    ; cd `git rev-parse --show-toplevel`; end
 
-
-if command -s vimr > /dev/null
-  abbr -a vim vimr
-  abbr -a v vimr
-
+if command -s neovide > /dev/null; and not test -n "$SSH_CLIENT" 
+  abbr -a vim neovide
+  abbr -a v neovide
 else
   if command -s nvim > /dev/null
     abbr -a vim nvim
@@ -109,7 +107,6 @@ function move-last-download
 end
 
 source ~/.local/local_env.fish
-
 
 # Notificaiton timeout (for `fisher install franciscolourenco/done`)
 set -U __done_min_cmd_duration 15000
