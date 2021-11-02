@@ -119,6 +119,10 @@ Plug 'bkad/CamelCaseMotion'
 " Rust language support
 Plug 'rust-lang/rust.vim'
 
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
+
+Plug 'nvim-telescope/telescope.nvim'
 
 " Control-n to select current word and put a virtual cursor. keep hitting.
 "Plug 'terryma/vim-multiple-cursors'
@@ -246,6 +250,8 @@ set backupskip=/tmp/*,/private/tmp/*"
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
 
+" guifont
+set guifont="Mona Lisa:h16"
 
 " Tabs, spaces, wrapping {{{
 set tabstop=2
@@ -741,7 +747,7 @@ set laststatus=2
 
 if has("gui_vimr")
 " highlight Normal guibg=black guifg=white
-"let g:airline_theme = 'one'
+let g:airline_theme = 'base16_gigavolt'
 let g:airline_powerline_fonts = 1
 endif
 
