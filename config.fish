@@ -30,6 +30,7 @@ set -x PLAN9 /usr/local/plan9
 
 prepend_path /
 prepend_path /usr
+prepend_path /opt/homebrew
 
 ## LLVM
 # prepend_path /usr/local/opt/llvm
@@ -50,11 +51,13 @@ prepend_path /opt/local
 prepend_path $HOME/.cabal
 prepend_path $HOME/.cargo
 prepend_path $GOPATH
+prepend_path /Applications/Xcode.app/Contents/Developer/usr
 # prepend_path ~/.local/(uname -s)
 # prepend_path ~/.local/(uname -s)/gems
 
 prepend_path /usr/local/opt/gpg
 
+set PATH ~/node_modules/.bin $PATH
 set PATH node_modules/.bin $PATH
 
 function ..    ; cd .. ; end
@@ -114,8 +117,12 @@ set -U __done_min_cmd_duration 15000
 # Enable vi mode
 fish_vi_key_bindings
 
-if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
-  bass source '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
+if test -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+  bass source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+else
+  if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
+    bass source '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
+  end
 end
 
 # eval (direnv hook fish)
