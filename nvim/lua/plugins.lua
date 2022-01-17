@@ -25,7 +25,7 @@ require "packer".startup(
     -- Align stuff. select, <enter><space>. cycle with <enter>
     use 'junegunn/vim-easy-align'
 
-    -- jump to certain spots 
+    -- jump to certain spots
     use 'phaazon/hop.nvim'
 
     use 'jparise/vim-graphql'

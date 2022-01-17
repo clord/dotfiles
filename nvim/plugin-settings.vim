@@ -21,14 +21,11 @@ augroup Packer
 augroup END
 " }}}
 
-
-" {{{
-" }}}
-
 " Telescope {{{
 nnoremap <leader>fp <cmd>Telescope<cr>
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <c-p> <cmd>Telescope find_files<cr>
+nnoremap <c-f> <cmd>Telescope live_grep<cr>
 nnoremap <leader>fd <cmd>Telescope file_browser<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
@@ -46,7 +43,6 @@ let g:workbench_storage_path = stdpath('data') . '/workbench/'
 " delimitMate {{{
 let delimitMate_expand_cr=1
 " }}}
-
 
 " COC {{{
 
@@ -108,7 +104,7 @@ vmap <leader>cf  <Plug>(coc-format-selected)
 
 " run code actions
 vmap <leader>ca  <Plug>(coc-codeaction-selected)
-nmap <leader>ca  <Plug>(coc-codeaction-selected)
+nmap <leader>ca  v<Plug>(coc-codeaction-selected)
 
 " Use `[c` and `]c` to navigate diagnostics
 nmap <silent> <leader>[ <Plug>(coc-diagnostic-prev)

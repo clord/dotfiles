@@ -1,104 +1,112 @@
 [user]
-	name = Christopher Lord
-	email = christopher@pliosoft.com
-    signingkey = 07DAB27421F27573
+name = Christopher Lord
+email = christopher@pliosoft.com
+signingkey = 07DAB27421F27573
 
 [color]
-   ui = always
+ui = always
+
 [color "branch"]
-   current = yellow reverse
-   local = yellow
-   remote = green
+current = yellow reverse
+local = yellow
+remote = green
+
 [color "status"]
-   added = yellow
-   changed = green
-   untracked = cyan
+added = yellow
+changed = green
+untracked = cyan
 
 [core]
-    editor = nvim
-    whitespace = trailing-space,space-before-tab,cr-at-eol
-    pager = delta --plus-color="#012800" --minus-color="#340001"
+editor = nvim
+whitespace = trailing-space,space-before-tab,cr-at-eol
+pager = delta --plus-color="#012800" --minus-color="#340001"
 
 [interactive]
-    diffFilter = delta --color-only
+diffFilter = delta --color-only
 
 [pull]
-    twohead = ort
+twohead = ort
 
 [diff]
-    algorithm = patience
+algorithm = patience
 
 [apply]
-    whitespace = fix
+whitespace = fix
 
 
 [help]
-   autocorrect = 1
+autocorrect = 1
 
 # push easily. http://stackoverflow.com/a/23918418/89484
 [push]
-   default = current
+default = current
 
 # use separate file for username / github token / etc
 [include]
-  path = ~/.gitconfig.local
+path = ~/.gitconfig.local
 
 
 [alias]
-    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-    unstage = reset HEAD --
-    staged = diff --cached
-    unstaged = diff
-    last = log -1 HEAD
-    s = status -s
-    d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
-    dt = difftool
-    c = commit -am
-    amend = commit --amend
-    a = add
-    ap = add --patch
-    ai = add --interactive
-    praise = blame
-    both = diff HEAD
-    tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
-    add-commit = !git add -A && git commit
-    ctags = !.git/hooks/ctags
-	quick-stats = ! /usr/local/bin/git-quick-stats
-	exec = "!exec "
+lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+unstage = reset HEAD --
+staged = diff --cached
+unstaged = diff
+last = log -1 HEAD
+s = status -s
+d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
+dt = difftool
+c = commit -am
+amend = commit --amend
+a = add
+ap = add --patch
+ai = add --interactive
+praise = blame
+both = diff HEAD
+tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
 
 [advice]
-    statusHints = false
+statusHints = false
+
 [branch]
-    autosetupmerge = true
+autosetupmerge = true
+
 [push]
-    default = tracking
+default = tracking
+
 [merge]
-    stat = true
-    conflictstyle = diff3
+stat = true
+conflictstyle = diff3
+
 [log]
-    decorate = short
+decorate = short
+
 [format]
-    numbered = auto
-[init]
-    templatedir = ~/.git_template
+numbered = auto
+
 [include]
-    path = ~/.gitconfig.reflow
+path = ~/.gitconfig.reflow
+
 [url "git@github.com:"]
-   insteadOf = "gh:"
-   insteadOf = "git://github.com"
-   pushInsteadOf = "github:"
-   pushInsteadOf = "git://github.com/"
-    pushInsteadOf = "https://github.com/"
+insteadOf = "gh:"
+insteadOf = "git://github.com"
+pushInsteadOf = "github:"
+pushInsteadOf = "git://github.com/"
+pushInsteadOf = "https://github.com/"
+
 [url "git@gist.github.com:"]
-   insteadOf = "gst:"
-   pushInsteadOf = "gist:"
-   pushInsteadOf = "git://gist.github.com/"
-   pushInsteadOf = "https://gist.github.com/"
+insteadOf = "gst:"
+pushInsteadOf = "gist:"
+pushInsteadOf = "git://gist.github.com/"
+pushInsteadOf = "https://gist.github.com/"
 
 [fetch]
-	prune = true
+prune = true
+
 [rerere]
-	enabled = true
-	autoupdate = true
+enabled = true
+autoupdate = true
+
 [gpg]
-	program = gpg
+program = gpg
+[commit]
+	template = /Users/clord/.gitmessage

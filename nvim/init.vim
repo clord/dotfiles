@@ -24,7 +24,7 @@ colorscheme ayu
 syntax enable
 
 " Font
-set guifont=MonoLisa\ Nerd\ Font:h14
+set guifont=MonoLisa\ Nerd\ Font:h15
 
 set tabstop=2
 set shiftwidth=0 " 0 => use same value as tabstop
@@ -88,7 +88,9 @@ function! SyntaxItem()
 endfunction
 
 
+source ~/.config/nvim/neovide.vim
 source ~/.config/nvim/plugin-settings.vim
 lua require'plugin-settings'
 lua require'init'
+
 
