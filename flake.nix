@@ -17,6 +17,7 @@
             homeDirectory = "/home/clord";
             username = "clord";
             extraModules = [ sops-nix.homeManagerModules.sops ];
+            extraSpecialArgs = { inherit nixpkgs; };
           };
         };
 
