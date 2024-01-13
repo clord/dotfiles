@@ -8,9 +8,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
   };
-  outputs = { self, home-manager, restedpi, nixpkgs
-    , nixos-hardware, sops-nix  }: {
-
+  outputs = { self, home-manager, restedpi, nixpkgs, nixos-hardware, sops-nix  }: {
 	nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
 	  system = "x86_64-linux";
  	  modules = [
