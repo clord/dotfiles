@@ -6,7 +6,7 @@
     useDHCP = true;
   };
 
-  hardware.enableRedistributableFirmware = lib.mkDefault true;
+  hardware.enableRedistributableFirmware = true;
   boot = { 
     loader.grub.enable = false;
     loader.systemd-boot.enable = true;
@@ -41,7 +41,7 @@
     };
   };
 
-  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+  nixpkgs.hostPlatform = "aarch64-linux";
   systemd.services.restedpi = {
     enable = true;
     environment = { RUST_BACKTRACE = "1"; };
