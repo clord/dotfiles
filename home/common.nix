@@ -1,5 +1,5 @@
 { config, pkgs, ... }: {
-  imports = [ ./fish.nix ];
+  imports = [ ./fish.nix  ./user.nix ./locale.nix ./git.nix ];
   programs.bat.enable = true;
   programs.info.enable = true;
   programs.ssh = import ./ssh.nix;
@@ -11,7 +11,6 @@
 
   home.packages = with pkgs; [
     neovim
-    neovide
     basex
     hledger
     openssh
