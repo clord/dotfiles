@@ -5,24 +5,17 @@
     unstable.url = "nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     sops-nix.url = "github:Mic92/sops-nix";
+    systems.url = "github:nix-systems/default";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
   };
   outputs = inputs@{ self, flake-parts, home-manager, restedpi, nixpkgs
-    , nixos-hardware, sops-nix, unstable }:
+    , nixos-hardware, sops-nix, systems, unstable }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ restedpi.flakeModule ];
-
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-
-        package = {
-          # TODO: Build a chickenpi image?
-          # chickenpiImage =
-          #  self.nixosConfigurations.chickenpi.config.system.build.sdImage;
-        };
-
+      systems = (import systems);
+      flake = { 
         homeManagerConfigurations = {
           "clord@linux" = home-manager.lib.homeManagerConfiguration {
             configuration = ./home/common.nix;

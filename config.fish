@@ -12,18 +12,18 @@ set -x REPLYTO $USER_EMAIL
 set -x SPACEFISH_NODE_SHOW false
 
 # Setting fd as the default source for fzf
-set -x FZF_DEFAULT_COMMAND fd --type f --hidden  --follow --exclude .git --exclude node_modules
+set -x FZF_DEFAULT_COMMAND fd --type f --hidden --follow --exclude .git --exclude node_modules
 set -x FZF_CTRL_T_COMMAND $FZF_DEFAULT_COMMAND
 
 ulimit -c 0
 
 function prepend_path --argument-names r
-   if test -d $r
-      test -d $r/sbin ; and set PATH $r/sbin $PATH
-      test -d $r/bin ; and set PATH $r/bin $PATH
-      test -d $r/scripts ; and set PATH $r/scripts $PATH
-      test -d $r/share/man ; and set MANPATH $r/share/man $MANPATH
-   end
+    if test -d $r
+        test -d $r/sbin; and set PATH $r/sbin $PATH
+        test -d $r/bin; and set PATH $r/bin $PATH
+        test -d $r/scripts; and set PATH $r/scripts $PATH
+        test -d $r/share/man; and set MANPATH $r/share/man $MANPATH
+    end
 end
 
 set -x PLAN9 /usr/local/plan9
@@ -60,23 +60,33 @@ prepend_path /usr/local/opt/gpg
 set PATH ~/node_modules/.bin $PATH
 set PATH node_modules/.bin $PATH
 
-function ..    ; cd .. ; end
-function ...   ; cd ../.. ; end
-function ....  ; cd ../../.. ; end
-function ..... ; cd ../../../.. ; end
+function ..
+    cd ..
+end
+function ...
+    cd ../..
+end
+function ....
+    cd ../../..
+end
+function .....
+    cd ../../../..
+end
 
 # How to represent as abbr?
-function mcd   ; mkdir -p $argv; and cd $1; end
+function mcd
+    mkdir -p $argv; and cd $1
+end
 # function cr    ; cd `git rev-parse --show-toplevel`; end
 
-if command -s neovide > /dev/null; and not test -n "$SSH_CLIENT" 
-  abbr -a vim neovide
-  abbr -a v neovide
+if command -s neovide >/dev/null; and not test -n "$SSH_CLIENT"
+    abbr -a vim neovide
+    abbr -a v neovide
 else
-  if command -s nvim > /dev/null
-    abbr -a vim nvim
-    abbr -a v nvim
-  end
+    if command -s nvim >/dev/null
+        abbr -a vim nvim
+        abbr -a v nvim
+    end
 end
 
 abbr -a c clear
@@ -100,7 +110,7 @@ end
 
 function wip
     if git diff --cached --quiet
-      git add .
+        git add .
     end
     git commit --no-verify -m "wip $argv"
 end
@@ -118,11 +128,11 @@ set -U __done_min_cmd_duration 15000
 fish_vi_key_bindings
 
 if test -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-  bass source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    bass source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
 else
-  if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
-    bass source '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
-  end
+    if test -e '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
+        bass source '/Users/clord/.nix-profile/etc/profile.d/nix.sh'
+    end
 end
 
 # eval (direnv hook fish)
@@ -130,6 +140,6 @@ end
 status --is-interactive; and source (rbenv init -|psub)
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/clord/google-cloud-sdk/path.fish.inc' ]; . '/Users/clord/google-cloud-sdk/path.fish.inc'; end
-
-
+if [ -f '/Users/clord/google-cloud-sdk/path.fish.inc' ]
+    . '/Users/clord/google-cloud-sdk/path.fish.inc'
+end
