@@ -10,15 +10,53 @@
   };
 
   home.packages = with pkgs; [
-    neovim
+    age
     basex
+    bundix
+    difftastic
+    direnv
+    dua
+    exa
+    fd
+    ffmpeg
+    ffsend
+    fish
+    fzf
+    fzy
+    git-crypt
+    gnused
     hledger
+    imgcat
+    jless
+    jsonnet
+    lima
+    luarocks
+    mosh
+    neovim
+    nixfmt
+    nq
     openssh
     pandoc
+    pandoc
+    pnpm
     proselint
+    pyenv
+    python3
+    rbenv
+    resvg
+    ripgrep
+    sops
     sqlite
+    sysbench
+    terraform
+    tldr
+    tree
+    typst
     unzip
+    vale
+    wget
     wkhtmltopdf
+    xz
     zip
   ];
 
