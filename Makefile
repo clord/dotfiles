@@ -1,6 +1,6 @@
 switch:
 	sudo nixos-rebuild switch --flake .
 
-clordAtChickenpi:
-	nix build '.#homeConfigurations.clord@chickenpi.activationPackage'
+clord-linux-minimal:
+	nix build '.#homeManagerConfigurations.clord-linux-minimal.activationPackage'
 

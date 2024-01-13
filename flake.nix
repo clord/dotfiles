@@ -12,7 +12,7 @@
     , nixos-hardware, sops-nix  }: {
 
         homeManagerConfigurations = {
-          "clord@linux-minimal" = home-manager.lib.homeManagerConfiguration {
+          "clord-linux-minimal" = home-manager.lib.homeManagerConfiguration {
             configuration = ./home/common.nix;
             homeDirectory = "/home/clord";
             username = "clord";
