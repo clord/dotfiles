@@ -28,6 +28,7 @@
             { sops.defaultSopsFile = ./secrets/dunbar.yaml; }
             ./systems/dunbar.nix
             ./systems/common.nix
+            ./systems/user.nix
           ];
         };
 
@@ -45,6 +46,7 @@
             }
             ./systems/chickenpi.nix
             ./systems/common.nix
+            ./systems/user.nix
           ];
         };
       };
