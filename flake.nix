@@ -38,7 +38,7 @@
             {
 		    home-manager.useGlobalPkgs = true;
 		    home-manager.useUserPackages = true;
-		    home-manager.users.clord = import ./home/clord.nix;
+		    home-manager.users.clord = import ./home/clord-minimal.nix;
             }
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
