@@ -2,20 +2,15 @@
   description = "NixOS configuration for all machines in the network";
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.11";
-    unstable.url = "nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
     sops-nix.url = "github:Mic92/sops-nix";
-    systems.url = "github:nix-systems/default";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
   };
-  outputs = inputs@{ self, flake-parts, home-manager, restedpi, nixpkgs
-    , nixos-hardware, sops-nix, systems, unstable }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = (import systems);
-      flake = { 
+  outputs = { self, home-manager, restedpi, nixpkgs
+    , nixos-hardware, sops-nix  }: {
+
         homeManagerConfigurations = {
           "clord@linux" = home-manager.lib.homeManagerConfiguration {
             configuration = ./home/common.nix;
@@ -40,6 +35,7 @@
           modules = [
             nixos-hardware.nixosModules.raspberry-pi-4
             sops-nix.nixosModules.sops
+            { restedpi = restedpi; }
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
               sops.secrets.application_secret = { };
@@ -51,5 +47,4 @@
           ];
         };
       };
-    };
 }

@@ -49,7 +49,7 @@
     unitConfig = { };
     serviceConfig = {
       ExecStart =
-        "${config.restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
+        "${config.packages.restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
     };
     wantedBy = [ "multi-user.target" ];
   };
