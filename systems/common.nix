@@ -1,8 +1,8 @@
 { config, sops-nix, pkgs, ... }: {
-#  system = {
+  system = {
     # Did you read the comment?
- #   stateVersion = "23.11";
-  #};
+    stateVersion = "23.11";
+  };
   services.timesyncd.enable = true;
   environment.systemPackages = with pkgs; [ git vim htop home-manager ];
 
