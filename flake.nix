@@ -10,7 +10,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
   };
-  outputs = inputs@{ self, flake_parts, home-manager, restedpi, nixpkgs
+  outputs = inputs@{ self, flake-parts, home-manager, restedpi, nixpkgs
     , nixos-hardware, sops-nix, unstable }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ restedpi.flakeModule ];
