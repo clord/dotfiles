@@ -1,5 +1,10 @@
 { config, lib, pkgs, modulesPath, ... }: {
+
+  imports =
+    [ (modulesPath + "/profiles/qemu-guest.nix")
+    ];
   hardware.enableRedistributableFirmware = lib.mkDefault true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "dunbar";
   networking.networkmanager.enable = true;
@@ -34,10 +39,6 @@
     pulse.enable = true;
   };
 
-
-  imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
-    ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
