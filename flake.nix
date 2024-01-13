@@ -12,7 +12,7 @@
     , nixos-hardware, sops-nix  }: {
 
         homeManagerConfigurations = {
-          "clord@linux" = home-manager.lib.homeManagerConfiguration {
+          "clord@linux-minimal" = home-manager.lib.homeManagerConfiguration {
             configuration = ./home/common.nix;
             homeDirectory = "/home/clord";
             username = "clord";
@@ -35,7 +35,7 @@
           modules = [
             nixos-hardware.nixosModules.raspberry-pi-4
             sops-nix.nixosModules.sops
-            { restedpi = restedpi; }
+            { restedpi = restedpi.packages.aarch64-linux; }
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
               sops.secrets.application_secret = { };

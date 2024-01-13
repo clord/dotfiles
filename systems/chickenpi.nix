@@ -1,4 +1,9 @@
-{ config, ... }: {
+{ config, lib, restedpi, ... }: with lib; let restedpi = config.restedpi; in {
+  options.restedpi = lib.mkOption {
+    type = lib.types.package;
+    defaultText = lib.literalExpression "pkgs.restedpi";
+    description = lib.mdDoc "The restedpi package to use.";
+  };
 
   networking = {
     hostName = "chickenpi";
@@ -49,7 +54,7 @@
     unitConfig = { };
     serviceConfig = {
       ExecStart =
-        "${config.packages.restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
+        "${restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
     };
     wantedBy = [ "multi-user.target" ];
   };
