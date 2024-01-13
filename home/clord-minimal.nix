@@ -7,6 +7,12 @@
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
   };
 
+  # Temporary workaround for rycee.net being down
+  manual.html.enable = false;
+  manual.manpages.enable = false;
+  manual.json.enable = false;
+
+
   home.packages = with pkgs; [
     age
     direnv
