@@ -2,17 +2,81 @@ require "packer".startup(
   function(use)
     use "wbthomason/packer.nvim"
 
-       -- Treesitter
-    use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
-    use "nvim-treesitter/playground" -- treesitter debugging
+    -- Github Copilot
+    use "github/copilot.vim"
 
+    -- Treesitter
+    use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
+
+   -- Visualize lsp progress
+    use({
+      "j-hui/fidget.nvim",
+      config = function()
+        require("fidget").setup()
+      end
+    })
+
+    use "neovim/nvim-lspconfig"
+
+    -- batteries included rust tools
+    use 'simrat39/rust-tools.nvim'
+
+    use "nvim-treesitter/playground" -- treesitter debugging
     use 'JoosepAlviste/nvim-ts-context-commentstring'
+    use('jose-elias-alvarez/null-ls.nvim')
+    use('MunifTanjim/prettier.nvim')
+
+    use {
+      "cshuaimin/ssr.nvim",
+      module = "ssr",
+      -- Calling setup is optional.
+      config = function()
+        require("ssr").setup {
+          min_width = 50,
+          min_height = 5,
+          keymaps = {
+            close = "q",
+            next_match = "n",
+            prev_match = "N",
+            replace_all = "<leader><cr>",
+          },
+        }
+      end
+    }
+
+  -- Adds extra functionality over rust analyzer
+  use("simrat39/rust-tools.nvim")
 
     -- Completion
-    use "hrsh7th/nvim-cmp"
+    use({"L3MON4D3/LuaSnip", tag = "v1.1.0"})
+    use {
+      'hrsh7th/nvim-cmp',
+      config = function ()
+        require'cmp'.setup {
+        snippet = {
+          expand = function(args)
+            require'luasnip'.lsp_expand(args.body)
+          end
+        },
+
+        sources = {
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'nvim_lsp_signature_help' },
+          { name = 'nvim_lsp_document_symbol' },
+          { name = 'path' },
+          { name = 'buffer' },
+        },
+      }
+      end
+    }
+    use { 'hrsh7th/cmp-nvim-lsp-signature-help' } 
+    use { 'hrsh7th/cmp-nvim-lsp-document-symbol' }
+
+    use { 'saadparwaiz1/cmp_luasnip' }
 
     -- crs (coerce to snake_case)
-    -- MixedCase (crm)
+    --- MixedCase (crm)
     --- camelCase (crc)
     --- snake_case (crs)
     --- UPPER_CASE (cru)
@@ -27,8 +91,6 @@ require "packer".startup(
 
     -- jump to certain spots
     use 'phaazon/hop.nvim'
-
-    use 'jparise/vim-graphql'
 
     -- Try to automatically delete swap
     use 'gioele/vim-autoswap'
@@ -74,17 +136,27 @@ require "packer".startup(
     -- use "mhartington/oceanic-next"
     -- use "saltdotac/citylights.vim"
 
+    use {
+      "folke/trouble.nvim",
+      requires = "kyazdani42/nvim-web-devicons",
+      config = function()
+        require("trouble").setup {
+          -- your configuration comes here
+          -- or leave it empty to use the default settings
+          -- refer to the configuration section below
+        }
+      end
+    }
+
     -- Edit
-    use "tpope/vim-surround"
-    use "Raimondi/delimitMate"
     use "tpope/vim-commentary"
 
     -- Movement
-    use "justinmk/vim-sneak"
     use "tpope/vim-sleuth"
 
+
     -- UI
-    use "hoob3rt/lualine.nvim"
+    use "nvim-lualine/lualine.nvim"
     use "akinsho/nvim-toggleterm.lua"
 
     -- Telescope
@@ -95,41 +167,45 @@ require "packer".startup(
     use {"nvim-telescope/telescope-fzf-native.nvim", run = "make"}
 
     -- Files
-    use "justinmk/vim-dirvish"
     use "justinmk/vim-gtfo"
     use "tpope/vim-eunuch"
-    use "kyazdani42/nvim-tree.lua"
-    use "kyazdani42/nvim-web-devicons"
+    use {
+        'kyazdani42/nvim-tree.lua',
+        requires = {
+          'kyazdani42/nvim-web-devicons', -- optional, for file icon
+        },
+        config = function() require'nvim-tree'.setup {} end
+    }
     use "yamatsum/nvim-nonicons"
 
     -- Git
-    use {"lewis6991/gitsigns.nvim", requires = "nvim-lua/plenary.nvim"}
-    use "lambdalisue/gina.vim"
-    use "kdheepak/lazygit.nvim"
+    use {
+      'lewis6991/gitsigns.nvim',
+      requires = {
+        'nvim-lua/plenary.nvim'
+      },
 
-    -- Snippets
-    use {"hrsh7th/vim-vsnip", requires = "kitagry/vs-snippets"}
+      config = function()
+        require('gitsigns').setup {
+          current_line_blame = true,
+          current_line_blame_opts = {
+            virt_text = true,
+            delay = 700
+          },
+        }
+      end
+    }
+    use "lambdalisue/gina.vim"
 
     -- Lang
-    use "lervag/vimtex"
-    use "petRUShka/vim-gap"
-    use "petRUShka/vim-magma"
-    use "westeri/asl-vim" -- ACPI
-    use "tikhomirov/vim-glsl"
+    use 'jparise/vim-graphql'
 
     -- Emmet expansion style. type a css selector any press CTRL-Y
     use 'mattn/emmet-vim'
-    use "pest-parser/pest.vim"
-    use "jwalton512/vim-blade"
-    use "pantharshit00/vim-prisma"
 
     -- Misc
     use "wincent/terminus"
     use "marcushwz/nvim-workbench"
     use "milisims/nvim-luaref"
-    use "jbyuki/nabla.nvim"
-
-    -- Experimenting
-    use "tpope/vim-unimpaired"
   end
 )

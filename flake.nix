@@ -1,0 +1,41 @@
+{
+  inputs = {
+    nixpkgs.url = "nixpkgs/nixos-23.11";
+    unstable.url = "nixpkgs/nixos-unstable";
+    sops-nix.url = "github:Mic92/sops-nix";
+    home-manager.url = "github:rycee/home-manager/release-23.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+  };
+  outputs = { self, home-manager, nixpkgs, sops-nix, unstable }: {
+    package = {
+      # TODO: Build a chickenpi image?
+      # chickenpiImage =
+      #  self.nixosConfigurations.chickenpi.config.system.build.sdImage;
+    };
+
+    homeManagerConfigurations = {
+      "clord@chickenpi" = home-manager.lib.homeManagerConfiguration {
+        configuration = ./home/common.nix;
+        system = "aarch64-linux";
+        homeDirectory = "/home/clord";
+        username = "clord";
+        extraModules = [ sops-nix.homeManagerModules.sops ];
+      };
+    };
+
+    nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+      modules = [
+        sops-nix.nixosModules.sops
+        {
+          sops.defaultSopsFile = ./secrets/chickenpi.yaml;
+          sops.secrets.application_secret = { };
+          sops.secrets.rip_cert = { };
+          sops.secrets.rip_key = { };
+        }
+        ./systems/chickenpi.nix
+        ./systems/common.nix
+      ];
+    };
+  };
+}

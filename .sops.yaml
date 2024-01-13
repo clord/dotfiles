@@ -1,0 +1,11 @@
+keys:
+  - &admin_clord_1p age1z5zsqkvq7yayllkcp7fzqsw0h5vfc45thjnhf4qkqfqg5luj7exqgk4dug
+  - &admin_clord_vm age1d870exktlqqx27jns4ls2zkes6rf8hsus4aechytkrxk8nk5kg3svdgsqg
+  - &server_chickenpi age1dt89ps60tke3q7gfam0zhdyc3syxcphyxuzrlg7n6mkewc5p0eeqachqk3
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+          - *admin_clord_1p
+          - *admin_clord_vm
+          - *server_chickenpi
