@@ -11,17 +11,35 @@
   outputs = { self, home-manager, restedpi, nixpkgs
     , nixos-hardware, sops-nix  }: {
 
+	nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
+	  system = "x86_64-linux";
+ 	  modules = [
+            nixos-hardware.nixosModules.system76
+	    sops-nix.nixosModules.sops
+            { sops.defaultSopsFile = ./secrets/wildwood.yaml; }
+	    home-manager.nixosModules.home-manager
+	    {
+		    home-manager.useGlobalPkgs = true;
+		    home-manager.useUserPackages = true;
+		    home-manager.users.clord = import ./home/clord.nix;
+	    }
+            ./systems/wildwood.nix
+            ./systems/common.nix
+            ./systems/user.nix
+	  ];
+	};	
+
         nixosConfigurations.dunbar = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
           modules = [
             sops-nix.nixosModules.sops
+            { sops.defaultSopsFile = ./secrets/dunbar.yaml; }
             home-manager.nixosModules.home-manager
             {
 		    home-manager.useGlobalPkgs = true;
 		    home-manager.useUserPackages = true;
 		    home-manager.users.clord = import ./home/clord.nix;
             }
-            { sops.defaultSopsFile = ./secrets/dunbar.yaml; }
             ./systems/dunbar.nix
             ./systems/common.nix
             ./systems/user.nix
