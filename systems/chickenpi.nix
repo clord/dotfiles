@@ -4,6 +4,7 @@
     defaultText = lib.literalExpression "pkgs.restedpi";
     description = lib.mdDoc "The restedpi package to use.";
   };
+  config = { 
 
   networking = {
     hostName = "chickenpi";
@@ -59,5 +60,6 @@
     wantedBy = [ "multi-user.target" ];
   };
 
+  };
 }
 
