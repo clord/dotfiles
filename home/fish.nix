@@ -18,21 +18,17 @@
         ls = "exa";
         ll = "exa -l";
         lll = "exa -bghHliS";
-        "!!" = {
-          position = "anywhere";
-          function = "last_history_item";
-        };
-        dotdot = {
-          regex = "^\\.\\.+$";
-          function = "multicd";
-        };
+        #dotdot = {
+        #  regex = "^\\.\\.+$";
+        #  function = "multicd";
+        #};
 
   };
       functions = {
         t = ''cd (mktemp -d /tmp/$1.XXXX)'';
         mcd = ''mkdir -p $argv; and cd $argv'';
         prepend_path = {
-          args = "r";
+          argumentNames = ["r"];
           body = ''
           if test -d $r
               test -d $r/sbin ; and set PATH $r/sbin $PATH

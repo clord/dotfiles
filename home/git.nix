@@ -35,11 +35,11 @@ in {
   programs.git = {
     enable = true;
     ignores = [ "*~" "*.swp" ];
-    signing = {
-      key =
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
-      signByDefault = true;
-    };
+    #signing = {
+    #  key =
+    #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
+    #  signByDefault = true;
+    #};
     userEmail = "christopher@pliosoft.com";
     userName = "Christopher Lord";
 
@@ -58,14 +58,14 @@ in {
       format.numbered = "auto";
       fetch.prune = "true";
       commit = {
-        template = gitMessage;
-        gpgsign = "true";
+        # template = gitMessage;
+        # gpgsign = "true";
       };
       rerere = {
         enabled = "true";
         autoupdate = "true";
       };
-      gpg = { format = "ssh"; };
+      # gpg = { format = "ssh"; };
       merge = {
         stat = "true";
         conflictStyle = "diff3";
@@ -91,7 +91,7 @@ in {
       "credential \"https://gist.github.com\"".helper =
         "!${pkgs.gh}/bin/gh auth git-credential";
 
-      "gpg \"ssh\"" = macInclude;
+      # "gpg \"ssh\"" = macInclude;
     };
 
     aliases = {
@@ -114,18 +114,18 @@ in {
         branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
     };
 
-    delta = {
-      enable = true;
-      options = {
-        features = "decorations";
-        whitespace-error-style = "22 reverse";
-        decorations = {
-          commit-decoration-style = "bold yellow box ul";
-          file-style = "bold yellow ul";
-          file-decoration-style = "none";
-        };
-      };
-    };
+    # delta = {
+    #  enable = true;
+    #  options = {
+    #    features = "decorations";
+    #    whitespace-error-style = "22 reverse";
+    #    decorations = {
+    #      commit-decoration-style = "bold yellow box ul";
+    #      file-style = "bold yellow ul";
+    #      file-decoration-style = "none";
+    #    };
+    #  };
+    #};
   };
 
   home.packages = with pkgs; [ difftastic gitAndTools.transcrypt gh ];

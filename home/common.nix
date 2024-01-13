@@ -4,10 +4,8 @@
   programs.bat.enable = true;
   programs.ssh = import ./ssh.nix;
 
-  # Temporary workaround for rycee.net being down
-  home.manual.html.enable = false;
-  home.manual.manpages.enable = false;
-  home.manual.json.enable = false;
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
   ];
