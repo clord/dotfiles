@@ -15,7 +15,6 @@
   hardware.enableRedistributableFirmware = true;
   boot = {
     loader.grub.enable = false;
-    loader.systemd-boot.enable = true;
     initrd.availableKernelModules = [ "xhci_pci" ];
     initrd.kernelModules = [ ];
     kernelModules = [ ];
