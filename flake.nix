@@ -14,13 +14,24 @@
     };
 
     homeManagerConfigurations = {
-      "clord@chickenpi" = home-manager.lib.homeManagerConfiguration {
+      "clord@linux" = home-manager.lib.homeManagerConfiguration {
         configuration = ./home/common.nix;
-        system = "aarch64-linux";
         homeDirectory = "/home/clord";
         username = "clord";
         extraModules = [ sops-nix.homeManagerModules.sops ];
       };
+    };
+
+    nixosConfigurations.dunbar = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+      modules = [
+        sops-nix.nixosModules.sops
+        {
+          sops.defaultSopsFile = ./secrets/dunbar.yaml;
+        }
+        ./systems/dunbar.nix
+        ./systems/common.nix
+      ];
     };
 
     nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem {
