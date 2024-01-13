@@ -35,7 +35,7 @@
           modules = [
             nixos-hardware.nixosModules.raspberry-pi-4
             sops-nix.nixosModules.sops
-            { restedpi = restedpi.packages.aarch64-linux; }
+            { restedpi = restedpi.packages.aarch64-linux.restedpi; }
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
               sops.secrets.application_secret = { };
