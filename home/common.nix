@@ -1,63 +1,15 @@
 { config, pkgs, ... }: {
-  imports = [ ./fish.nix  ./git.nix ];
+  imports = [ ];
   home.stateVersion = "23.11";
   programs.bat.enable = true;
-  programs.info.enable = true;
   programs.ssh = import ./ssh.nix;
 
-  home.file = {
-    # Just to document how to make symlinks really...
-    ".homedir".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
-  };
+  # Temporary workaround for rycee.net being down
+  home.manual.html.enable = false;
+  home.manual.manpages.enable = false;
+  home.manual.json.enable = false;
 
   home.packages = with pkgs; [
-    age
-    basex
-    bundix
-    difftastic
-    direnv
-    dua
-    eza
-    fd
-    ffmpeg
-    ffsend
-    fish
-    fzf
-    fzy
-    git-crypt
-    gnused
-    hledger
-    imgcat
-    jless
-    jsonnet
-    lima
-    luarocks
-    mosh
-    neovim
-    nixfmt
-    nq
-    openssh
-    pandoc
-    proselint
-    pyenv
-    python3
-    rbenv
-    resvg
-    ripgrep
-    sops
-    sqlite
-    sysbench
-    terraform
-    tldr
-    tree
-    typst
-    unzip
-    vale
-    wget
-    wkhtmltopdf
-    xz
-    zip
   ];
 
 }

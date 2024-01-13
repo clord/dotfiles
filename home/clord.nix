@@ -1,0 +1,59 @@
+{ config, pkgs, ... }: {
+  imports = [ ./common.nix ./fish.nix ./git.nix ];
+
+  home.file = {
+    # Just to document how to make symlinks really...
+    ".homedir".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
+  };
+
+  home.packages = with pkgs; [
+    age
+    basex
+    bundix
+    difftastic
+    direnv
+    dua
+    eza
+    fd
+    ffmpeg
+    ffsend
+    fish
+    fzf
+    fzy
+    git-crypt
+    gnused
+    hledger
+    imgcat
+    jless
+    jsonnet
+    lima
+    luarocks
+    mosh
+    neovim
+    nixfmt
+    nq
+    openssh
+    pandoc
+    proselint
+    pyenv
+    python3
+    rbenv
+    resvg
+    ripgrep
+    sops
+    sqlite
+    sysbench
+    terraform
+    tldr
+    tree
+    typst
+    unzip
+    vale
+    wget
+    wkhtmltopdf
+    xz
+    zip
+  ];
+
+}

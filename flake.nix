@@ -19,7 +19,7 @@
             {
 		    home-manager.useGlobalPkgs = true;
 		    home-manager.useUserPackages = true;
-		    home-manager.users.clord = import ./home/common.nix;
+		    home-manager.users.clord = import ./home/clord.nix;
             }
             { sops.defaultSopsFile = ./secrets/dunbar.yaml; }
             ./systems/dunbar.nix
@@ -38,7 +38,7 @@
             {
 		    home-manager.useGlobalPkgs = true;
 		    home-manager.useUserPackages = true;
-		    home-manager.users.clord = import ./home/common.nix;
+		    home-manager.users.clord = import ./home/clord.nix;
             }
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
