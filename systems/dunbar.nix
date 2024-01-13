@@ -1,4 +1,4 @@
-{config, lib, pkgs, modulesPath, ...}: {
+{ config, lib, pkgs, modulesPath, ... }: {
   hardware.enableRedistributableFirmware = lib.mkDefault true;
   networking.hostName = "dunbar";
   networking.useDHCP = lib.mkDefault true;

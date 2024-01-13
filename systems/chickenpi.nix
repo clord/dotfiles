@@ -1,4 +1,4 @@
-{ config, restedpi, ... }: {
+{ config, ... }: {
 
   networking = {
     hostName = "chickenpi";
@@ -7,7 +7,7 @@
   };
 
   hardware.enableRedistributableFirmware = true;
-  boot = { 
+  boot = {
     loader.grub.enable = false;
     loader.systemd-boot.enable = true;
     loader.generic-extlinux-compatible.enable = true;
@@ -18,11 +18,11 @@
   };
   swapDevices = [ ];
 
-  fileSystems = { 
+  fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/44444444-4444-4444-8888-888888888888";
       fsType = "ext4";
-      };
+    };
     "/boot" = {
       device = "/dev/disk/by-uuid/2178-694E";
       fsType = "vfat";
@@ -49,7 +49,7 @@
     unitConfig = { };
     serviceConfig = {
       ExecStart =
-        "${restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
+        "${config.restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
     };
     wantedBy = [ "multi-user.target" ];
   };

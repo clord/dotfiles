@@ -23,7 +23,7 @@ let
         '';
 
   macInclude = if pkgs.system == "aarch64-darwin" then {
-      program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
   } else
     { };
 in {
@@ -95,7 +95,7 @@ in {
       "credential \"https://gist.github.com\"".helper =
         "!${pkgs.gh}/bin/gh auth git-credential";
 
-    "gpg \"ssh\"" = macInclude;
+      "gpg \"ssh\"" = macInclude;
     };
 
     aliases = {
