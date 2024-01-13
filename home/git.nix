@@ -42,10 +42,6 @@ in {
     };
     userEmail = "christopher@pliosoft.com";
     userName = "Christopher Lord";
-    pager = "delta";
-    editor = "nvim";
-    whitespace = "trailing-space,space-before-tab,cr-at-eol";
-    apply.whitespace = "fix";
 
     includes = [{
       condition = "gitdir:~/src/grafana/*";
@@ -56,7 +52,7 @@ in {
       github.user = "clord";
       init.defaultBranch = "main";
       branch.autoSetupMerge = "true";
-      apply.whitespace = "fix";
+      apply.whitespace = "fix,trailing-space,space-before-tab,cr-at-eol";
       interactive.diffFilter = "difft";
       log.decorate = "short";
       format.numbered = "auto";

@@ -33,7 +33,7 @@
         mcd = ''mkdir -p $argv; and cd $argv'';
         prepend_path = {
           args = "r";
-          body: ''
+          body = ''
           if test -d $r
               test -d $r/sbin ; and set PATH $r/sbin $PATH
               test -d $r/bin ; and set PATH $r/bin $PATH
