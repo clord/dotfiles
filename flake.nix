@@ -3,10 +3,11 @@
     nixpkgs.url = "nixpkgs/nixos-23.11";
     unstable.url = "nixpkgs/nixos-unstable";
     sops-nix.url = "github:Mic92/sops-nix";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, home-manager, nixpkgs, sops-nix, unstable }: {
+  outputs = { self, home-manager, nixpkgs, nixos-hardware, sops-nix, unstable }: {
     package = {
       # TODO: Build a chickenpi image?
       # chickenpiImage =
@@ -25,6 +26,7 @@
     nixosConfigurations.dunbar = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       modules = [
+        nixos-hardware.nixosModules.raspberry-pi-4
         sops-nix.nixosModules.sops
         {
           sops.defaultSopsFile = ./secrets/dunbar.yaml;
@@ -32,7 +34,7 @@
         ./systems/dunbar.nix
         ./systems/common.nix
       ];
-    };
+
 
     nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
