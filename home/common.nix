@@ -18,7 +18,7 @@
     difftastic
     direnv
     dua
-    exa
+    eza
     fd
     ffmpeg
     ffsend
