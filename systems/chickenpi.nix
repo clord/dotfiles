@@ -6,6 +6,29 @@
     useDHCP = true;
   };
 
+  hardware.enableRedistributableFirmware = lib.mkDefault true;
+  boot = { 
+    loader.grub.enable = false;
+    loader.systemd-boot.enable = true;
+    loader.generic-extlinux-compatible.enable = true;
+    initrd.availableKernelModules = [ "xhci_pci" ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ ];
+    extraModulePackages = [ ];
+  };
+  swapDevices = [ ];
+
+  fileSystems = { 
+    "/" = {
+      device = "/dev/disk/by-uuid/44444444-4444-4444-8888-888888888888";
+      fsType = "ext4";
+      };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/2178-694E";
+      fsType = "vfat";
+    };
+  };
+
   hardware.bluetooth.powerOnBoot = false;
 
   services.prometheus = {
@@ -18,6 +41,7 @@
     };
   };
 
+  nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
   systemd.services.restedpi = {
     enable = true;
     environment = { RUST_BACKTRACE = "1"; };
