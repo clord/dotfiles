@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
   imports = [ ./fish.nix  ./git.nix ];
-  stateVersion = "23.11";
+  home.stateVersion = "23.11";
   programs.bat.enable = true;
   programs.info.enable = true;
   programs.ssh = import ./ssh.nix;
@@ -39,8 +39,6 @@
     nq
     openssh
     pandoc
-    pandoc
-    pnpm
     proselint
     pyenv
     python3
