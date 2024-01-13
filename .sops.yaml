@@ -3,6 +3,7 @@ keys:
   - &admin_clord_vm age1d870exktlqqx27jns4ls2zkes6rf8hsus4aechytkrxk8nk5kg3svdgsqg
   - &server_chickenpi age1kc969hg79336a6lwhusn0j8wuns66ngr77r5tk598lyxcywue54skr6yjp
   - &server_wildwood age1k0ke3zf0z2x2ge8pg6xxt79h308uuz077eeve3nseultwqh8u49sw7ud89
+  - &server_dunbar age1e3l4zlv8r9uedwrk0xq2tnggtqdhdxcyucmgyzz5ewkeul0fqdfqt5cdty
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -11,3 +12,4 @@ creation_rules:
           - *admin_clord_vm
           - *server_chickenpi
           - *server_wildwood
+          - *server_dunbar
