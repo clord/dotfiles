@@ -34,7 +34,7 @@
         ./systems/dunbar.nix
         ./systems/common.nix
       ];
-
+    };
 
     nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
