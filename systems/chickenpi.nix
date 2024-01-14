@@ -22,17 +22,6 @@
   };
   swapDevices = [ ];
 
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-uuid/44444444-4444-4444-8888-888888888888";
-      fsType = "ext4";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-uuid/2178-694E";
-      fsType = "vfat";
-    };
-  };
-
   hardware.bluetooth.powerOnBoot = false;
 
   services.prometheus = {

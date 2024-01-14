@@ -49,6 +49,9 @@
           modules = [
             nixos-hardware.nixosModules.raspberry-pi-4
             sops-nix.nixosModules.sops
+            "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+            { sdImage.compressImage = false; }
+            { sops.defaultSopsFile = ./secrets/chickenpi.yaml;  }
             { restedpi = restedpi.packages.aarch64-linux.restedpi; }
             home-manager.nixosModules.home-manager
             {
@@ -67,5 +70,8 @@
             ./systems/user.nix
           ];
         };
+
+        chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
       };
+
 }
