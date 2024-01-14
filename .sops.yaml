@@ -1,7 +1,7 @@
 keys:
   - &admin_clord_1p age1z5zsqkvq7yayllkcp7fzqsw0h5vfc45thjnhf4qkqfqg5luj7exqgk4dug
   - &admin_clord_vm age1d870exktlqqx27jns4ls2zkes6rf8hsus4aechytkrxk8nk5kg3svdgsqg
-  - &server_chickenpi age1dc664ll32e3nw2awk4fq5curr6qan04vrrmr55dtmt9q5mdkxggqvtpj9l
+  - &server_chickenpi age1jzudjhfjkptxn3g3fk87yufaye7003fx0flzf8ps47n4mwzgys0su2tlaf
   - &server_wildwood age1k0ke3zf0z2x2ge8pg6xxt79h308uuz077eeve3nseultwqh8u49sw7ud89
   - &server_dunbar age1e3l4zlv8r9uedwrk0xq2tnggtqdhdxcyucmgyzz5ewkeul0fqdfqt5cdty
 creation_rules:
