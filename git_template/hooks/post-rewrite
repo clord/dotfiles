@@ -1,5 +1,0 @@
-#!/bin/sh
-case "$!" in
-   rebase) exec .git/hooks/post-merge ;;
-esac
-

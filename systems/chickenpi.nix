@@ -12,7 +12,6 @@
     useDHCP = true;
   };
 
-  hardware.enableRedistributableFirmware = true;
   boot = {
     loader.grub.enable = false;
     initrd.availableKernelModules = [ "xhci_pci" ];
