@@ -188,33 +188,11 @@
         "type": "github"
       }
     },
-    "restedpi": {
-      "inputs": {
-        "flake-parts": "flake-parts",
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs_2",
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1705128567,
-        "narHash": "sha256-gneU8ChCCSPi/3HIQvfu1WKyokTlZpehu/kQa1ABRhA=",
-        "owner": "clord",
-        "repo": "restedpi",
-        "rev": "95e4e1c62f2cbbf9f47ed6e9372fe4fa3557fc97",
-        "type": "github"
-      },
-      "original": {
-        "owner": "clord",
-        "repo": "restedpi",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "restedpi": "restedpi",
         "sops-nix": "sops-nix"
       }
     },
