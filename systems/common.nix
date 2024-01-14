@@ -4,7 +4,7 @@
     stateVersion = "23.11";
   };
   services.timesyncd.enable = true;
-  environment.systemPackages = with pkgs; [ git vim htop home-manager ];
+  environment.systemPackages = with pkgs; [ git vim home-manager ];
 
   services.openssh = {
     enable = true;
