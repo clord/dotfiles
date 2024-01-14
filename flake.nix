@@ -63,6 +63,7 @@
             {
               sops.defaultSopsFile = ./secrets/chickenpi.yaml;
               sops.secrets.application_secret = { };
+              sops.secrets.configuration = { };
               sops.secrets.rip_cert = { };
               sops.secrets.rip_key = { };
             }
