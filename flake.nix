@@ -71,7 +71,7 @@
           ];
         };
 
-        chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
+        packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
       };
 
 }
