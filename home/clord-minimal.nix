@@ -1,6 +1,9 @@
 { config, pkgs, ... }: {
   imports = [ ./common.nix ./fish.nix ./git.nix ];
 
+  home.username = "clord";
+  home.homeDirectory = "/home/clord";
+
   home.file = {
     # Just to document how to make symlinks really...
     # ".homedir".source =

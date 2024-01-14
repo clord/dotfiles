@@ -19,7 +19,7 @@
 	    {
 		    home-manager.useGlobalPkgs = true;
 		    home-manager.useUserPackages = true;
-		    home-manager.users.clord = import ./home/clord.nix;
+		    home-manager.users.clord = import ./home/clord-minimal.nix;
 	    }
             ./systems/wildwood.nix
             ./systems/common.nix
