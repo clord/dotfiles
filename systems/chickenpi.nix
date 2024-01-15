@@ -1,10 +1,11 @@
-{ config, lib, restedpi, ... }: with lib; let restedpi = config.restedpi; in {
+{ config, lib, pkgs, restedpi, ... }: with lib; let restedpi = config.restedpi; in {
   options.restedpi = lib.mkOption {
     type = lib.types.package;
     defaultText = lib.literalExpression "pkgs.restedpi";
     description = lib.mdDoc "The restedpi package to use.";
   };
   config = { 
+  environment.systemPackages = with pkgs; [ i2c-tools ];
 
   networking = {
     hostName = "chickenpi";
