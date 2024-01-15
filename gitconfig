@@ -1,0 +1,146 @@
+[user]
+name = Christopher Lord
+email = christopher@pliosoft.com
+signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO
+
+[color]
+ui = always
+
+[color "branch"]
+current = yellow reverse
+local = yellow
+remote = green
+
+[color "status"]
+added = yellow
+changed = green
+untracked = cyan
+
+[core]
+attributesfile = ~/.gitattributes
+editor = nvim
+whitespace = trailing-space,space-before-tab,cr-at-eol
+pager = delta
+
+[interactive]
+diffFilter = delta --color-only
+
+[delta]
+navigate = true
+
+[delta "interactive"]
+keep-plus-minus-markers = false
+
+[pull]
+twohead = ort
+
+[diff]
+colorMoved = default
+algorithm = patience
+external = difft
+
+[apply]
+whitespace = fix
+
+
+[help]
+autocorrect = 1
+
+# push easily. http://stackoverflow.com/a/23918418/89484
+[push]
+default = current
+
+# use separate file for username / github token / etc
+[include]
+path = ~/.gitconfig.local
+
+
+[alias]
+lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+unstage = reset HEAD --
+staged = diff --cached
+unstaged = diff
+last = log -1 HEAD
+s = status -s
+d = diff -w --minimal --word-diff=color --color-words --abbrev --patience
+dt = difftool
+c = commit -am
+amend = commit --amend
+a = add
+ap = add --patch
+ai = add --interactive
+praise = blame
+both = diff HEAD
+tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	recent = branch --sort=-committerdate --format=\"%(committerdate:relative)%09%(refname:short)\"
+
+[advice]
+statusHints = false
+
+[branch]
+autosetupmerge = true
+
+[push]
+default = tracking
+	autoSetupRemote = true
+	followTags = true
+
+[merge]
+stat = true
+conflictstyle = diff3
+tool = gitmergetool
+
+
+[log]
+decorate = short
+
+[format]
+numbered = auto
+
+[url "git@github.com:"]
+insteadOf = "gh:"
+insteadOf = "git://github.com"
+pushInsteadOf = "github:"
+pushInsteadOf = "git://github.com/"
+pushInsteadOf = "https://github.com/"
+
+[url "git@gist.github.com:"]
+insteadOf = "gst:"
+pushInsteadOf = "gist:"
+pushInsteadOf = "git://gist.github.com/"
+pushInsteadOf = "https://gist.github.com/"
+
+[fetch]
+	prune = true
+
+[rerere]
+enabled = true
+autoupdate = true
+
+[gpg]
+format = ssh
+
+[gpg "ssh"]
+program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+template = ~/.gitmessage
+gpgsign = true
+
+[init]
+defaultBranch = master
+
+[mergetool "gitmergetool"]
+cmd = gitmergetool \"$BASE\" \"$REMOTE\" \"$LOCAL\" \"$MERGED\"
+
+[credential "https://github.com"]
+helper = 
+helper = !/nix/store/fwcz5nk6w2xmyhy2c7fd0a01gf22wh9r-gh-2.17.0/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+helper = 
+helper = !/nix/store/fwcz5nk6w2xmyhy2c7fd0a01gf22wh9r-gh-2.17.0/bin/gh auth git-credential
+
+
+
+

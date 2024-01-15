@@ -7,8 +7,27 @@
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { self, home-manager, restedpi, nixpkgs, nixos-hardware, sops-nix  }: {
+  outputs = { self, nix-darwin, home-manager, restedpi, nixpkgs, nixos-hardware, sops-nix  }: {
+
+      darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+         modules = [
+           sops-nix.nixosModules.sops
+           { sops.defaultSopsFile = ./secrets/edmon.yaml; }
+           home-manager.nixosModules.home-manager
+	    {
+		    home-manager.useGlobalPkgs = true;
+		    home-manager.useUserPackages = true;
+		    home-manager.users.clord = import ./home/clord-edmon.nix;
+	    }
+            ./systems/edmon.nix
+           ];
+             
+      };
+
 	nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
 	  system = "x86_64-linux";
  	  modules = [
