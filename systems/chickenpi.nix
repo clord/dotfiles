@@ -1,4 +1,22 @@
-{ config, lib, pkgs, restedpi, ... }: with lib; let restedpi = config.restedpi; in {
+{ config, lib, pkgs, restedpi, ... }: with lib; let 
+  restedpi = config.restedpi; 
+  simple-overlay = { target, status }: {
+    name = "${target}-${status}-overlay";
+    dtsText = ''
+      /dts-v1/;
+      /plugin/;
+      / {
+        compatible = "brcm,bcm2711";
+        fragment@0 {
+          target = <&${target}>;
+          __overlay__ {
+            status = "${status}";
+          };
+        };
+      };
+    '';
+  };
+in {
   options.restedpi = lib.mkOption {
     type = lib.types.package;
     defaultText = lib.literalExpression "pkgs.restedpi";
@@ -6,6 +24,23 @@
   };
   config = { 
   environment.systemPackages = with pkgs; [ i2c-tools ];
+
+  #hardware.bluetooth.powerOnBoot = false;
+  hardware = #lib.mkMerge [
+   # (lib.mkIf cfg.i2c0.enable {
+   #   i2c.enable = lib.mkDefault true;
+   #   deviceTree = {
+   #     overlays = [ (simple-overlay { target = "i2c0if"; status = "okay"; }) ];
+   #   };
+   # })
+    {
+      bluetooth.powerOnBoot = false;
+      i2c.enable = lib.mkDefault true;
+      deviceTree = {
+        overlays = [ (simple-overlay { target = "i2c1"; status = "okay"; }) ];
+      };
+    };
+#  ];
 
   networking = {
     hostName = "chickenpi";
@@ -22,7 +57,6 @@
   };
   swapDevices = [ ];
 
-  hardware.bluetooth.powerOnBoot = false;
 
   services.prometheus = {
     exporters = {

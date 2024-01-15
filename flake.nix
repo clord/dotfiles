@@ -48,7 +48,7 @@
           system = "aarch64-linux";
 
           modules = [
-            # nixos-hardware.nixosModules.raspberry-pi-4
+            #  nixos-hardware.nixosModules.raspberry-pi-4
             sops-nix.nixosModules.sops
             "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
             { sdImage.compressImage = false; }
