@@ -1,4 +1,7 @@
 { config, sops-nix, pkgs, ... }: {
+
+  imports = [ ./locale.nix ];
+
   system = {
     # Did you read the comment?
     stateVersion = "23.11";
