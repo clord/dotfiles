@@ -25,27 +25,27 @@ in {
   config = { 
   environment.systemPackages = with pkgs; [ i2c-tools ];
 
-  #hardware.bluetooth.powerOnBoot = false;
-  hardware = #lib.mkMerge [
-   # (lib.mkIf cfg.i2c0.enable {
-   #   i2c.enable = lib.mkDefault true;
-   #   deviceTree = {
-   #     overlays = [ (simple-overlay { target = "i2c0if"; status = "okay"; }) ];
-   #   };
-   # })
-    {
-      bluetooth.powerOnBoot = false;
-      i2c.enable = lib.mkDefault true;
-      deviceTree = {
-        overlays = [ (simple-overlay { target = "i2c1"; status = "okay"; }) ];
-      };
+  hardware = {
+    bluetooth.powerOnBoot = false;
+    i2c.enable = true;
+    deviceTree = {
+      overlays = [ (simple-overlay { target = "i2c1"; status = "okay"; }) ];
     };
-#  ];
+  };
 
   networking = {
     hostName = "chickenpi";
     wireless.enable = false;
-    useDHCP = true;
+    interfaces.end0.ipv4.addresses = [{
+      address = "10.68.3.17";
+      prefixLength = 24;
+    }];
+    defaultGateway = "10.68.3.254";
+    nameservers = ["10.68.3.4"];
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 21 22 80 3030 443 ];
+    };
   };
 
   boot = {
