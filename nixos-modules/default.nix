@@ -1,6 +1,1 @@
-{
-  imports = [
-    ./agenix.nix
-    ./user/default.nix
-  ];
-}
+{ imports = [ ./agenix.nix ./user/default.nix ]; }

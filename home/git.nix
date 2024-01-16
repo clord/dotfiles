@@ -20,7 +20,7 @@ let
     # At the end: Include Co-authored-by for all contributors. 
     # Include at least one empty line before it. Format: 
     # Co-authored-by: Name <user@users.noreply.github.com>
-        '';
+  '';
 
   macInclude = if pkgs.system == "aarch64-darwin" then {
     program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
@@ -86,10 +86,8 @@ in {
         colorMoved = "zebra";
         external = "difft";
       };
-      "credential \"https://github.com\"".helper =
-        "!${pkgs.gh}/bin/gh auth git-credential";
-      "credential \"https://gist.github.com\"".helper =
-        "!${pkgs.gh}/bin/gh auth git-credential";
+      "credential \"https://github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
+      "credential \"https://gist.github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
 
       # "gpg \"ssh\"" = macInclude;
     };
@@ -102,16 +100,14 @@ in {
       unstaged = "diff";
       last = "log -1 HEAD";
       s = "status -s";
-      d =
-        "diff -w --minimal --word-diff=color --color-words --abbrev --patience";
+      d = "diff -w --minimal --word-diff=color --color-words --abbrev --patience";
       dt = "difftool";
       c = "commit -am";
       amend = "commit --amend";
       a = "add";
       ai = "add --interactive";
       tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
-      recent = ''
-        branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
+      recent = ''branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
     };
 
     # delta = {

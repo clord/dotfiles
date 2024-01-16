@@ -15,22 +15,6 @@
   manual.manpages.enable = false;
   manual.json.enable = false;
 
-  home.packages = with pkgs; [
-    age
-    direnv
-    eza
-    fd
-    fish
-    nixfmt
-    openssh
-    ripgrep
-    sops
-    sqlite
-    tree
-    unzip
-    wget
-    xz
-    zip
-  ];
+  home.packages = with pkgs; [ age direnv eza fd fish nixfmt openssh ripgrep sops sqlite tree unzip wget xz zip ];
 
 }

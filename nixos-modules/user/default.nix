@@ -7,8 +7,7 @@ let
   extraAuthorizedKeys = cfg.extraAuthorizedKeys;
   pubkeys = import ../../pubkeys/default.nix;
 
-in
-{
+in {
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
     uid = lib.mkOption {

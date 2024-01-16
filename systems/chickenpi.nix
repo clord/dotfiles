@@ -1,5 +1,7 @@
-{ config, lib, pkgs, restedpi, ... }: with lib; let 
-  restedpi = config.restedpi; 
+{ config, lib, pkgs, restedpi, ... }:
+with lib;
+let
+  restedpi = config.restedpi;
   simple-overlay = { target, status }: {
     name = "${target}-${status}-overlay";
     dtsText = ''
@@ -22,31 +24,36 @@ in {
     defaultText = lib.literalExpression "pkgs.restedpi";
     description = lib.mdDoc "The restedpi package to use.";
   };
-  config = { 
-  environment.systemPackages = with pkgs; [ i2c-tools ];
+  config = {
+    environment.systemPackages = with pkgs; [ i2c-tools ];
 
-  hardware = {
-    bluetooth.powerOnBoot = false;
-    i2c.enable = true;
-    deviceTree = {
-      overlays = [ (simple-overlay { target = "i2c1"; status = "okay"; }) ];
+    hardware = {
+      bluetooth.powerOnBoot = false;
+      i2c.enable = true;
+      deviceTree = {
+        overlays = [
+          (simple-overlay {
+            target = "i2c1";
+            status = "okay";
+          })
+        ];
+      };
     };
-  };
 
-  networking = {
-    hostName = "chickenpi";
-    wireless.enable = false;
-    interfaces.end0.ipv4.addresses = [{
-      address = "10.68.3.17";
-      prefixLength = 24;
-    }];
-    defaultGateway = "10.68.3.254";
-    nameservers = ["10.68.3.4"];
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 21 22 80 3030 443 ];
+    networking = {
+      hostName = "chickenpi";
+      wireless.enable = false;
+      interfaces.end0.ipv4.addresses = [{
+        address = "10.68.3.17";
+        prefixLength = 24;
+      }];
+      defaultGateway = "10.68.3.254";
+      nameservers = [ "10.68.3.4" ];
+      firewall = {
+        enable = true;
+        allowedTCPPorts = [ 21 22 80 3030 443 ];
+      };
     };
-  };
 
     boot = {
       loader.grub.enable = false;
@@ -56,7 +63,6 @@ in {
       extraModulePackages = [ ];
     };
     swapDevices = [ ];
-
 
     services.prometheus = {
       exporters = {

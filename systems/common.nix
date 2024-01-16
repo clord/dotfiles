@@ -7,12 +7,7 @@
     stateVersion = "23.11";
   };
   services.timesyncd.enable = true;
-  environment.systemPackages = [
-    pkgs.git
-    pkgs.vim
-    pkgs.home-manager
-    agenix
-  ];
+  environment.systemPackages = [ pkgs.git pkgs.vim pkgs.home-manager agenix ];
 
   services.openssh = {
     enable = true;
@@ -39,8 +34,7 @@
     };
 
     # Free up to 1GiB whenever there is less than 100MiB left.
-    extraOptions =
-      "  min-free = ${toString (100 * 1024 * 1024)}\n  max-free = ${
+    extraOptions = "  min-free = ${toString (100 * 1024 * 1024)}\n  max-free = ${
           toString (1024 * 1024 * 1024)
         }\n  keep-outputs = true\n  keep-derivations = true\n";
   };

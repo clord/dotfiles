@@ -5,8 +5,7 @@ let
   secretsDir = "${toString ../../secrets}";
   secretsFile = "${secretsDir}/secrets.nix";
   cfg = config.clord.agenix;
-in
-{
+in {
   options.clord.agenix = {
     enable = mkBoolOpt true;
     secrets = mkOption {
@@ -17,18 +16,12 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ inputs.agenix.packages.${pkgs.system}.default ];
     users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
-    age.identityPaths =
-      [
-        "/etc/ssh/ssh_host_ed25519_key"
-      ];
-    age.secrets = mapAttrs (name: obj: ({ file = "${secretsDir}/${name}.age"; } // obj))
-      (cfg.secrets //
-        {
-          rootPasswd = { };
-        }
-      );
-    assertions = [
-      { assertion = (pathExists secretsFile); message = "${secretsFile} does not exist"; }
-    ];
+    age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.secrets =
+      mapAttrs (name: obj: ({ file = "${secretsDir}/${name}.age"; } // obj)) (cfg.secrets // { rootPasswd = { }; });
+    assertions = [{
+      assertion = (pathExists secretsFile);
+      message = "${secretsFile} does not exist";
+    }];
   };
 }

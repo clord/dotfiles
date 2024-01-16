@@ -6,8 +6,7 @@
 
   home.file = {
     # Just to document how to make symlinks really...
-    ".homedir".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
+    ".homedir".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
   };
 
   # Temporary workaround for rycee.net being down

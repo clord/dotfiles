@@ -4,8 +4,7 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  boot.initrd.availableKernelModules =
-    [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
@@ -27,22 +26,19 @@
     fsType = "vfat";
   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/d32f9711-d667-4191-ada4-42889f0f1539"; }];
+  swapDevices = [{ device = "/dev/disk/by-uuid/d32f9711-d667-4191-ada4-42889f0f1539"; }];
 
   # Enable swap on luks
   boot.initrd.luks.devices."luks-124a19d0-de3d-4b28-8c69-cb56b7905426".device =
     "/dev/disk/by-uuid/124a19d0-de3d-4b28-8c69-cb56b7905426";
-  boot.initrd.luks.devices."luks-124a19d0-de3d-4b28-8c69-cb56b7905426".keyFile =
-    "/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-124a19d0-de3d-4b28-8c69-cb56b7905426".keyFile = "/crypto_keyfile.bin";
 
   networking.hostName = "wildwood";
   networking.networkmanager.enable = true;
   networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
