@@ -1,4 +1,4 @@
-{ config, sops-nix, pkgs, ... }: {
+{ config,  pkgs, ... }: {
 
   imports = [ ./locale.nix ];
 
@@ -7,7 +7,12 @@
     stateVersion = "23.11";
   };
   services.timesyncd.enable = true;
-  environment.systemPackages = with pkgs; [ git vim home-manager ];
+  environment.systemPackages =  [ 
+    pkgs.git
+    pkgs.vim
+    pkgs.home-manager
+    inputs.agenix.packages.${pkgs.system}.default
+  ];
 
   services.openssh = {
     enable = true;
@@ -40,9 +45,5 @@
         }\n  keep-outputs = true\n  keep-derivations = true\n";
   };
 
-  # see https://github.com/Mic92/sops-nix
-  sops.age.generateKey = true;
-  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  sops.age.keyFile = "/var/lib/sops/age/keys.txt";
 }
 

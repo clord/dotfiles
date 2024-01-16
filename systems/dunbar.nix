@@ -1,8 +1,6 @@
 { config, lib, pkgs, modulesPath, ... }: {
 
-  imports =
-    [ (modulesPath + "/profiles/qemu-guest.nix")
-    ];
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   hardware.enableRedistributableFirmware = lib.mkDefault true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -39,21 +37,21 @@
     pulse.enable = true;
   };
 
-
-  boot.initrd.availableKernelModules = [ "xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod" ];
+  boot.initrd.availableKernelModules =
+    [ "xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/04793b4d-85f3-4ccc-91da-a746d9b1b359";
-      fsType = "ext4";
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/04793b4d-85f3-4ccc-91da-a746d9b1b359";
+    fsType = "ext4";
+  };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/20BC-B3BE";
-      fsType = "vfat";
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/20BC-B3BE";
+    fsType = "vfat";
+  };
 
   swapDevices = [ ];
 

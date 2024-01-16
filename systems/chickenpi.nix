@@ -48,38 +48,38 @@ in {
     };
   };
 
-  boot = {
-    loader.grub.enable = false;
-    initrd.availableKernelModules = [ "xhci_pci" ];
-    initrd.kernelModules = [ ];
-    kernelModules = [ ];
-    extraModulePackages = [ ];
-  };
-  swapDevices = [ ];
+    boot = {
+      loader.grub.enable = false;
+      initrd.availableKernelModules = [ "xhci_pci" ];
+      initrd.kernelModules = [ ];
+      kernelModules = [ ];
+      extraModulePackages = [ ];
+    };
+    swapDevices = [ ];
 
 
-  services.prometheus = {
-    exporters = {
-      node = {
-        enable = true;
-        enabledCollectors = [ "systemd" ];
-        port = 9002;
+    services.prometheus = {
+      exporters = {
+        node = {
+          enable = true;
+          enabledCollectors = [ "systemd" ];
+          port = 9002;
+        };
       };
     };
-  };
 
-  nixpkgs.hostPlatform = "aarch64-linux";
-  systemd.services.restedpi = {
-    enable = true;
-    environment = { RUST_BACKTRACE = "1"; };
-    description = "restedpi exposes a graphql api on the raspberry pi";
-    unitConfig = { };
-    serviceConfig = {
-      ExecStart =
-        "${restedpi}/bin/restedpi --config-file /run/secrets/configuration --log-level warn server";
+    nixpkgs.hostPlatform = "aarch64-linux";
+    systemd.services.restedpi = {
+      enable = true;
+      environment = { RUST_BACKTRACE = "1"; };
+      description = "restedpi exposes a graphql api on the raspberry pi";
+      unitConfig = { };
+      serviceConfig = {
+        ExecStart =
+          "${restedpi}/bin/restedpi --config-file ${config.age.secrets.chickenpiConfig.path} --log-level warn server";
+      };
+      wantedBy = [ "multi-user.target" ];
     };
-    wantedBy = [ "multi-user.target" ];
-  };
 
   };
 }

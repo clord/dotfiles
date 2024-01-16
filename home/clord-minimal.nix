@@ -15,7 +15,6 @@
   manual.manpages.enable = false;
   manual.json.enable = false;
 
-
   home.packages = with pkgs; [
     age
     direnv
