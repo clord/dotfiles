@@ -41,6 +41,7 @@ in
       uid = cfg.uid;
       home = cfg.home;
       shell = pkgs.fish;
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
       hashedPasswordFile = config.age.secrets.clordPasswd.path;
     };
