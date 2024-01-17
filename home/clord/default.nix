@@ -14,6 +14,8 @@
   manual.manpages.enable = false;
   manual.json.enable = false;
 
+  xdg.configFile.nvim.source = ./nvim;
+
   home.packages = with pkgs; [
     age
     basex
