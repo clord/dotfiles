@@ -1,6 +1,9 @@
 nixos-switch:
 	sudo nixos-rebuild switch --flake .
 
+rekey:
+	cd secrets; agenix -r
+
 darwin-switch: 
 	nix run nix-darwin -- switch --flake .
 
