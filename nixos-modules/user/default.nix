@@ -3,7 +3,8 @@ let
   cfg = config.clord.user;
   pubkeys = import ../../pubkeys/default.nix;
 
-in {
+in
+{
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
     uid = lib.mkOption {
@@ -33,13 +34,12 @@ in {
 
   config = lib.mkIf cfg.enable {
     # Let ~/bin/ be in $PATH
-    environment.homeBinInPath = true;
+    # environment.homeBinInPath = true;
 
     users.users.clord = {
       isNormalUser = true;
       uid = cfg.uid;
       home = cfg.home;
-      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       shell = pkgs.fish;
       openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
       hashedPasswordFile = config.age.secrets.clordPasswd.path;

@@ -2,27 +2,39 @@
 
   programs.fish = {
     enable = true;
-    shellAbbrs = {
-      gco = "git checkout";
-      c = "clear";
-      g = "git";
-      v = "nvim";
-      ga = "git add";
-      gs = "git switch";
-      s = "git status";
-      gc = "git commit";
-      gp = "git push";
-      gu = "git pull";
-      gd = "git diff --patience -w";
-      l = "eza";
-      ls = "eza";
-      ll = "eza -l";
-      lll = "eza -bghHliS";
+    interactiveShellInit = ''
+      set fish_greeting # Disable greeting
+      fish_vi_key_bindings
+      set fish_cursor_default block
+      set fish_cursor_insert line
+      set fish_cursor_replace_one underscore
+      set fish_cursor_visual block
+      set -g theme_display_vi yes
+      set -g theme_title_display_user ssh
+      set -g theme_title_display_hostname ssh
+      set -g theme_display_nix no
+      set -g default_user clord
+    '';
+    shellAliases = {
       #dotdot = {
       #  regex = "^\\.\\.+$";
       #  function = "multicd";
       #};
-
+    };
+    shellAbbrs = {
+      vim = "nvim";
+      v = "nvim";
+      c = "clear";
+      g = "git";
+      s = "git status -sb";
+      ga = "git add -A";
+      gs = "git switch";
+      "gs!" = "git switch --create";
+      gc = "git commit --verbose";
+      gp = "git push";
+      gu = "git pull";
+      gd = "git diff --patience -w";
+      lll = "eza -bghHliS";
     };
     functions = {
       t = "cd (mktemp -d /tmp/$1.XXXX)";

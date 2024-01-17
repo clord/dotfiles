@@ -22,16 +22,22 @@ let
     # Co-authored-by: Name <user@users.noreply.github.com>
   '';
 
-  macInclude = if pkgs.system == "aarch64-darwin" then {
-    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-  } else
-    { };
-in {
+  macInclude =
+    if pkgs.system == "aarch64-darwin" then {
+      program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+    } else
+      { };
+in
+{
   programs.gh = {
     enable = true;
-    settings.aliases = { };
-    settings.editor = "nvim";
+    settings = {
+      git_protocol = "ssh";
+      aliases = { co = "pr checkout"; };
+      editor = "nvim";
+    };
   };
+
   programs.git = {
     enable = true;
     ignores = [ "*~" "*.swp" ];

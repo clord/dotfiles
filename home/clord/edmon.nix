@@ -2,26 +2,33 @@
   imports = [ ./common.nix ./fish.nix ./git.nix ];
 
   home.username = "clord";
-  home.homeDirectory = "/home/clord";
-
-  #home.file = {
-    # Just to document how to make symlinks really...
-    #".homedir".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
-  #};
+  home.homeDirectory = "/Users/clord";
 
   # Temporary workaround for rycee.net being down
   manual.html.enable = false;
   manual.manpages.enable = false;
   manual.json.enable = false;
 
+
+  programs.direnv = { enable = true; };
+  programs.eza = { enable = true; enableAliases = true; icons = true; git = true; };
+
+  programs.ssh = {
+    enable = true;
+    extraConfig = ''
+      # IdentityAgent /Users/clord/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+      IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    '';
+  };
+
   home.packages = with pkgs; [
     age
     basex
     bundix
     difftastic
-    eza
     direnv
     dua
+    eza
     fd
     ffmpeg
     ffsend
@@ -40,6 +47,7 @@
     openssh
     pandoc
     proselint
+    pyenv
     python3
     rbenv
     resvg
@@ -58,3 +66,4 @@
   ];
 
 }
+

@@ -7,27 +7,28 @@
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     restedpi.url = "github:clord/restedpi";
-    #nix-darwin.url = "github:LnL7/nix-darwin";
-    #nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self,  home-manager, restedpi, nixpkgs, nixos-hardware, agenix }@inputs:
+  outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix }@inputs:
     let defaultModules = [ agenix.nixosModules.default ./nixos-modules/default.nix ];
-    in {
-      #darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
-      #  system = "aarch64-darwin";
-      #  specialArgs = { inherit inputs; agenix = inputs.agenix.packages.aarch64-darwin.default; };
-      #  modules = [
-      #    home-manager.darwinModules.home-manager
-      #    {
-      #      home-manager.useGlobalPkgs = true;
-      #      home-manager.useUserPackages = true;
-      #      home-manager.users.clord = import ./home/clord-edmon.nix;
-      #      home-manager.extraSpecialArgs = { inherit inputs; };
-       #   }
-      #    ./systems/edmon.nix
-      #  ] ++ defaultModules;
-      #};
+    in
+    {
+      darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit inputs; agenix = inputs.agenix.packages.aarch64-darwin.default; };
+        modules = [
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.clord = import ./home/clord/edmon.nix;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+          }
+          ./systems/edmon.nix
+        ];
+      };
       nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; agenix = inputs.agenix.packages.x86_64-linux.default; };
@@ -37,8 +38,9 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.clord = import ./home/clord-minimal.nix;
+            clord.user.extraGroups = [ "wheel" ];
             clord.user.enable = true;
+            home-manager.users.clord = import ./home/clord/minimal.nix;
           }
           ./systems/wildwood.nix
           ./systems/common.nix
@@ -53,7 +55,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.clord = import ./home/clord.nix;
+            clord.user.extraGroups = [ "wheel" ];
+            home-manager.users.clord = import ./home/clord/default.nix;
             clord.user.enable = true;
           }
           ./systems/dunbar.nix
@@ -73,7 +76,8 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.clord = import ./home/clord-minimal.nix;
+            clord.user.extraGroups = [ "wheel" ];
+            home-manager.users.clord = import ./home/clord/minimal.nix;
             clord.user.enable = true;
           }
           ./systems/chickenpi.nix
@@ -83,5 +87,4 @@
 
       packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
     };
-
 }
