@@ -3,8 +3,8 @@ in
 {
   "rootPasswd.age".publicKeys = pubkeys.clord.computers;
   "clordPasswd.age".publicKeys = pubkeys.clord.computers;
-  "chickenpiAppSecret.age".publicKeys = pubkeys.clord.host "chickenpi";
-  "chickenpiRipCert.age".publicKeys = pubkeys.clord.host "chickenpi";
-  "chickenpiRipKey.age".publicKeys = pubkeys.clord.host "chickenpi";
-  "chickenpiConfig.age".publicKeys = pubkeys.clord.host "chickenpi";
+  "chickenpiAppSecret.age".publicKeys = pubkeys.clord.computers;
+  "chickenpiRipCert.age".publicKeys = pubkeys.clord.computers;
+  "chickenpiRipKey.age".publicKeys = pubkeys.clord.computers;
+  "chickenpiConfig.age".publicKeys = pubkeys.clord.computers;
 }
