@@ -21,8 +21,12 @@
     basex
     bundix
     difftastic
+    gcc
+    gnumake
+    nodejs
     eza
     direnv
+    go
     dua
     fd
     ffmpeg
