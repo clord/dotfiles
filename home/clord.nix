@@ -4,10 +4,10 @@
   home.username = "clord";
   home.homeDirectory = "/home/clord";
 
-  home.file = {
+  #home.file = {
     # Just to document how to make symlinks really...
-    ".homedir".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
-  };
+    #".homedir".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/";
+  #};
 
   # Temporary workaround for rycee.net being down
   manual.html.enable = false;
@@ -19,9 +19,9 @@
     basex
     bundix
     difftastic
+    eza
     direnv
     dua
-    eza
     fd
     ffmpeg
     ffsend
@@ -40,7 +40,6 @@
     openssh
     pandoc
     proselint
-    pyenv
     python3
     rbenv
     resvg
@@ -48,7 +47,6 @@
     sops
     sqlite
     sysbench
-    terraform
     tldr
     tree
     typst

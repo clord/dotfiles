@@ -1,4 +1,4 @@
-{ config, agenix, pkgs, ... }: {
+{ config, pkgs, ... }: {
 
   imports = [ ./locale.nix ];
 
@@ -7,7 +7,7 @@
     stateVersion = "23.11";
   };
   services.timesyncd.enable = true;
-  environment.systemPackages = [ pkgs.git pkgs.vim pkgs.home-manager agenix ];
+  environment.systemPackages = [ pkgs.git pkgs.vim pkgs.home-manager ];
 
   services.openssh = {
     enable = true;

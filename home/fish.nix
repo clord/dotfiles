@@ -14,10 +14,10 @@
       gp = "git push";
       gu = "git pull";
       gd = "git diff --patience -w";
-      l = "exa";
-      ls = "exa";
-      ll = "exa -l";
-      lll = "exa -bghHliS";
+      l = "eza";
+      ls = "eza";
+      ll = "eza -l";
+      lll = "eza -bghHliS";
       #dotdot = {
       #  regex = "^\\.\\.+$";
       #  function = "multicd";

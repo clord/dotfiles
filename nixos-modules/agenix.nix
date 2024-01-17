@@ -2,12 +2,10 @@
 with builtins;
 with lib;
 let
-  secretsDir = "${toString ../../secrets}";
-  secretsFile = "${secretsDir}/secrets.nix";
   cfg = config.clord.agenix;
 in {
   options.clord.agenix = {
-    enable = mkBoolOpt true;
+    enable = mkOption { default = true; example = true; type = types.bool; };
     secrets = mkOption {
       type = types.attrs;
       default = { };
@@ -17,11 +15,13 @@ in {
     environment.systemPackages = [ inputs.agenix.packages.${pkgs.system}.default ];
     users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
     age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-    age.secrets =
-      mapAttrs (name: obj: ({ file = "${secretsDir}/${name}.age"; } // obj)) (cfg.secrets // { rootPasswd = { }; });
-    assertions = [{
-      assertion = (pathExists secretsFile);
-      message = "${secretsFile} does not exist";
-    }];
+    age.secrets = {
+chickenpiAppSecret.file = ../secrets/chickenpiAppSecret.age;
+chickenpiConfig.file = ../secrets/chickenpiConfig.age;
+chickenpiRipCert.file = ../secrets/chickenpiRipCert.age;
+chickenpiRipKey.file = ../secrets/chickenpiRipKey.age;
+clordPasswd.file = ../secrets/clordPasswd.age;
+rootPasswd.file = ../secrets/rootPasswd.age;
+    };
   };
 }

@@ -1,10 +1,6 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.clord.user;
-  uid = cfg.uid;
-  username = cfg.username;
-  extraGroups = cfg.extraGroups;
-  extraAuthorizedKeys = cfg.extraAuthorizedKeys;
   pubkeys = import ../../pubkeys/default.nix;
 
 in {
@@ -13,6 +9,11 @@ in {
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1000;
+    };
+    home = lib.mkOption {
+      type = lib.types.path;
+      default = "/home/clord";
+      description = "path to user's home dir";
     };
     username = lib.mkOption {
       type = lib.types.str;
@@ -34,16 +35,16 @@ in {
     # Let ~/bin/ be in $PATH
     environment.homeBinInPath = true;
 
-    # Define my user account
-    users.extraUsers.${username} = {
+    users.users.clord = {
       isNormalUser = true;
-      uid = uid;
-      extraGroups = [ "wheel" ] ++ extraGroups;
+      uid = cfg.uid;
+      home = cfg.home;
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       shell = pkgs.fish;
-      openssh.authorizedKeys.keys = pubkeys.clord.user ++ extraAuthorizedKeys;
+      openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
       hashedPasswordFile = config.age.secrets.clordPasswd.path;
     };
+    programs.fish.enable = true;
     clord.agenix.secrets.clordPasswd = { };
-
   };
 }
