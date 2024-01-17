@@ -1,4 +1,4 @@
-# clord dotfiles
+# clord's dotfiles
 
 ## Structure
 
@@ -9,7 +9,7 @@
 - `home/`
   Home-manager configuration.
 - `secrets/`
-  Secret files that are encrypted with agenix.
+  Secret files that are encrypted with [agenix](https://github.com/ryantm/agenix).
 - `pubkeys/`
   Public user and host keys.
 
@@ -23,3 +23,9 @@ I took some ideas from the following sources:
 
 - [rprospero/dotfiles](https://gitlab.com/rprospero/dotfiles/)
 - [thexyno/nixos-config](https://github.com/thexyno/nixos-config)
+
+## Plans
+
+- [ ] Use for my Homelab server, including [containerization](https://www.tweag.io/blog/2020-07-31-nixos-flakes/)
+- [ ] nix-ize my [Grafana setup](https://xeiaso.net/blog/prometheus-grafana-loki-nixos-2020-11-20/)
+- [ ] port over favorite [macos options to nix-darwin](https://github.com/LnL7/nix-darwin/blob/master/modules/examples/lnl.nix).
