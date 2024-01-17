@@ -1,8 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =6
-let g:netrw_dirhist_6='/Users/clord/src/grafana/respond/plugin'
-let g:netrw_dirhist_5='/Users/clord/src/grafana/respond/plugin/src'
-let g:netrw_dirhist_4='/Users/clord/src/grafana/respond/plugin'
-let g:netrw_dirhist_3='/Users/clord/src/grafana/respond/plugin/src'
-let g:netrw_dirhist_2='/Users/clord/src/grafana/respond/plugin'
-let g:netrw_dirhist_1='/Users/clord/.earthly'
