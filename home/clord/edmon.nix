@@ -9,6 +9,7 @@
   manual.manpages.enable = false;
   manual.json.enable = false;
 
+  xdg.configFile.nvim.source = ./nvim;
 
   programs.direnv = { enable = true; };
   programs.eza = { enable = true; enableAliases = true; icons = true; git = true; };
@@ -26,13 +27,10 @@
     basex
     bundix
     difftastic
-    direnv
     dua
-    eza
     fd
     ffmpeg
     ffsend
-    fish
     fzf
     fzy
     git-crypt

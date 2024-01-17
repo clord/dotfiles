@@ -1,0 +1,33 @@
+return {
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   enabled = true,
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("copilot").setup({
+  --       suggestion = { enabled = false },
+  --       panel = { enabled = false },
+  --     })
+  --   end,
+  -- },
+  -- {
+  --   "zbirenbaum/copilot-cmp",
+  --   after = { "copilot.lua" },
+  --   config = function()
+  --     require("copilot_cmp").setup()
+  --   end,
+  -- },
+  -- {
+  --   "hrsh7th/nvim-cmp",
+  --   ---@param opts cmp.ConfigSchema
+  --   opts = function(_, opts)
+  --     local cmp = require("cmp")
+  --     opts.sources = cmp.config.sources(vim.list_extend(opts.sources, {
+  --       { name = "copilot", group_index = 2 },
+  --       { name = "nvim_lsp", group_index = 2 },
+  --       { name = "path", group_index = 2 },
+  --       { name = "luasnip", group_index = 2 },
+  --     }))
+  --   end,
+  -- },
+}

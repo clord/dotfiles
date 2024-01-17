@@ -1,0 +1,12 @@
+return {}
+-- return {
+--   "dmmulroy/tsc.nvim",
+--   opts = {
+--     setup = {
+--       typescript = function(_)
+--         require("tsc").setup({ build = true })
+--         return true
+--       end,
+--     },
+--   },
+-- }
