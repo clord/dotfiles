@@ -15,7 +15,7 @@ let
 in
 {
   clord = {
-    inherit clord;
+    user = clord;
     computers = clord ++ (builtins.foldl' (a: b: a ++ b) [ ] (builtins.attrValues hosts)); # everything
     host = hn: (hosts.${hn} ++ clord);
     hosts = hn: ((map (x: hosts.${x}) hn) ++ clord);
