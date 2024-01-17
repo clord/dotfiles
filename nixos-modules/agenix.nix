@@ -3,7 +3,8 @@ with builtins;
 with lib;
 let
   cfg = config.clord.agenix;
-in {
+in
+{
   options.clord.agenix = {
     enable = mkOption { default = true; example = true; type = types.bool; };
     secrets = mkOption {
@@ -16,12 +17,12 @@ in {
     users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
     age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     age.secrets = {
-chickenpiAppSecret.file = ../secrets/chickenpiAppSecret.age;
-chickenpiConfig.file = ../secrets/chickenpiConfig.age;
-chickenpiRipCert.file = ../secrets/chickenpiRipCert.age;
-chickenpiRipKey.file = ../secrets/chickenpiRipKey.age;
-clordPasswd.file = ../secrets/clordPasswd.age;
-rootPasswd.file = ../secrets/rootPasswd.age;
+      chickenpiAppSecret.file = ../secrets/chickenpiAppSecret.age;
+      chickenpiConfig.file = ../secrets/chickenpiConfig.age;
+      chickenpiRipCert.file = ../secrets/chickenpiRipCert.age;
+      chickenpiRipKey.file = ../secrets/chickenpiRipKey.age;
+      clordPasswd.file = ../secrets/clordPasswd.age;
+      rootPasswd.file = ../secrets/rootPasswd.age;
     };
   };
 }
