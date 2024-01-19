@@ -7,18 +7,26 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPbu/FXxZhyXOEsQpsAm2YLR4P07WoFcYTm1tbUohQ1U" # clord@dunbar
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP3DeyWHOIc+SdTqNP9iFD4jpf0fg1FVTsaWn2qcKDTa" # clord@edmon
   ];
+  eugene = [
+    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLJRSywFF+3U6cJyLGXskOVTXiWKg5YlVaQ2/eM+2iROwckWRVG5AW8d1AJ/2IecRioOzjG4QHKxWBhgjzNi8MY=" # eugene@ipad
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjFa1FBFggj9BTAd8kKfWBX4EJB1DhTgzlaBqjZpBUU" # eugene@munchkin
+  ];
   hosts = {
     edmon = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG44RTSc6mqKI+9F0SbP9Qstk1xVg1FAALK/sVCDHaj/" ];
     chickenpi = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICq9/gH0UlteZW5mhWN0gNvGN/EFyrjpmmcQ9Tf2hhgj" ];
     jasper = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6l/tsNUalrBFf0Zaftlk0QqYTQZKMfomJxv1dt7a/1" ];
     dunbar = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuh/pr52sE9A0KJC1wUsE+z/TVdOOR38bSjNqjkbqTU" ];
+    munchkin = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpEGG6sYzCWQZ+bTpy5V50B3qxsCbyLGsevqBXBxHX9" ];
+    wildwood = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICccVCVLq1RLFuxYfL9qJW8RV3CdKoAqJ2/F/hRG1Sry"];
   };
+  mkUser = user: {
+    user = user;
+    computers = user ++ (builtins.foldl' (a: b: a ++ b) [ ] (builtins.attrValues hosts)); # everything
+    host = hn: (hosts.${hn} ++ user);
+    hosts = hn: ((map (x: hosts.${x}) hn) ++ user);
+  }
 in
 {
-  clord = {
-    user = clord;
-    computers = clord ++ (builtins.foldl' (a: b: a ++ b) [ ] (builtins.attrValues hosts)); # everything
-    host = hn: (hosts.${hn} ++ clord);
-    hosts = hn: ((map (x: hosts.${x}) hn) ++ clord);
-  };
+  eugene = mkUser eugene;
+  clord = mkUser clord;
 }

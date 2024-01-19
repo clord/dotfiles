@@ -67,18 +67,6 @@
     pulse.enable = true;
   };
 
-  users.users.eugene = {
-    isNormalUser = true;
-    description = "Eugene Lord";
-    extraGroups = [ "networkmanager" ];
-  };
-
-  home-manager.users.eugene = { pkgs, ... }: {
-    home.stateVersion = "22.11";
-    home.packages = with pkgs; [ firefox neovim ];
-    programs.fish.enable = true;
-  };
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 

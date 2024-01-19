@@ -13,6 +13,10 @@
 
   outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix }@inputs:
     let defaultModules = [ agenix.nixosModules.default ./nixos-modules/default.nix ];
+        hm = {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            };
     in
     {
       darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
@@ -20,9 +24,8 @@
         specialArgs = { inherit inputs; agenix = inputs.agenix.packages.aarch64-darwin.default; };
         modules = [
           home-manager.darwinModules.home-manager
+          hm
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
             home-manager.users.clord = import ./home/clord/edmon.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
           }
@@ -35,12 +38,16 @@
         modules = [
           nixos-hardware.nixosModules.system76
           home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            clord.user.extraGroups = [ "wheel" ];
+          hm
+{ 
+            clord.user.extraGroups = [ "wheel" "networkmanager" ];
             clord.user.enable = true;
             home-manager.users.clord = import ./home/clord/minimal.nix;
+}
+{
+            eugene.user.enable = true;
+            eugene.user.extraGroups = [ "networkmanager" ]; 
+            home-manager.users.eugene = import ./home/eugene/default.nix;
           }
           ./systems/wildwood.nix
           ./systems/common.nix
@@ -52,9 +59,8 @@
         specialArgs = { inherit inputs; agenix = inputs.agenix.packages.aarch64-linux.default; };
         modules = [
           home-manager.nixosModules.home-manager
+          hm
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/default.nix;
             clord.user.enable = true;
@@ -73,9 +79,8 @@
           { sdImage.compressImage = false; }
           { restedpi = restedpi.packages.aarch64-linux.restedpi; }
           home-manager.nixosModules.home-manager
+          hm
           {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/minimal.nix;
             clord.user.enable = true;
