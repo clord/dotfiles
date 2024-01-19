@@ -22,6 +22,7 @@ in
       chickenpiRipCert.file = ../secrets/chickenpiRipCert.age;
       chickenpiRipKey.file = ../secrets/chickenpiRipKey.age;
       clordPasswd.file = ../secrets/clordPasswd.age;
+      eugenePasswd.file = ../secrets/eugenePasswd.age;
       rootPasswd.file = ../secrets/rootPasswd.age;
     };
   };
