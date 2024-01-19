@@ -46,6 +46,6 @@ in
       hashedPasswordFile = config.age.secrets.eugenePasswd.path;
     };
     programs.fish.enable = true;
-    eugene.agenix.secrets.eugenePasswd = { };
+    clord.agenix.secrets.eugenePasswd = { };
   };
 }
