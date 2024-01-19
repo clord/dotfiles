@@ -1,5 +1,5 @@
 { inputs, lib, config, pkgs, ... }: {
-  imports = [ ./programs ];
+  imports = [ ./common.nix ./programs ];
 
   home = {
     username = "eugene";
