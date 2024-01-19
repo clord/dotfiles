@@ -8,7 +8,6 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP3DeyWHOIc+SdTqNP9iFD4jpf0fg1FVTsaWn2qcKDTa" # clord@edmon
   ];
   eugene = [
-    "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLJRSywFF+3U6cJyLGXskOVTXiWKg5YlVaQ2/eM+2iROwckWRVG5AW8d1AJ/2IecRioOzjG4QHKxWBhgjzNi8MY=" # eugene@ipad
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjFa1FBFggj9BTAd8kKfWBX4EJB1DhTgzlaBqjZpBUU" # eugene@munchkin
   ];
   hosts = {
@@ -21,10 +20,10 @@ let
   };
   mkUser = user: {
     user = user;
-    computers = user ++ (builtins.foldl' (a: b: a ++ b) [ ] (builtins.attrValues hosts)); # everything
-    host = hn: (hosts.${hn} ++ user);
-    hosts = hn: ((map (x: hosts.${x}) hn) ++ user);
-  }
+    computers = clord ++ user ++ (builtins.foldl' (a: b: a ++ b) [ ] (builtins.attrValues hosts)); # everything
+    host = hn: (hosts.${hn} ++ user ++ clord);
+    hosts = hn: ((map (x: hosts.${x}) hn) ++ user ++ clord);
+  };
 in
 {
   eugene = mkUser eugene;
