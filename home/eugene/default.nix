@@ -7,6 +7,9 @@
   };
 
   programs.neovim.enable = true;
+  programs.vscode = {
+    enable = true;
+  };
   home.packages = with pkgs; [
     alacritty
     alsa-utils
