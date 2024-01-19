@@ -23,6 +23,7 @@ I took some ideas from the following sources:
 
 - [rprospero/dotfiles](https://gitlab.com/rprospero/dotfiles/)
 - [thexyno/nixos-config](https://github.com/thexyno/nixos-config)
+- [calops/nix](https://github.com/calops/nix)
 
 ## Plans
 
