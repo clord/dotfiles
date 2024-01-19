@@ -19,7 +19,7 @@
     dolphin
     typst
     typst-lsp
-    vscode-fhs
+    vscode
     go
     hledger
     godot_4

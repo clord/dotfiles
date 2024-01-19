@@ -42,7 +42,7 @@
 { 
             clord.user.extraGroups = [ "wheel" "networkmanager" ];
             clord.user.enable = true;
-            home-manager.users.clord = import ./home/clord/minimal.nix;
+            home-manager.users.clord = import ./home/clord/default.nix;
 }
 {
             eugene.user.enable = true;

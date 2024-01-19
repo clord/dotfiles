@@ -24,6 +24,7 @@
     gcc
     gnumake
     nodejs
+    vscode
     eza
     direnv
     go
