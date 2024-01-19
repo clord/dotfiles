@@ -15,7 +15,11 @@
     dmenu
     dolphin
     typst
-    vscode
+    typst-lsp
+    vscode-fhs
+    go
+    hledger
+    godot_4
     element-desktop
     exfat
     eza
