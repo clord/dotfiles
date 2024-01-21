@@ -17,7 +17,7 @@
       };
       font = {
         #normal = {
-          # family = "DejaVu Sans";
+        # family = "DejaVu Sans";
         #};
         #size = 14;
       };

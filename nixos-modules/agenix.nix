@@ -1,12 +1,14 @@
 { options, config, inputs, lib, pkgs, ... }:
 with builtins;
 with lib;
-let
-  cfg = config.clord.agenix;
-in
-{
+let cfg = config.clord.agenix;
+in {
   options.clord.agenix = {
-    enable = mkOption { default = true; example = true; type = types.bool; };
+    enable = mkOption {
+      default = true;
+      example = true;
+      type = types.bool;
+    };
     secrets = mkOption {
       type = types.attrs;
       default = { };

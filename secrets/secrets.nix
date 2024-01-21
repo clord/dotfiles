@@ -1,6 +1,5 @@
 let pubkeys = import ../pubkeys/default.nix;
-in
-{
+in {
   "rootPasswd.age".publicKeys = pubkeys.clord.computers;
   "clordPasswd.age".publicKeys = pubkeys.clord.computers;
   "eugenePasswd.age".publicKeys = pubkeys.eugene.computers;

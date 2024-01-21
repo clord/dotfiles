@@ -12,7 +12,12 @@
   xdg.configFile.nvim.source = ./nvim;
 
   programs.direnv = { enable = true; };
-  programs.eza = { enable = true; enableAliases = true; icons = true; git = true; };
+  programs.eza = {
+    enable = true;
+    enableAliases = true;
+    icons = true;
+    git = true;
+  };
 
   programs.ssh = {
     enable = true;

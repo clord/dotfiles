@@ -1,8 +1,6 @@
 {
   enable = true;
   matchBlocks = { };
-  extraConfig = ''
-  '';
+  extraConfig = "";
 }
-
 

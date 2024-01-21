@@ -1,4 +1,1 @@
-{...}: { imports = [
- ./alacritty
- ./git
-];}
+{ ... }: { imports = [ ./alacritty ./git ]; }

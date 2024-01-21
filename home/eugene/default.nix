@@ -7,9 +7,7 @@
   };
 
   programs.neovim.enable = true;
-  programs.vscode = {
-    enable = true;
-  };
+  programs.vscode = { enable = true; };
   home.packages = with pkgs; [
     alacritty
     alsa-utils
@@ -60,20 +58,14 @@
     windowManager.xmonad = {
       enable = true;
       enableContribAndExtras = true;
-      extraPackages = hp: [
-        hp.dbus
-        hp.monad-logger
-        hp.xmonad-contrib
-      ];
+      extraPackages = hp: [ hp.dbus hp.monad-logger hp.xmonad-contrib ];
       config = ./xmonad.hs;
     };
   };
 
   programs.alacritty = {
     enable = true;
-    settings = {
-      font.size = 14;
-    };
+    settings = { font.size = 14; };
   };
 
   programs.home-manager.enable = true;

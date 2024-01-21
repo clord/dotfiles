@@ -16,7 +16,7 @@ let
     jasper = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO6l/tsNUalrBFf0Zaftlk0QqYTQZKMfomJxv1dt7a/1" ];
     dunbar = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHuh/pr52sE9A0KJC1wUsE+z/TVdOOR38bSjNqjkbqTU" ];
     munchkin = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHpEGG6sYzCWQZ+bTpy5V50B3qxsCbyLGsevqBXBxHX9" ];
-    wildwood = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICccVCVLq1RLFuxYfL9qJW8RV3CdKoAqJ2/F/hRG1Sry"];
+    wildwood = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICccVCVLq1RLFuxYfL9qJW8RV3CdKoAqJ2/F/hRG1Sry" ];
   };
   mkUser = user: {
     user = user;
@@ -24,8 +24,7 @@ let
     host = hn: (hosts.${hn} ++ user ++ clord);
     hosts = hn: ((map (x: hosts.${x}) hn) ++ user ++ clord);
   };
-in
-{
+in {
   eugene = mkUser eugene;
   clord = mkUser clord;
 }
