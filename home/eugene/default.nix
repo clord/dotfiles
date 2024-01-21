@@ -1,11 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
   imports = [ ./common.nix ./programs ];
 
-  home = {
-    username = "eugene";
-    homeDirectory = "/home/eugene";
-  };
-
   programs.neovim.enable = true;
   programs.vscode = { enable = true; };
   home.packages = with pkgs; [

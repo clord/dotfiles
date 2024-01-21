@@ -6,6 +6,7 @@ let
 in {
   options.eugene.user = {
     enable = lib.mkEnableOption "Enables eugene user.";
+    linuxUser = mkOption { default = false; example = true; type = types.bool; };
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1010;
@@ -32,18 +33,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # Let ~/bin/ be in $PATH
-    # environment.homeBinInPath = true;
-
     users.users.eugene = {
-      isNormalUser = true;
+      name = cfg.username;
       uid = cfg.uid;
       home = cfg.home;
       shell = pkgs.fish;
-      extraGroups = [ "family" ] ++ cfg.extraGroups;
       openssh.authorizedKeys.keys = pubkeys.eugene.user ++ cfg.extraAuthorizedKeys;
-      hashedPasswordFile = config.age.secrets.eugenePasswd.path;
-    };
+    } // (lib.mkIf cfg.linuxUser {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
+      hashedPasswordFile = config.age.secrets.clordPasswd.path;
+    });
     programs.fish.enable = true;
     clord.agenix.secrets.eugenePasswd = { };
   };

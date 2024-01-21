@@ -45,6 +45,7 @@
           }
           {
             roles.terminal.enable = true;
+            clord.user.home = "/Users/clord";
           }
           ./systems/edmon.nix
         ] ++ defaultModules;
