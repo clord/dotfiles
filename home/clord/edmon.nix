@@ -1,15 +1,9 @@
 { config, pkgs, ... }: {
-  imports = [ ./common.nix ./fish.nix ./git.nix ];
+
+  imports = [ ./common.nix ./fish.nix ./git.nix ./programs ];
 
   home.username = "clord";
   home.homeDirectory = "/Users/clord";
-
-  # Temporary workaround for rycee.net being down
-  manual.html.enable = false;
-  manual.manpages.enable = false;
-  manual.json.enable = false;
-
-  xdg.configFile.nvim.source = ./nvim;
 
   programs.direnv = { enable = true; };
   programs.eza = {

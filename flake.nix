@@ -11,14 +11,25 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix }@inputs:
+  outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix, ... }@inputs:
     let
-      defaultModules = [ agenix.nixosModules.default ./nixos-modules/default.nix ];
-      hm = {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-      };
-    in {
+      defaultModules = [
+        agenix.nixosModules.default
+        ./nixos-modules
+        ./roles
+      ];
+      hm = ({ config, ... }: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = {
+            inherit inputs;
+            roles = config.roles;
+          };
+        };
+      });
+    in
+    {
       darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
@@ -32,8 +43,11 @@
             home-manager.users.clord = import ./home/clord/edmon.nix;
             home-manager.extraSpecialArgs = { inherit inputs; };
           }
+          {
+            roles.terminal.enable = true;
+          }
           ./systems/edmon.nix
-        ];
+        ] ++ defaultModules;
       };
       nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -46,12 +60,17 @@
           home-manager.nixosModules.home-manager
           hm
           {
+            roles.terminal.enable = true;
+          }
+          {
             clord.user.extraGroups = [ "wheel" "networkmanager" ];
             clord.user.enable = true;
+            clord.user.linuxUser = true;
             home-manager.users.clord = import ./home/clord/default.nix;
           }
           {
             eugene.user.enable = true;
+            eugene.user.linuxUser = true;
             eugene.user.extraGroups = [ "networkmanager" ];
             home-manager.users.eugene = import ./home/eugene/default.nix;
           }
@@ -70,9 +89,13 @@
           home-manager.nixosModules.home-manager
           hm
           {
+            roles.terminal.enable = true;
+          }
+          {
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/default.nix;
             clord.user.enable = true;
+            clord.user.linuxUser = true;
           }
           ./systems/dunbar.nix
           ./systems/common.nix
@@ -93,9 +116,13 @@
           home-manager.nixosModules.home-manager
           hm
           {
+            roles.terminal.enable = true;
+          }
+          {
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/minimal.nix;
             clord.user.enable = true;
+            clord.user.linuxUser = true;
           }
           ./systems/chickenpi.nix
           ./systems/common.nix

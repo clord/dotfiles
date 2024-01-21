@@ -2,7 +2,10 @@
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
-  nix.settings.trusted-users = [ "@admin" ];
+  nix.settings.trusted-users = [
+    "@admin"
+    "clord"
+  ];
   nix.configureBuildUsers = true;
 
   # Necessary for using flakes on this system.

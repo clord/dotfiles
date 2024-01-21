@@ -1,11 +1,13 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, types, pkgs, ... }:
 let
   cfg = config.clord.user;
   pubkeys = import ../../pubkeys/default.nix;
 
-in {
+in
+{
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
+    linuxUser = lib.mkOption { default = false; example = true; type = types.bool; };
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1000;
@@ -32,18 +34,17 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # Let ~/bin/ be in $PATH
-    # environment.homeBinInPath = true;
-
     users.users.clord = {
-      isNormalUser = true;
-      uid = cfg.uid;
+      name = cfg.username;
       home = cfg.home;
       shell = pkgs.fish;
-      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
+    } // (lib.mkIf cfg.linuxUser {
+      isNormalUser = true;
+      uid = cfg.uid;
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
       hashedPasswordFile = config.age.secrets.clordPasswd.path;
-    };
+    });
     programs.fish.enable = true;
     clord.agenix.secrets.clordPasswd = { };
   };
