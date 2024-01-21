@@ -6,6 +6,9 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+    nixd.url = "github:nix-community/nixd";
+    rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -13,11 +16,8 @@
 
   outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix, ... }@inputs:
     let
-      defaultModules = [
-        agenix.nixosModules.default
-        ./nixos-modules
-        ./roles
-      ];
+      overlays = with inputs; [ neovim-nightly-overlay.overlay nixd.overlays.default rust-overlay.overlays.default ];
+      defaultModules = [ agenix.nixosModules.default ./nixos-modules ./roles ];
       hm = ({ config, ... }: {
         home-manager = {
           useGlobalPkgs = true;
@@ -28,13 +28,17 @@
           };
         };
       });
-    in
-    {
-      darwinConfigurations.edmon = nix-darwin.lib.darwinSystem {
+    in {
+      darwinConfigurations.edmon = nix-darwin.lib.darwinSystem rec {
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
           agenix = inputs.agenix.packages.aarch64-darwin.default;
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = overlays;
+          };
         };
         modules = [
           home-manager.darwinModules.home-manager
@@ -50,19 +54,23 @@
           ./systems/edmon.nix
         ] ++ defaultModules;
       };
-      nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
           agenix = inputs.agenix.packages.x86_64-linux.default;
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = overlays;
+          };
+
         };
         modules = [
           nixos-hardware.nixosModules.system76
           home-manager.nixosModules.home-manager
           hm
-          {
-            roles.terminal.enable = true;
-          }
+          { roles.terminal.enable = true; }
           {
             clord.user.extraGroups = [ "wheel" "networkmanager" ];
             clord.user.enable = true;
@@ -80,18 +88,21 @@
         ] ++ defaultModules;
       };
 
-      nixosConfigurations.dunbar = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.dunbar = nixpkgs.lib.nixosSystem rec {
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
           agenix = inputs.agenix.packages.aarch64-linux.default;
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = overlays;
+          };
         };
         modules = [
           home-manager.nixosModules.home-manager
           hm
-          {
-            roles.terminal.enable = true;
-          }
+          { roles.terminal.enable = true; }
           {
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/default.nix;
@@ -103,11 +114,16 @@
         ] ++ defaultModules;
       };
 
-      nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.chickenpi = nixpkgs.lib.nixosSystem rec {
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
           agenix = inputs.agenix.packages.aarch64-linux.default;
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            overlays = overlays;
+          };
         };
 
         modules = [
@@ -116,9 +132,7 @@
           { restedpi = restedpi.packages.aarch64-linux.restedpi; }
           home-manager.nixosModules.home-manager
           hm
-          {
-            roles.terminal.enable = true;
-          }
+          { roles.terminal.enable = true; }
           {
             clord.user.extraGroups = [ "wheel" ];
             home-manager.users.clord = import ./home/clord/minimal.nix;

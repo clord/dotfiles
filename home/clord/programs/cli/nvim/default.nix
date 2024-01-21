@@ -15,6 +15,7 @@
         nixd
         nodejs
         prettierd
+        python3
         ripgrep
         rust-analyzer
         shfmt
@@ -22,10 +23,7 @@
         sqlite
         stylua
       ];
-      plugins = with pkgs.vimPlugins; [
-        lazy-nvim
-        vim-autoswap
-      ];
+      plugins = with pkgs.vimPlugins; [ lazy-nvim vim-autoswap ];
     };
     xdg.configFile = { };
   };

@@ -1,13 +1,16 @@
-{ config, lib,  pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   cfg = config.clord.user;
   pubkeys = import ../../pubkeys/default.nix;
 
-in
-{
+in {
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
-    linuxUser = lib.mkOption { default = false; example = true; type = lib.types.bool; };
+    linuxUser = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
+    };
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1000;

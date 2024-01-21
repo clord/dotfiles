@@ -3,11 +3,14 @@ let
   cfg = config.eugene.user;
   pubkeys = import ../../pubkeys/default.nix;
 
-in
-{
+in {
   options.eugene.user = {
     enable = lib.mkEnableOption "Enables eugene user.";
-    linuxUser = lib.mkOption { default = false; example = true; type = lib.types.bool; };
+    linuxUser = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
+    };
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1010;
