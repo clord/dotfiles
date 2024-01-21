@@ -6,7 +6,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
+     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixd.url = "github:nix-community/nixd";
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
@@ -16,7 +16,7 @@
 
   outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix, ... }@inputs:
     let
-      overlays = with inputs; [ neovim-nightly-overlay.overlay nixd.overlays.default rust-overlay.overlays.default ];
+      overlays = with inputs; [  neovim-nightly-overlay.overlay  nixd.overlays.default rust-overlay.overlays.default ];
       defaultModules = [ agenix.nixosModules.default ./nixos-modules ./roles ];
       hm = ({ config, ... }: {
         home-manager = {

@@ -38,7 +38,6 @@
     jless
     jsonnet
     mosh
-    neovim
     nixfmt
     nq
     openssh
