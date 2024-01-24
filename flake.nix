@@ -6,7 +6,6 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     nixd.url = "github:nix-community/nixd";
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
@@ -16,8 +15,12 @@
 
   outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix, ... }@inputs:
     let
-      overlays = with inputs; [  neovim-nightly-overlay.overlay  nixd.overlays.default rust-overlay.overlays.default ];
-      defaultModules = [ agenix.nixosModules.default ./nixos-modules ./roles ];
+      overlays = with inputs; [  nixd.overlays.default rust-overlay.overlays.default ];
+      defaultModules = [ 
+        agenix.nixosModules.default 
+        ./nixos-modules 
+        ./roles 
+      ];
       hm = ({ config, ... }: {
         home-manager = {
           useGlobalPkgs = true;
@@ -33,7 +36,7 @@
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
-          agenix = inputs.agenix.packages.aarch64-darwin.default;
+          agenix = agenix.packages.aarch64-darwin.default;
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;

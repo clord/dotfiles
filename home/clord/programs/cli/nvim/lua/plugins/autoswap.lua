@@ -1,3 +1,0 @@
-return {
-  { "gioele/vim-autoswap" },
-}

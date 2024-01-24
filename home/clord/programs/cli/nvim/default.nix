@@ -10,6 +10,9 @@
         ripgrep
         black
         cmake
+        lazygit
+        vscode-langservers-extracted
+        tree-sitter
         fzf
         gcc
         gnumake
@@ -23,25 +26,29 @@
         sqlfluff
         sqlite
       ];
-      plugins = with pkgs.vimPlugins; [ lazy-nvim vim-autoswap ];
+      plugins = with pkgs.vimPlugins; [ lazy-nvim  ];
       extraLuaConfig = let plugins = with pkgs.vimPlugins; [
           LazyVim
           bufferline-nvim
           cmp-buffer
+          cmp_luasnip
           cmp-nvim-lsp
           cmp-path
-          cmp_luasnip
+          cmp-emoji
           conform-nvim
+          copilot-lua
           dashboard-nvim
           dressing-nvim
           flash-nvim
           friendly-snippets
+          fidget-nvim
+          gitsigns-nvim
           gitsigns-nvim
           indent-blankline-nvim
           lualine-nvim
-          neo-tree-nvim
           neoconf-nvim
           neodev-nvim
+          neo-tree-nvim
           noice-nvim
           nui-nvim
           nvim-cmp
@@ -49,12 +56,14 @@
           nvim-lspconfig
           nvim-notify
           nvim-spectre
+          rustaceanvim
           nvim-treesitter
           nvim-treesitter-context
           nvim-treesitter-textobjects
           nvim-ts-autotag
           nvim-ts-context-commentstring
           nvim-web-devicons
+          nvim-window-picker
           persistence-nvim
           plenary-nvim
           telescope-fzf-native-nvim
@@ -62,7 +71,9 @@
           todo-comments-nvim
           tokyonight-nvim
           trouble-nvim
+          vim-autoswap
           vim-illuminate
+          vim-sleuth
           vim-startuptime
           which-key-nvim
           { name = "LuaSnip"; path = luasnip; }
@@ -128,6 +139,9 @@
     "${parsers}/parser";
 
   # Normal LazyVim config here, see https://github.com/LazyVim/starter/tree/main/lua
-  xdg.configFile."nvim/lua".source = ./lua;
+  xdg.configFile."nvim/lua" = {
+    recursive = true;
+    source = ./lua;
+  };
   };
 }
