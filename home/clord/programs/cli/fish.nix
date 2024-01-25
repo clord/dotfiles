@@ -1,18 +1,17 @@
-{ config, pkgs, ... }: {
-
+{pkgs, ...}: {
   programs.fish = {
     enable = true;
-    plugins = [{
-      name = "tide";
-      src = pkgs.fetchFromGitHub {
-        owner = "IlanCosman";
-        repo = "tide";
-        rev = "a34b0c2809f665e854d6813dd4b052c1b32a32b4";
-        sha256 = "sha256-ZyEk/WoxdX5Fr2kXRERQS1U1QHH3oVSyBQvlwYnEYyc=";
-      };
-    }
-
-      ];
+    plugins = [
+      {
+        name = "tide";
+        src = pkgs.fetchFromGitHub {
+          owner = "IlanCosman";
+          repo = "tide";
+          rev = "a34b0c2809f665e854d6813dd4b052c1b32a32b4";
+          sha256 = "sha256-ZyEk/WoxdX5Fr2kXRERQS1U1QHH3oVSyBQvlwYnEYyc=";
+        };
+      }
+    ];
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
       fish_vi_key_bindings
@@ -27,14 +26,8 @@
       set -g default_user clord
     '';
     shellAliases = {
-      #dotdot = {
-      #  regex = "^\\.\\.+$";
-      #  function = "multicd";
-      #};
     };
     shellAbbrs = {
-      vim = "nvim";
-      v = "nvim";
       c = "clear";
       g = "git";
       s = "git status -sb";
@@ -51,7 +44,7 @@
       t = "cd (mktemp -d /tmp/$1.XXXX)";
       mcd = "mkdir -p $argv; and cd $argv";
       prepend_path = {
-        argumentNames = [ "r" ];
+        argumentNames = ["r"];
         body = ''
           if test -d $r
               test -d $r/sbin ; and set PATH $r/sbin $PATH
@@ -63,5 +56,4 @@
       };
     };
   };
-
 }

@@ -12,7 +12,6 @@
   } @ inputs: let
     overlays = with inputs; [nixd.overlays.default rust-overlay.overlays.default];
     defaultModules = [
-      {programs.fish.enable = true;}
       agenix.nixosModules.default
       ./nixos-modules
       ./roles
@@ -45,12 +44,12 @@
             hm
             {roles.terminal.enable = true;}
             {
+              home-manager.users.clord = import ./home/clord/edmon.nix;
               clord.user = {
                 enable = true;
                 home = "/Users/clord";
               };
               users.users.clord.home = "/Users/clord";
-              home-manager.users.clord = import ./home/clord/edmon.nix;
             }
             ./systems/edmon.nix
           ]
@@ -141,7 +140,7 @@
           [
             "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
             {sdImage.compressImage = false;}
-            {restedpi = restedpi.packages.aarch64-linux.restedpi;}
+            {inherit (restedpi.packages.aarch64-linux) restedpi;}
             home-manager.nixosModules.home-manager
             hm
             {roles.terminal.enable = true;}

@@ -1,8 +1,11 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.clord.user;
   pubkeys = import ../../pubkeys/default.nix;
-
 in {
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
@@ -27,28 +30,29 @@ in {
     };
     extraGroups = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
+      default = [];
     };
     extraAuthorizedKeys = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
+      default = [];
       description = "Additional authorized keys";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.clord = {
-      name = cfg.username;
-      home = cfg.home;
-      shell = pkgs.fish;
-      openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
-    } // (lib.mkIf cfg.linuxUser {
-      isNormalUser = true;
-      uid = cfg.uid;
-      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
-      hashedPasswordFile = config.age.secrets.clordPasswd.path;
-    });
-    programs.fish.enable = true;
-    clord.agenix.secrets.clordPasswd = { };
+    users.users.clord =
+      {
+        inherit (cfg) home;
+        name = cfg.username;
+        shell = pkgs.fish;
+        openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
+      }
+      // (lib.mkIf cfg.linuxUser {
+        inherit (cfg) uid;
+        isNormalUser = true;
+        extraGroups = ["wheel"] ++ cfg.extraGroups;
+        hashedPasswordFile = config.age.secrets.clordPasswd.path;
+      });
+    clord.agenix.secrets.clordPasswd = {};
   };
 }

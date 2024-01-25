@@ -1,7 +1,7 @@
-{ config, pkgs, ... }: {
-  imports = [ ./common.nix ./programs ];
+{pkgs, ...}: {
+  imports = [./common.nix ./programs];
 
-  home.sessionVariables = { };
+  home.sessionVariables = {};
 
   home.packages = with pkgs; [
     age
@@ -48,5 +48,4 @@
     xz
     zip
   ];
-
 }
