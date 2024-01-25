@@ -35,6 +35,5 @@ zip
   ];
   };
 
-  # programs.nix-index.enable = true;
 }
 
