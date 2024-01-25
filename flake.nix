@@ -17,6 +17,7 @@
     let
       overlays = with inputs; [ nixd.overlays.default rust-overlay.overlays.default ];
       defaultModules = [
+      {programs.fish.enable = true;}
         agenix.nixosModules.default
         ./nixos-modules
         ./roles
@@ -48,17 +49,15 @@
           home-manager.darwinModules.home-manager
           hm
           {
-            home-manager.users.clord = import ./home/clord/edmon.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-          {
             roles.terminal.enable = true;
             clord.user.home = "/Users/clord";
             users.users.clord.home = "/Users/clord";
+            home-manager.users.clord = import ./home/clord/edmon.nix;
           }
           ./systems/edmon.nix
         ] ++ defaultModules;
       };
+
       nixosConfigurations.wildwood = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         specialArgs = {
