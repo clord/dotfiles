@@ -9,7 +9,7 @@
   services.timesyncd.enable = true;
   environment.systemPackages = [ pkgs.git pkgs.vim pkgs.home-manager ];
 
-  programs.nix-index.enable = true;
+  # programs.nix-index.enable = true;
 
   services.openssh = {
     enable = true;
