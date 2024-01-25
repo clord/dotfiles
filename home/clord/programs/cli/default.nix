@@ -7,6 +7,8 @@
   ./helix.nix  
   ./nvim 
   ./eza.nix  
+  ./fish.nix 
+  ./git.nix 
   ];
   config = {
   home.packages = with pkgs; [

@@ -1,6 +1,6 @@
 { config, pkgs, ... }: {
 
-  imports = [ ./common.nix ./fish.nix ./git.nix ./programs ];
+  imports = [ ./common.nix ./programs ];
 
   home = {
     username = "clord";
