@@ -11,6 +11,10 @@
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    neovim-flake = {
+      url = "github:notashelf/neovim-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
