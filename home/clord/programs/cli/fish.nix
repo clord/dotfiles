@@ -28,6 +28,8 @@
     shellAliases = {
     };
     shellAbbrs = {
+      v = "neovide";
+      vim = "nvim";
       c = "clear";
       g = "git";
       s = "git status -sb";
