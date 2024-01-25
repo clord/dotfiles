@@ -18,7 +18,8 @@ let
       };
     '';
   };
-in {
+in
+{
   options.restedpi = lib.mkOption {
     type = lib.types.package;
     defaultText = lib.literalExpression "pkgs.restedpi";
@@ -26,6 +27,7 @@ in {
   };
   config = {
     environment.systemPackages = with pkgs; [ i2c-tools ];
+    users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
 
     hardware = {
       bluetooth.powerOnBoot = false;

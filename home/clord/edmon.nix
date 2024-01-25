@@ -2,8 +2,10 @@
 
   imports = [ ./common.nix ./fish.nix ./git.nix ./programs ];
 
-  home.username = "clord";
-  home.homeDirectory = "/Users/clord";
+  home = {
+    username = "clord";
+    homeDirectory = "/Users/clord";
+  };
 
   programs.direnv = { enable = true; };
   programs.eza = {

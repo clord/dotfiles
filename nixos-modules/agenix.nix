@@ -2,7 +2,8 @@
 with builtins;
 with lib;
 let cfg = config.clord.agenix;
-in {
+in
+{
   options.clord.agenix = {
     enable = mkOption {
       default = true;
@@ -14,9 +15,8 @@ in {
       default = { };
     };
   };
-  config = mkIf cfg.enable {
+  config = (mkIf cfg.enable {
     environment.systemPackages = [ inputs.agenix.packages.${pkgs.system}.default ];
-    users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
     age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     age.secrets = {
       chickenpiAppSecret.file = ../secrets/chickenpiAppSecret.age;
@@ -27,5 +27,6 @@ in {
       eugenePasswd.file = ../secrets/eugenePasswd.age;
       rootPasswd.file = ../secrets/rootPasswd.age;
     };
-  };
+  })
+  ;
 }

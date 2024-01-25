@@ -15,11 +15,11 @@
 
   outputs = { self, home-manager, restedpi, nixpkgs, nix-darwin, nixos-hardware, agenix, ... }@inputs:
     let
-      overlays = with inputs; [  nixd.overlays.default rust-overlay.overlays.default ];
-      defaultModules = [ 
-        agenix.nixosModules.default 
-        ./nixos-modules 
-        ./roles 
+      overlays = with inputs; [ nixd.overlays.default rust-overlay.overlays.default ];
+      defaultModules = [
+        agenix.nixosModules.default
+        ./nixos-modules
+        ./roles
       ];
       hm = ({ config, ... }: {
         home-manager = {
@@ -31,7 +31,8 @@
           };
         };
       });
-    in {
+    in
+    {
       darwinConfigurations.edmon = nix-darwin.lib.darwinSystem rec {
         system = "aarch64-darwin";
         specialArgs = {
@@ -53,6 +54,7 @@
           {
             roles.terminal.enable = true;
             clord.user.home = "/Users/clord";
+            users.users.clord.home = "/Users/clord";
           }
           ./systems/edmon.nix
         ] ++ defaultModules;

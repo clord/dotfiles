@@ -23,6 +23,8 @@
     xkbVariant = "";
   };
 
+  users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 

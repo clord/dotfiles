@@ -1,4 +1,5 @@
 { config, pkgs, lib, ... }: {
+  users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
   hardware.enableRedistributableFirmware = true;
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
