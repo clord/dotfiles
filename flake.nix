@@ -1,22 +1,5 @@
 {
   description = "NixOS configuration for all machines in the network";
-  inputs = {
-    nixpkgs.url = "nixpkgs/nixos-23.11";
-    agenix.url = "github:ryantm/agenix";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-23.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    nixd.url = "github:nix-community/nixd";
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    restedpi.url = "github:clord/restedpi";
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    neovim-flake = {
-      url = "github:notashelf/neovim-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
   outputs = {
     self,
     home-manager,
@@ -175,5 +158,22 @@
     };
 
     packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
+  };
+
+  inputs = {
+    nixpkgs.url = "nixpkgs/nixos-23.11";
+    agenix.url = "github:ryantm/agenix";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    home-manager.url = "github:rycee/home-manager/release-23.11";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nixd.url = "github:nix-community/nixd";
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    restedpi.url = "github:clord/restedpi";
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    neovim-flake = {
+      url = "github:notashelf/neovim-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
