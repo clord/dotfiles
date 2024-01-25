@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   grafanaInclude = {
     user = {
       name = "Christopher Lord";
@@ -13,32 +12,34 @@ let
 
     # Remember blank line between title and body.
 
-    ### Body: Explain *what* and *why* (not *how*). Include issue reference 
+    ### Body: Explain *what* and *why* (not *how*). Include issue reference
     # Wrap at 72 chars. ################################## which is here: #
 
 
-    # At the end: Include Co-authored-by for all contributors. 
-    # Include at least one empty line before it. Format: 
+    # At the end: Include Co-authored-by for all contributors.
+    # Include at least one empty line before it. Format:
     # Co-authored-by: Name <user@users.noreply.github.com>
   '';
 
-  macInclude = if pkgs.system == "aarch64-darwin" then {
-    program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-  } else
-    { };
+  macInclude =
+    if pkgs.system == "aarch64-darwin"
+    then {
+      program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+    }
+    else {};
 in {
   programs.gh = {
     enable = true;
     settings = {
       git_protocol = "ssh";
-      aliases = { co = "pr checkout"; };
+      aliases = {co = "pr checkout";};
       editor = "nvim";
     };
   };
 
   programs.git = {
     enable = true;
-    ignores = [ "*~" "*.swp" ];
+    ignores = ["*~" "*.swp"];
     #signing = {
     #  key =
     #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
@@ -47,10 +48,12 @@ in {
     userEmail = "christopher@pliosoft.com";
     userName = "Christopher Lord";
 
-    includes = [{
-      condition = "gitdir:~/src/grafana/*";
-      contents = grafanaInclude;
-    }];
+    includes = [
+      {
+        condition = "gitdir:~/src/grafana/*";
+        contents = grafanaInclude;
+      }
+    ];
 
     extraConfig = {
       github.user = "clord";
@@ -97,8 +100,7 @@ in {
     };
 
     aliases = {
-      lg =
-        "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --";
+      lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --";
       unstage = "reset HEAD --";
       staged = "diff --cached";
       unstaged = "diff";
@@ -113,21 +115,7 @@ in {
       tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
       recent = ''branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
     };
-
-    # delta = {
-    #  enable = true;
-    #  options = {
-    #    features = "decorations";
-    #    whitespace-error-style = "22 reverse";
-    #    decorations = {
-    #      commit-decoration-style = "bold yellow box ul";
-    #      file-style = "bold yellow ul";
-    #      file-decoration-style = "none";
-    #    };
-    #  };
-    #};
   };
 
-  home.packages = with pkgs; [ difftastic gitAndTools.transcrypt gh ];
+  home.packages = with pkgs; [difftastic gitAndTools.transcrypt gh];
 }
-

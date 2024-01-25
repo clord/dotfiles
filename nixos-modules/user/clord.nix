@@ -54,5 +54,6 @@ in {
         hashedPasswordFile = config.age.secrets.clordPasswd.path;
       });
     clord.agenix.secrets.clordPasswd = {};
+    programs.fish.enable = true;
   };
 }

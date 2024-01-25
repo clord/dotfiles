@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [./common.nix ./programs];
 
-  home.sessionVariables = {};
+  programs.fish.enable = true;
 
   home.packages = with pkgs; [
     age
