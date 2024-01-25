@@ -12,9 +12,9 @@
       # most settings are documented in the appendix
       settings = {
         config = {
-          leaderKey = ",";
-          lineNumberMode = "number";
           vim = {
+            leaderKey = ",";
+            lineNumberMode = "number";
             viAlias = true;
             vimAlias = true;
             debugMode = {

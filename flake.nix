@@ -23,7 +23,7 @@
         useUserPackages = true;
         extraSpecialArgs = {
           inherit inputs;
-          roles = config.roles;
+          inherit (config) roles;
         };
       };
     };
@@ -43,9 +43,12 @@
           [
             home-manager.darwinModules.home-manager
             hm
+            {roles.terminal.enable = true;}
             {
-              roles.terminal.enable = true;
-              clord.user.home = "/Users/clord";
+              clord.user = {
+                enable = true;
+                home = "/Users/clord";
+              };
               users.users.clord.home = "/Users/clord";
               home-manager.users.clord = import ./home/clord/edmon.nix;
             }

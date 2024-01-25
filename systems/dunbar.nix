@@ -1,11 +1,18 @@
-{ config, lib, pkgs, modulesPath, ... }: {
-
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}: {
+  imports = [(modulesPath + "/profiles/qemu-guest.nix")];
   hardware.enableRedistributableFirmware = lib.mkDefault true;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "dunbar";
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "dunbar";
+    networkmanager.enable = true;
+    useDHCP = lib.mkDefault true;
+  };
   nixpkgs.config.allowUnfree = true;
 
   services.xserver.displayManager.autoLogin.enable = true;
@@ -39,10 +46,10 @@
     pulse.enable = true;
   };
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
+  boot.initrd.availableKernelModules = ["xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod"];
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = [];
+  boot.extraModulePackages = [];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/04793b4d-85f3-4ccc-91da-a746d9b1b359";
@@ -54,9 +61,7 @@
     fsType = "vfat";
   };
 
-  swapDevices = [ ];
+  swapDevices = [];
 
-  networking.useDHCP = lib.mkDefault true;
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
-
