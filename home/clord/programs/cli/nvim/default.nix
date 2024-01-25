@@ -27,7 +27,7 @@
           vim.lsp = {
             formatOnSave = true;
             lspkind.enable = false;
-            lightbulb.enable = true;
+            lightbulb.enable = false;
             lspsaga.enable = false;
             nvimCodeActionMenu.enable = true;
             trouble.enable = true;
@@ -37,10 +37,10 @@
           };
 
           vim.debugger = {
-            nvim-dap = {
-              enable = true;
-              ui.enable = true;
-            };
+            # nvim-dap = {
+            #   enable = false;
+            #   ui.enable = false;
+            # };
           };
 
           vim.languages = {
@@ -70,20 +70,20 @@
             enable = true;
             nvimWebDevicons.enable = true;
             fidget-nvim.enable = true;
-            highlight-undo.enable = true;
+            # highlight-undo.enable = true;
 
             indentBlankline = {
               enable = true;
               fillChar = null;
               eolChar = null;
               scope = {
-                enabled = true;
+                enabled = false;
               };
             };
 
             cursorline = {
               enable = true;
-              lineTimeout = 0;
+              lineTimeout = 200;
             };
           };
 
@@ -117,7 +117,7 @@
             nvimBufferline.enable = true;
           };
 
-          vim.treesitter.context.enable = true;
+          # vim.treesitter.context.enable = true;
 
           vim.binds = {
             whichKey.enable = true;
@@ -130,11 +130,6 @@
             enable = true;
             gitsigns.enable = true;
             gitsigns.codeActions = false; # throws an annoying debug message
-          };
-
-          vim.minimap = {
-            minimap-vim.enable = false;
-            codewindow.enable = true; # lighter, faster, and uses lua for configuration
           };
 
           vim.dashboard = {
@@ -171,12 +166,12 @@
           vim.terminal = {
             toggleterm = {
               enable = true;
-              lazygit.enable = true;
+              # lazygit.enable = true;
             };
           };
 
           vim.ui = {
-            borders.enable = true;
+            borders.enable = false;
             noice.enable = true;
             colorizer.enable = true;
             modes-nvim.enable = false; # the theme looks terrible with catppuccin
@@ -184,16 +179,6 @@
             breadcrumbs = {
               enable = true;
               navbuddy.enable = true;
-            };
-            smartcolumn = {
-              enable = true;
-              columnAt.languages = {
-                # this is a freeform module, it's `buftype = int;` for configuring column position
-                nix = 110;
-                ruby = 120;
-                java = 130;
-                go = [90 130];
-              };
             };
           };
 
