@@ -37,12 +37,17 @@
               };
               trouble = {
                 enable = true;
+                mappings = {
+                  workspaceDiagnostics = "<leader>gD";
+                  documentDiagnostics = "<leader>gd";
+                  lspReferences = "<leader>gr";
+                };
               };
               lspsaga = {
                 enable = true;
                 mappings = {
                   rename = "gr";
-                  previewDefinition = "K";
+                  renderHoveredDoc = "K";
                   nextDiagnostic = "]d";
                   previousDiagnostic = "[d";
                   codeAction = "ga";
