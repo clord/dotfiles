@@ -1,8 +1,15 @@
-_: {
+{inputs, ...}: {
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
   nix = {
+    registry = {
+      nixpkgs = {flake = inputs.nixpkgs;};
+    };
+    nixPath = [
+      "nixpkgs=${inputs.nixpkgs}"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
     settings.trusted-users = ["@admin" "clord"];
     configureBuildUsers = true;
 

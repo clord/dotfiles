@@ -8,8 +8,6 @@
   config = lib.mkIf roles.terminal.enable {
     programs.neovim-flake = {
       enable = true;
-      # your settings need to go into the settings attribute set
-      # most settings are documented in the appendix
       settings = {
         config = {
           vim = {
@@ -17,192 +15,215 @@
             lineNumberMode = "number";
             viAlias = true;
             vimAlias = true;
+            tabWidth = 2;
+            useSystemClipboard = true;
+            spellChecking = {
+              enable = true;
+              # enableProgrammingWordList = true;
+            };
             debugMode = {
               enable = false;
               level = 20;
               logFile = "/tmp/nvim.log";
             };
-          };
 
-          vim.lsp = {
-            formatOnSave = true;
-            lspkind.enable = false;
-            lightbulb.enable = false;
-            lspsaga.enable = false;
-            nvimCodeActionMenu.enable = true;
-            trouble.enable = true;
-            lspSignature.enable = true;
-            #lsplines.enable = isMaximal;
-            #nvim-docs-view.enable = isMaximal;
-          };
-
-          vim.debugger = {
-            # nvim-dap = {
-            #   enable = false;
-            #   ui.enable = false;
-            # };
-          };
-
-          vim.languages = {
-            enableLSP = true;
-            enableFormat = true;
-            enableTreesitter = true;
-            enableExtraDiagnostics = true;
-
-            nix.enable = true;
-            html.enable = true;
-            clang = {
-              enable = true;
-              lsp.server = "clangd";
+            lsp = {
+              formatOnSave = true;
+              mappings = {
+                goToType = "gt";
+                goToDefinition = "gd";
+                listImplementations = "gi";
+                listReferences = "gR";
+              };
+              trouble = {
+                enable = true;
+              };
+              lspsaga = {
+                enable = true;
+                mappings = {
+                  rename = "gr";
+                  previewDefinition = "K";
+                  nextDiagnostic = "]d";
+                  previousDiagnostic = "[d";
+                  codeAction = "ga";
+                  signatureHelp = "gh";
+                  smartScrollUp = "<C-u>";
+                  smartScrollDown = "<C-d>";
+                };
+              };
+              lspkind.enable = true;
+              lightbulb.enable = false;
             };
-            sql.enable = true;
-            rust = {
+
+            telescope = {
               enable = true;
-              crates.enable = true;
+              mappings = {
+                findFiles = "<C-p>";
+                liveGrep = "<C-f>";
+              };
             };
-            ts.enable = true;
-            go.enable = true;
-            python.enable = true;
-            bash.enable = true;
-          };
-
-          vim.visuals = {
-            enable = true;
-            nvimWebDevicons.enable = true;
-            fidget-nvim.enable = true;
-            # highlight-undo.enable = true;
-
-            indentBlankline = {
-              enable = true;
-              fillChar = null;
-              eolChar = null;
-              scope = {
-                enabled = false;
+            utility = {
+              ccc.enable = true;
+              vim-wakatime.enable = false;
+              icon-picker.enable = false;
+              surround.enable = true;
+              diffview-nvim.enable = true;
+              motion = {
+                hop.enable = true;
+                leap.enable = true;
               };
             };
 
-            cursorline = {
+            languages = {
+              enableLSP = true;
+              enableFormat = true;
+              enableTreesitter = true;
+              enableExtraDiagnostics = true;
+
+              nix.enable = true;
+              html.enable = true;
+              clang = {
+                enable = true;
+                lsp.server = "clangd";
+              };
+              # sql.enable = true;
+              rust = {
+                enable = true;
+                crates.enable = true;
+              };
+              ts.enable = true;
+              go.enable = true;
+              python.enable = true;
+              bash.enable = true;
+            };
+
+            visuals = {
               enable = true;
-              lineTimeout = 200;
-            };
-          };
+              nvimWebDevicons.enable = true;
+              fidget-nvim.enable = true;
+              # highlight-undo.enable = true;
 
-          vim.statusline = {
-            lualine = {
+              indentBlankline = {
+                enable = true;
+                fillChar = null;
+                eolChar = null;
+                scope = {
+                  enabled = false;
+                };
+              };
+
+              cursorline = {
+                enable = true;
+                lineTimeout = 200;
+              };
+            };
+
+            statusline = {
+              lualine = {
+                enable = true;
+                theme = "tokyonight";
+              };
+            };
+
+            theme = {
               enable = true;
-              theme = "tokyonight";
+              name = "tokyonight";
+              style = "night";
+              transparent = false;
             };
-          };
+            autopairs.enable = false;
 
-          vim.theme = {
-            enable = true;
-            name = "tokyonight";
-            style = "night";
-            transparent = false;
-          };
-          vim.autopairs.enable = true;
-
-          vim.autocomplete = {
-            enable = true;
-            type = "nvim-cmp";
-          };
-
-          vim.filetree = {
-            nvimTree = {
+            autocomplete = {
               enable = true;
+              type = "nvim-cmp";
             };
-          };
 
-          vim.tabline = {
-            nvimBufferline.enable = true;
-          };
-
-          # vim.treesitter.context.enable = true;
-
-          vim.binds = {
-            whichKey.enable = true;
-            cheatsheet.enable = true;
-          };
-
-          vim.telescope.enable = true;
-
-          vim.git = {
-            enable = true;
-            gitsigns.enable = true;
-            gitsigns.codeActions = false; # throws an annoying debug message
-          };
-
-          vim.dashboard = {
-            dashboard-nvim.enable = false;
-            alpha.enable = true;
-          };
-
-          vim.notify = {
-            nvim-notify.enable = true;
-          };
-
-          vim.projects = {
-            project-nvim.enable = false;
-          };
-
-          vim.utility = {
-            ccc.enable = true;
-            vim-wakatime.enable = false;
-            icon-picker.enable = false;
-            surround.enable = true;
-            diffview-nvim.enable = true;
-            motion = {
-              hop.enable = true;
-              leap.enable = true;
+            filetree = {
+              nvimTree = {
+                enable = true;
+                mappings = {toggle = "<leader>e";};
+                view.float = {enable = true;};
+                openOnSetup = false;
+              };
             };
-          };
 
-          vim.notes = {
-            orgmode.enable = false;
-            mind-nvim.enable = false;
-            todo-comments.enable = true;
-          };
+            # vim.tabline = {
+            #   nvimBufferline.enable = true;
+            # };
 
-          vim.terminal = {
-            toggleterm = {
+            # vim.treesitter.context.enable = true;
+
+            binds = {
+              whichKey.enable = true;
+              cheatsheet.enable = true;
+            };
+
+            git = {
               enable = true;
-              # lazygit.enable = true;
+              gitsigns.enable = true;
             };
-          };
 
-          vim.ui = {
-            borders.enable = false;
-            noice.enable = true;
-            colorizer.enable = true;
-            modes-nvim.enable = false; # the theme looks terrible with catppuccin
-            illuminate.enable = true;
-            breadcrumbs = {
-              enable = true;
-              navbuddy.enable = true;
+            dashboard = {
+              dashboard-nvim.enable = false;
+              alpha.enable = true;
             };
-          };
 
-          vim.assistant = {
-            copilot = {
-              enable = true;
-              cmp.enable = true;
+            notify = {
+              nvim-notify.enable = true;
             };
-          };
 
-          vim.session = {
-            nvim-session-manager.enable = false;
-          };
+            projects = {
+              project-nvim.enable = false;
+            };
 
-          vim.gestures = {
-            gesture-nvim.enable = false;
-          };
+            notes = {
+              orgmode.enable = false;
+              mind-nvim.enable = false;
+              todo-comments.enable = true;
+            };
 
-          vim.comments = {
-            comment-nvim.enable = true;
-          };
+            terminal = {
+              toggleterm = {
+                enable = true;
+                # lazygit.enable = true;
+              };
+            };
 
-          vim.presence = {
-            neocord.enable = false;
+            ui = {
+              borders.enable = false;
+              noice.enable = true;
+              colorizer.enable = true;
+              modes-nvim.enable = false; # the theme looks terrible with catppuccin
+              illuminate.enable = true;
+              breadcrumbs = {
+                enable = true;
+                navbuddy.enable = true;
+              };
+            };
+
+            assistant = {
+              copilot = {
+                enable = true;
+                cmp.enable = true;
+                mappings.panel.refresh = "<leader>cr";
+              };
+            };
+
+            session = {
+              nvim-session-manager.enable = false;
+            };
+
+            gestures = {
+              gesture-nvim.enable = false;
+            };
+
+            comments = {
+              comment-nvim.enable = false;
+            };
+
+            presence = {
+              neocord.enable = false;
+            };
           };
         };
       };
