@@ -1,3 +1,11 @@
+#                                                               
+#                       ████ ██████           █████      ██
+#                      ███████████             █████ 
+#                      █████████ ███████████████████ ███   ███████████
+#                     █████████  ███    █████████████ █████ ██████████████
+#                    █████████ ██████████ █████████ █████ █████ ████ █████
+#                  ███████████ ███    ███ █████████ █████ █████ ████ █████
+#                 ██████  █████████████████████ ████ █████ █████ ████ ██████
 {
   inputs,
   roles,
@@ -141,6 +149,12 @@
             autocomplete = {
               enable = true;
               type = "nvim-cmp";
+              mappings = {
+                complete = "<C-Space>";
+                close = "<esc>";
+                next = "<C-n>";
+                previous = "<C-p>";
+              };
             };
 
             filetree = {
@@ -166,11 +180,23 @@
             git = {
               enable = true;
               gitsigns.enable = true;
-            };
-
-            dashboard = {
-              dashboard-nvim.enable = false;
-              alpha.enable = true;
+              mappings = {
+                # hunks
+                nextHunk = "]c";
+                previousHunk = "[c";
+                stageHunk = "<leader>hs";
+                undoStageHunk = "<leader>hu";
+                resetHunk = "<leader>hr";
+                previewHunk = "<leader>hP";
+                # buffers
+                stageBuffer = "<leader>hS";
+                resetBuffer = "<leader>hR";
+                blameLine = "<leader>hb";
+                toggleBlame = "<leader>tb";
+                diffThis = "<leader>hd";
+                diffProject = "<leader>hD";
+                toggleDeleted = "<leader>td";
+              };
             };
 
             notify = {
