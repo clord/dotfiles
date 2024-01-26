@@ -1,1 +1,1 @@
-{ config, pkgs, ... }: { imports = [ ./cli ./gui ]; }
+_: {imports = [./cli ./gui];}

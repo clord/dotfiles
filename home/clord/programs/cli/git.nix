@@ -40,11 +40,10 @@ in {
   programs.git = {
     enable = true;
     ignores = ["*~" "*.swp"];
-    #signing = {
-    #  key =
-    #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
-    #  signByDefault = true;
-    #};
+    signing = {
+      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
+      signByDefault = true;
+    };
     userEmail = "christopher@pliosoft.com";
     userName = "Christopher Lord";
 
@@ -65,14 +64,13 @@ in {
       format.numbered = "auto";
       fetch.prune = "true";
       commit = {
-        # template = gitMessage;
-        # gpgsign = "true";
+        template = "${gitMessage}";
       };
       rerere = {
         enabled = "true";
         autoupdate = "true";
       };
-      # gpg = { format = "ssh"; };
+      gpg = {format = "ssh";};
       merge = {
         stat = "true";
         conflictStyle = "diff3";
@@ -96,7 +94,7 @@ in {
       "credential \"https://github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
       "credential \"https://gist.github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
 
-      # "gpg \"ssh\"" = macInclude;
+      "gpg \"ssh\"" = macInclude;
     };
 
     aliases = {

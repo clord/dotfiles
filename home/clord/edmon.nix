@@ -1,6 +1,5 @@
-{ config, pkgs, ... }: {
-
-  imports = [ ./common.nix ./programs ];
+{pkgs, ...}: {
+  imports = [./common.nix ./programs];
 
   home = {
     username = "clord";
@@ -46,6 +45,4 @@
     xz
     zip
   ];
-
 }
-

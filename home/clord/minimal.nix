@@ -1,9 +1,9 @@
-{ config, pkgs, ... }: {
-  imports = [ ./common.nix ];
+{pkgs, ...}: {
+  imports = [./common.nix];
+  home = {
+    username = "clord";
+    homeDirectory = "/home/clord";
 
-  home.username = "clord";
-  home.homeDirectory = "/home/clord";
-
-  home.packages = with pkgs; [ age direnv eza fd fish nixfmt openssh ripgrep sops sqlite tree unzip wget xz zip ];
-
+    packages = with pkgs; [age direnv eza fd fish nixfmt openssh ripgrep sops sqlite tree unzip wget xz zip];
+  };
 }

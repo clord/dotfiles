@@ -1,8 +1,11 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.eugene.user;
   pubkeys = import ../../pubkeys/default.nix;
-
 in {
   options.eugene.user = {
     enable = lib.mkEnableOption "Enables eugene user.";
@@ -27,28 +30,29 @@ in {
     };
     extraGroups = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
+      default = [];
     };
     extraAuthorizedKeys = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ ];
+      default = [];
       description = "Additional authorized keys";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    users.users.eugene = {
-      name = cfg.username;
-      uid = cfg.uid;
-      home = cfg.home;
-      shell = pkgs.fish;
-      openssh.authorizedKeys.keys = pubkeys.eugene.user ++ cfg.extraAuthorizedKeys;
-    } // (lib.mkIf cfg.linuxUser {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
-      hashedPasswordFile = config.age.secrets.clordPasswd.path;
-    });
+    users.users.eugene =
+      {
+        inherit (cfg) uid home;
+        name = cfg.username;
+        shell = pkgs.fish;
+        openssh.authorizedKeys.keys = pubkeys.eugene.user ++ cfg.extraAuthorizedKeys;
+      }
+      // (lib.mkIf cfg.linuxUser {
+        isNormalUser = true;
+        extraGroups = ["wheel"] ++ cfg.extraGroups;
+        hashedPasswordFile = config.age.secrets.clordPasswd.path;
+      });
     programs.fish.enable = true;
-    clord.agenix.secrets.eugenePasswd = { };
+    clord.agenix.secrets.eugenePasswd = {};
   };
 }

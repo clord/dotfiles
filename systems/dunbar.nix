@@ -6,50 +6,56 @@
 }: {
   imports = [(modulesPath + "/profiles/qemu-guest.nix")];
   hardware.enableRedistributableFirmware = lib.mkDefault true;
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+
+    initrd.availableKernelModules = ["xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod"];
+    initrd.kernelModules = [];
+    kernelModules = [];
+    extraModulePackages = [];
+  };
   networking = {
     hostName = "dunbar";
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
   };
   nixpkgs.config.allowUnfree = true;
+  services = {
+    xserver = {
+      displayManager = {
+        autoLogin.enable = true;
+        autoLogin.user = "clord";
 
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "clord";
+        # Enable the GNOME Desktop Environment.
+        gdm.enable = true;
+      };
+      desktopManager.gnome.enable = true;
+
+      enable = true;
+      layout = "us";
+      xkbVariant = "";
+    };
+
+    # Enable CUPS to print documents.
+    printing.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+  };
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    xkbVariant = "";
-  };
-
   users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  boot.initrd.availableKernelModules = ["xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = [];
-  boot.extraModulePackages = [];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/04793b4d-85f3-4ccc-91da-a746d9b1b359";

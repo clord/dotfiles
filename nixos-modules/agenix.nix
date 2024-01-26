@@ -1,9 +1,14 @@
-{ options, config, inputs, lib, pkgs, ... }:
-with builtins;
-with lib;
-let cfg = config.clord.agenix;
-in
 {
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
+with builtins;
+with lib; let
+  cfg = config.clord.agenix;
+in {
   options.clord.agenix = {
     enable = mkOption {
       default = true;
@@ -12,12 +17,12 @@ in
     };
     secrets = mkOption {
       type = types.attrs;
-      default = { };
+      default = {};
     };
   };
-  config = (mkIf cfg.enable {
-    environment.systemPackages = [ inputs.agenix.packages.${pkgs.system}.default ];
-    age.identityPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  config = mkIf cfg.enable {
+    environment.systemPackages = [inputs.agenix.packages.${pkgs.system}.default];
+    age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
     age.secrets = {
       chickenpiAppSecret.file = ../secrets/chickenpiAppSecret.age;
       chickenpiConfig.file = ../secrets/chickenpiConfig.age;
@@ -27,6 +32,5 @@ in
       eugenePasswd.file = ../secrets/eugenePasswd.age;
       rootPasswd.file = ../secrets/rootPasswd.age;
     };
-  })
-  ;
+  };
 }

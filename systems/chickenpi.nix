@@ -1,8 +1,15 @@
-{ config, lib, pkgs, restedpi, ... }:
-with lib;
-let
-  restedpi = config.restedpi;
-  simple-overlay = { target, status }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  inherit (config) restedpi;
+  simple-overlay = {
+    target,
+    status,
+  }: {
     name = "${target}-${status}-overlay";
     dtsText = ''
       /dts-v1/;
@@ -18,15 +25,14 @@ let
       };
     '';
   };
-in
-{
+in {
   options.restedpi = lib.mkOption {
     type = lib.types.package;
     defaultText = lib.literalExpression "pkgs.restedpi";
     description = lib.mdDoc "The restedpi package to use.";
   };
   config = {
-    environment.systemPackages = with pkgs; [ i2c-tools ];
+    environment.systemPackages = with pkgs; [i2c-tools];
     users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
 
     hardware = {
@@ -45,32 +51,34 @@ in
     networking = {
       hostName = "chickenpi";
       wireless.enable = false;
-      interfaces.end0.ipv4.addresses = [{
-        address = "10.68.3.17";
-        prefixLength = 24;
-      }];
+      interfaces.end0.ipv4.addresses = [
+        {
+          address = "10.68.3.17";
+          prefixLength = 24;
+        }
+      ];
       defaultGateway = "10.68.3.254";
-      nameservers = [ "10.68.3.4" ];
+      nameservers = ["10.68.3.4"];
       firewall = {
         enable = true;
-        allowedTCPPorts = [ 21 22 80 3030 443 ];
+        allowedTCPPorts = [21 22 80 3030 443];
       };
     };
 
     boot = {
       loader.grub.enable = false;
-      initrd.availableKernelModules = [ "xhci_pci" ];
-      initrd.kernelModules = [ ];
-      kernelModules = [ ];
-      extraModulePackages = [ ];
+      initrd.availableKernelModules = ["xhci_pci"];
+      initrd.kernelModules = [];
+      kernelModules = [];
+      extraModulePackages = [];
     };
-    swapDevices = [ ];
+    swapDevices = [];
 
     services.prometheus = {
       exporters = {
         node = {
           enable = true;
-          enabledCollectors = [ "systemd" ];
+          enabledCollectors = ["systemd"];
           port = 9002;
         };
       };
@@ -79,16 +87,13 @@ in
     nixpkgs.hostPlatform = "aarch64-linux";
     systemd.services.restedpi = {
       enable = true;
-      environment = { RUST_BACKTRACE = "1"; };
+      environment = {RUST_BACKTRACE = "1";};
       description = "restedpi exposes a graphql api on the raspberry pi";
-      unitConfig = { };
+      unitConfig = {};
       serviceConfig = {
-        ExecStart =
-          "${restedpi}/bin/restedpi --config-file ${config.age.secrets.chickenpiConfig.path} --log-level warn server";
+        ExecStart = "${restedpi}/bin/restedpi --config-file ${config.age.secrets.chickenpiConfig.path} --log-level warn server";
       };
-      wantedBy = [ "multi-user.target" ];
+      wantedBy = ["multi-user.target"];
     };
-
   };
 }
-
