@@ -41,15 +41,16 @@
     devShell = flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = import nixpkgs {inherit system;};
-      in
-        pkgs.mkShell {
+      in {
+        default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nil
             statix
             alejandra
             deadnix
           ];
-        }
+        };
+      }
     );
   in {
     inherit devShell;
