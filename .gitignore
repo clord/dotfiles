@@ -1,4 +1,7 @@
 *.swp
+.direnv
+.env
+.envrc
 /result
 *.log
 .AppleDouble

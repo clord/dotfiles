@@ -18,6 +18,7 @@
     nixpkgs,
     nix-darwin,
     nixos-hardware,
+    flake-utils,
     agenix,
     ...
   } @ inputs: let
@@ -37,7 +38,21 @@
         };
       };
     };
+    devShell = flake-utils.lib.eachDefaultSystem (
+      system: let
+        pkgs = import nixpkgs {inherit system;};
+      in
+        pkgs.mkShell {
+          buildInputs = with pkgs; [
+            nil
+            statix
+            alejandra
+            deadnix
+          ];
+        }
+    );
   in {
+    inherit devShell;
     darwinConfigurations = {
       edmon = nix-darwin.lib.darwinSystem rec {
         system = "aarch64-darwin";
@@ -172,13 +187,13 @@
 
     packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
   };
-
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.11";
     agenix.url = "github:ryantm/agenix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
     nixd.url = "github:nix-community/nixd";
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";

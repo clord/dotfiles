@@ -1,6 +1,12 @@
 {roles, ...}: {
   programs.direnv = {
-    enable = roles.terminal.enable;
+    inherit (roles.terminal) enable;
     nix-direnv.enable = true;
+    config = {
+      load_dotenv = true;
+      strict_env = true;
+      warn_timeout = 10;
+      disable_stdin = true;
+    };
   };
 }
