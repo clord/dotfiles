@@ -92,14 +92,12 @@
               enableFormat = true;
               enableTreesitter = true;
               enableExtraDiagnostics = true;
-
               nix.enable = true;
               html.enable = true;
               clang = {
                 enable = true;
                 lsp.server = "clangd";
               };
-              # sql.enable = true;
               rust = {
                 enable = true;
                 crates.enable = true;
@@ -114,8 +112,6 @@
               enable = true;
               nvimWebDevicons.enable = true;
               fidget-nvim.enable = true;
-              # highlight-undo.enable = true;
-
               indentBlankline = {
                 enable = true;
                 fillChar = null;
@@ -124,7 +120,6 @@
                   enabled = false;
                 };
               };
-
               cursorline = {
                 enable = true;
                 lineTimeout = 200;
@@ -159,12 +154,6 @@
                 openOnSetup = false;
               };
             };
-
-            # vim.tabline = {
-            #   nvimBufferline.enable = true;
-            # };
-
-            # vim.treesitter.context.enable = true;
 
             binds = {
               whichKey.enable = true;
@@ -212,7 +201,6 @@
             terminal = {
               toggleterm = {
                 enable = true;
-                # lazygit.enable = true;
               };
             };
 
@@ -220,7 +208,7 @@
               borders.enable = false;
               noice.enable = true;
               colorizer.enable = true;
-              modes-nvim.enable = false; # the theme looks terrible with catppuccin
+              modes-nvim.enable = true;
               illuminate.enable = true;
               breadcrumbs = {
                 enable = true;

@@ -1,6 +1,8 @@
-{ fontSize, pkgs, ... }:
-
 {
+  fontSize,
+  pkgs,
+  ...
+}: {
   programs.alacritty = {
     enable = true;
     settings = {

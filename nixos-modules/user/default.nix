@@ -1,1 +1,1 @@
-{ imports = [ ./clord.nix ./eugene.nix ]; }
+{imports = [./clord.nix ./eugene.nix];}

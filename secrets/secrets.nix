@@ -1,4 +1,5 @@
-let pubkeys = import ../pubkeys/default.nix;
+let
+  pubkeys = import ../pubkeys/default.nix;
 in {
   "rootPasswd.age".publicKeys = pubkeys.clord.computers;
   "clordPasswd.age".publicKeys = pubkeys.clord.computers;

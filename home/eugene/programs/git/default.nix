@@ -1,15 +1,17 @@
-{ config, pkgs, ... }:
-
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   gitConfig = {
-    core = { editor = "nvim"; };
+    core = {editor = "nvim";};
 
     user = {
       email = "eugene@lord.ac";
       name = "Eugene Lord";
     };
     init.defaultBranch = "main";
-    merge = { conflictStyle = "diff3"; };
+    merge = {conflictStyle = "diff3";};
     pull.rebase = true;
     url = {
       "https://github.com/".insteadOf = "gh:";
