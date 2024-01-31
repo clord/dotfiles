@@ -38,7 +38,7 @@
         };
       };
     };
-    devShell = flake-utils.lib.eachDefaultSystem (
+    devShells = flake-utils.lib.eachDefaultSystemMap (
       system: let
         pkgs = import nixpkgs {inherit system;};
       in {
@@ -53,7 +53,7 @@
       }
     );
   in {
-    inherit devShell;
+    inherit devShells;
     darwinConfigurations = {
       edmon = nix-darwin.lib.darwinSystem rec {
         system = "aarch64-darwin";
