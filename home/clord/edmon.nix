@@ -44,5 +44,8 @@
     wget
     xz
     zip
+    k3d
+    tilt
+    kubernetes-helm
   ];
 }

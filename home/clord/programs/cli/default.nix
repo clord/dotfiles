@@ -11,29 +11,35 @@
     ./git.nix
   ];
   config = {
-    home.sessionVariables = {EDITOR = "nvim";};
-
-    home.packages = with pkgs; [
-      age
-      basex
-      bundix
-      difftastic
-      fd
-      ffmpeg
-      fzf
-      fzy
-      mosh
-      nixfmt
-      pandoc
-      typst
-      tldr
-      sysbench
-      sqlite
-      unzip
-      vale
-      wget
-      xz
-      zip
-    ];
+    home = {
+      sessionPath = ["node_modules/.bin"];
+      sessionVariables = {
+        EDITOR = "nvim";
+      };
+      packages = with pkgs; [
+        age
+        nodejs
+        basex
+        bundix
+        difftastic
+        fd
+        ffmpeg
+        fzf
+        fzy
+        mosh
+        nixfmt
+        pandoc
+        typst
+        tldr
+        sysbench
+        sqlite
+        unzip
+        vale
+        wget
+        xz
+        zip
+        nodePackages.yarn
+      ];
+    };
   };
 }
