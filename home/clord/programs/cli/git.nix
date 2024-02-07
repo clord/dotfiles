@@ -31,8 +31,13 @@ in {
   programs.gh = {
     enable = true;
     settings = {
+      version = 1;
       git_protocol = "ssh";
-      aliases = {co = "pr checkout";};
+      http_unix_socket = "";
+      browser = "";
+      aliases = {
+        co = "pr checkout";
+      };
       editor = "nvim";
     };
   };

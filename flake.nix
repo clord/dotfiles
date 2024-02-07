@@ -19,12 +19,11 @@
     nix-darwin,
     nixos-hardware,
     flake-utils,
-    agenix,
     ...
   } @ inputs: let
-    overlays = with inputs; [nixd.overlays.default rust-overlay.overlays.default];
+    overlays = with inputs; [rust-overlay.overlays.default];
     defaultModules = [
-      agenix.nixosModules.default
+      inputs.agenix.nixosModules.default
       ./nixos-modules
       ./roles
     ];
@@ -59,7 +58,8 @@
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
-          agenix = agenix.packages.aarch64-darwin.default;
+          inherit (inputs.devenv.packages.${system}) devenv;
+          agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
             config.allowUnfree = true;
@@ -89,7 +89,8 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          agenix = inputs.agenix.packages.x86_64-linux.default;
+          inherit (inputs.devenv.packages.${system}) devenv;
+          agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
             config.allowUnfree = true;
@@ -127,7 +128,8 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          agenix = inputs.agenix.packages.aarch64-linux.default;
+          inherit (inputs.devenv.packages.${system}) devenv;
+          agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
             config.allowUnfree = true;
@@ -156,7 +158,8 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          agenix = inputs.agenix.packages.aarch64-linux.default;
+          inherit (inputs.devenv.packages.${system}) devenv;
+          agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
             config.allowUnfree = true;
@@ -195,11 +198,14 @@
     home-manager.url = "github:rycee/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
-    nixd.url = "github:nix-community/nixd";
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neovim-flake = {
       url = "github:notashelf/neovim-flake";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  devenv,
+  ...
+}: {
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
@@ -16,6 +20,8 @@
     # Necessary for using flakes on this system.
     settings.experimental-features = "nix-command flakes";
   };
+
+  environment.systemPackages = [devenv];
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
