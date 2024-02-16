@@ -35,6 +35,24 @@
               args = ["--quiet"];
             };
           }
+          {
+            name = "typescript";
+            language-servers = ["typescript-language-server" "eslint"];
+            formatter = {
+              command = "${pkgs.nodePackages_latest.prettier}/bin/prettier";
+              args = ["--parser" "typescript"];
+              autoFormat = true;
+            };
+          }
+          {
+            name = "tsx";
+            language-servers = ["typescript-language-server" "eslint"];
+            formatter = {
+              command = "${pkgs.nodePackages_latest.prettier}/bin/prettier";
+              autoFormat = true;
+              args = ["--parser" "typescript"];
+            };
+          }
         ];
         language-server = {
           gopls = {
@@ -67,7 +85,25 @@
             };
           };
 
-          typescript-language-server = with pkgs.nodePackages; {
+          eslint = with pkgs.nodePackages_latest; {
+            command = "${eslint}/bin/eslint";
+            args = ["--stdin"];
+            config = {
+              codeActionsOnSave = {
+                mode = "all";
+                "source.fixAll.eslint" = true;
+              };
+              format = {enable = true;};
+              nodePath = "${pkgs.nodejs_21}";
+              quiet = false;
+              run = "onType";
+              validate = "on";
+              codeAction = {
+              };
+            };
+          };
+
+          typescript-language-server = with pkgs.nodePackages_latest; {
             command = "${typescript-language-server}/bin/typescript-language-server";
             args = ["--stdio"];
           };

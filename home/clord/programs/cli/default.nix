@@ -22,6 +22,7 @@
         basex
         bundix
         difftastic
+        go
         fd
         ffmpeg
         fzf
