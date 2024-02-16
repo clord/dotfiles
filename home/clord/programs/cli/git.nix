@@ -60,10 +60,17 @@ in {
     ];
 
     extraConfig = {
+      core.excludeFiles = builtins.toFile "clord-gitignore" ''
+        .DS_Store
+        .idea
+      '';
       github.user = "clord";
       init.defaultBranch = "main";
+      transfer.fsckobjects = true;
+      fetch.fsckobjects = true;
       branch.autoSetupMerge = "true";
       apply.whitespace = "fix,trailing-space,space-before-tab,cr-at-eol";
+      branch.sort = "-commiterdate";
       interactive.diffFilter = "difft";
       log.decorate = "short";
       format.numbered = "auto";
@@ -78,8 +85,9 @@ in {
       gpg = {format = "ssh";};
       merge = {
         stat = "true";
-        conflictStyle = "diff3";
-        tool = "gitmergetool";
+        conflictStyle = "zdiff3";
+        # tool = "gitmergetool";
+        tool = "${pkgs.meld}/bin/meld";
       };
       user = {
         name = "Christopher Lord";
@@ -91,7 +99,7 @@ in {
         followTags = "true";
       };
       diff = {
-        algorithm = "patience";
+        algorithm = "histogram";
         compactionHeuristic = "true";
         colorMoved = "zebra";
         external = "difft";
