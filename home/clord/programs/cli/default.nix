@@ -1,14 +1,14 @@
 {pkgs, ...}: {
   imports = [
     ./bat.nix
-    ./ssh.nix
     ./btop.nix
     ./direnv.nix
-    ./helix.nix
-    ./nvim
     ./eza.nix
     ./fish.nix
     ./git.nix
+    ./helix.nix
+    ./nvim
+    ./ssh.nix
   ];
   config = {
     home = {
@@ -18,28 +18,26 @@
       };
       packages = with pkgs; [
         age
-        nodejs
-        basex
-        bundix
         difftastic
-        go
         fd
         ffmpeg
         fzf
-        fzy
+        go
         mosh
         nixfmt
+        nodePackages.yarn
+        nodejs
         pandoc
-        typst
-        tldr
-        sysbench
+        python311Packages.pynvim
         sqlite
+        sysbench
+        tldr
+        typst
         unzip
-        vale
         wget
         xz
+        zig
         zip
-        nodePackages.yarn
       ];
     };
   };
