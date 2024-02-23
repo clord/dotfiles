@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.eugene.user;
-  pubkeys = import ../../pubkeys/default.nix;
+  pubkeys = import ../../pubkeys;
 in {
   options.eugene.user = {
     enable = lib.mkEnableOption "Enables eugene user.";
@@ -40,6 +40,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.users.eugene = import ../../home/eugene;
     users.users.eugene =
       {
         inherit (cfg) uid home;

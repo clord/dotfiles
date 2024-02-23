@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.clord.user;
-  pubkeys = import ../../pubkeys/default.nix;
+  pubkeys = import ../../pubkeys;
 in {
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
@@ -17,6 +17,16 @@ in {
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1000;
+    };
+    minimal = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
+    };
+    isMac = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
     };
     home = lib.mkOption {
       type = lib.types.path;
@@ -40,6 +50,24 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    home-manager.users.clord =
+      (lib.mkIf cfg.minimal
+        (import ../../home/clord/minimal.nix))
+      // (lib.mkIf cfg.isMac
+        ((import ../../home/clord/edmon.nix)
+          // {
+            programs.ssh = {
+              enable = true;
+              extraConfig = ''
+                # Set up our mac-specific stuff
+                # IdentityAgent /Users/clord/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+                IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+              '';
+            };
+          }))
+      // (lib.mkIf (!cfg.minimal && !cfg.isMac)
+        (import ../../home/clord));
+
     users.users.clord =
       {
         inherit (cfg) home;

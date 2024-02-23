@@ -1,9 +1,5 @@
-{roles, ...}: let
-  pubkeys = import ../../../../pubkeys;
-in {
+{roles, ...}: {
   programs.ssh = {
     inherit (roles.terminal) enable;
-    privateKeys = ["~/.ssh/id_ed25519"];
-    authorizedKeys = pubkeys.clord;
   };
 }

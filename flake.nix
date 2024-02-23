@@ -69,25 +69,13 @@
           [
             home-manager.darwinModules.home-manager
             hm
-            {roles.terminal.enable = true;}
             {
-              home-manager.users.clord =
-                import ./home/clord/edmon.nix
-                // {
-                  programs.ssh = {
-                    enable = true;
-                    extraConfig = ''
-                      # Set up our host-specific stuff
-                      # IdentityAgent /Users/clord/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
-                      IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-                    '';
-                  };
-                };
+              roles.terminal.enable = true;
               clord.user = {
+                isMac = true;
                 enable = true;
                 home = "/Users/clord";
               };
-              users.users.clord.home = "/Users/clord";
             }
             ./systems/edmon.nix
           ]
@@ -119,15 +107,11 @@
                 enable = true;
                 linuxUser = true;
               };
-              home-manager.users.clord = import ./home/clord/default.nix;
-            }
-            {
               eugene.user = {
                 enable = true;
                 linuxUser = true;
                 extraGroups = ["networkmanager"];
               };
-              home-manager.users.eugene = import ./home/eugene/default.nix;
             }
             ./systems/wildwood.nix
             ./systems/common.nix
@@ -150,9 +134,8 @@
           [
             home-manager.nixosModules.home-manager
             hm
-            {roles.terminal.enable = true;}
             {
-              home-manager.users.clord = import ./home/clord/default.nix;
+              roles.terminal.enable = true;
               clord.user = {
                 extraGroups = ["wheel"];
                 enable = true;
@@ -184,10 +167,10 @@
             {inherit (restedpi.packages.aarch64-linux) restedpi;}
             home-manager.nixosModules.home-manager
             hm
-            {roles.terminal.enable = true;}
             {
-              home-manager.users.clord = import ./home/clord/minimal.nix;
+              roles.terminal.enable = true;
               clord.user = {
+                minimal = true;
                 extraGroups = ["wheel"];
                 enable = true;
                 linuxUser = true;
