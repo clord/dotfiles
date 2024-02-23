@@ -1,14 +1,14 @@
 let
   clord = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINXLYw43gNlnfEoHpmK/UWae4DcQyLBQTGQH9ZYlRG5q clord" # clord@wildwood
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLtiIXQ0r+l0gtnjCj1hT5Z1YzRqgJ/g66pP/eEuXM3 clord" # clord@ipad
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHrw5QuFDaSsiZIXHypWLk4xQgxIoaVzPn4QzRag4eX clord" # clord@chickenpi
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO clord" # clord@1p
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPbu/FXxZhyXOEsQpsAm2YLR4P07WoFcYTm1tbUohQ1U clord" # clord@dunbar
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP3DeyWHOIc+SdTqNP9iFD4jpf0fg1FVTsaWn2qcKDTa clord" # clord@edmon
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINXLYw43gNlnfEoHpmK/UWae4DcQyLBQTGQH9ZYlRG5q clord" # wildwood
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLtiIXQ0r+l0gtnjCj1hT5Z1YzRqgJ/g66pP/eEuXM3 clord" # ipad
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHrw5QuFDaSsiZIXHypWLk4xQgxIoaVzPn4QzRag4eX clord" # chickenpi
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO clord" # 1p
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPbu/FXxZhyXOEsQpsAm2YLR4P07WoFcYTm1tbUohQ1U clord" # dunbar
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP3DeyWHOIc+SdTqNP9iFD4jpf0fg1FVTsaWn2qcKDTa clord" # edmon
   ];
   eugene = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjFa1FBFggj9BTAd8kKfWBX4EJB1DhTgzlaBqjZpBUU eugene" # eugene@munchkin
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBjFa1FBFggj9BTAd8kKfWBX4EJB1DhTgzlaBqjZpBUU eugene" # munchkin
   ];
   hosts = {
     edmon = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG44RTSc6mqKI+9F0SbP9Qstk1xVg1FAALK/sVCDHaj/"];

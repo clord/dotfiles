@@ -71,7 +71,18 @@
             hm
             {roles.terminal.enable = true;}
             {
-              home-manager.users.clord = import ./home/clord/edmon.nix;
+              home-manager.users.clord =
+                import ./home/clord/edmon.nix
+                // {
+                  programs.ssh = {
+                    enable = true;
+                    extraConfig = ''
+                      # Set up our host-specific stuff
+                      # IdentityAgent /Users/clord/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+                      IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+                    '';
+                  };
+                };
               clord.user = {
                 enable = true;
                 home = "/Users/clord";
