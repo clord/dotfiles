@@ -53,8 +53,6 @@ in {
       name = "Christopher Lord";
       email = "christopher@pliosoft.com";
     };
-    userEmail = "christopher@pliosoft.com";
-
     include = [
       (
         if pkgs.system == "aarch64-darwin"

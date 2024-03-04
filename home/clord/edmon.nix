@@ -6,24 +6,12 @@
     homeDirectory = "/Users/clord";
   };
   home.packages = with pkgs; [
-    age
-    basex
-    bundix
-    difftastic
-    dua
-    fd
     fish
-    ffmpeg
-    ffsend
     fzf
     fzy
-    git-crypt
     gnused
-    hledger
     jless
     jsonnet
-    mosh
-    nixfmt
     nq
     openssh
     pandoc

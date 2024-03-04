@@ -4,6 +4,6 @@
     username = "clord";
     homeDirectory = "/home/clord";
 
-    packages = with pkgs; [age direnv eza fd fish nixfmt openssh ripgrep sops sqlite tree unzip wget xz zip];
+    packages = with pkgs; [age direnv eza fd fish nushell nixfmt openssh ripgrep sops sqlite tree unzip wget xz zip];
   };
 }

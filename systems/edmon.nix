@@ -1,4 +1,5 @@
 {
+  pkgs,
   inputs,
   devenv,
   ...
@@ -21,7 +22,7 @@
     settings.experimental-features = "nix-command flakes";
   };
 
-  environment.systemPackages = [devenv];
+  environment.systemPackages = [devenv] ++ (with pkgs; [fish nushell vim git]);
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";

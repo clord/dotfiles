@@ -6,7 +6,7 @@
     stateVersion = "23.11";
   };
   services.timesyncd.enable = true;
-  environment.systemPackages = [pkgs.git pkgs.vim pkgs.home-manager];
+  environment.systemPackages = [pkgs.git pkgs.vim pkgs.home-manager pkgs.fish pkgs.nushell];
 
   # programs.nix-index.enable = true;
 

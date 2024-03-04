@@ -5,6 +5,7 @@
     ./direnv.nix
     ./eza.nix
     ./fish.nix
+    ./nushell.nix
     ./git.nix
     ./helix.nix
     ./nvim
@@ -18,10 +19,14 @@
       };
       packages = with pkgs; [
         age
+        dua
         difftastic
         fd
         ffmpeg
+        hledger
         fzf
+        nixfmt
+        git
         go
         mosh
         nixfmt

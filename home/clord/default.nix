@@ -1,13 +1,10 @@
 {pkgs, ...}: {
   imports = [./common.nix ./programs];
 
-  programs.fish.enable = true;
-
   home.packages = with pkgs; [
     age
-    basex
-    bundix
     difftastic
+    git
     gcc
     gnumake
     nodejs
@@ -18,10 +15,10 @@
     fd
     ffmpeg
     ffsend
+    nushell
     fish
     fzf
     fzy
-    git-crypt
     gnused
     hledger
     jless
