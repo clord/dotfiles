@@ -49,14 +49,21 @@ in {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
       signByDefault = true;
     };
+    user = {
+      name = "Christopher Lord";
+      email = "christopher@pliosoft.com";
+    };
     userEmail = "christopher@pliosoft.com";
-    userName = "Christopher Lord";
 
-    includes = [
-      {
-        condition = "gitdir:~/src/grafana/*";
-        contents = grafanaInclude;
-      }
+    include = [
+      (
+        if pkgs.system == "aarch64-darwin"
+        then {
+          condition = "hasconfig:remote.*.url:git@github.com:grafana/**";
+          contents = grafanaInclude;
+        }
+        else {}
+      )
     ];
 
     extraConfig = {
@@ -72,17 +79,22 @@ in {
       apply.whitespace = "fix,trailing-space,space-before-tab,cr-at-eol";
       branch.sort = "-commiterdate";
       interactive.diffFilter = "difft";
-      log.decorate = "short";
+      log = {
+        decorate = "short";
+        date = "local";
+      };
       format.numbered = "auto";
       fetch.prune = "true";
       commit = {
         template = "${gitMessage}";
+        verbose = true;
       };
       rerere = {
         enabled = "true";
         autoupdate = "true";
       };
       gpg = {format = "ssh";};
+      tag = {sort = "version:refname";};
       merge = {
         stat = "true";
         conflictStyle = "zdiff3";
