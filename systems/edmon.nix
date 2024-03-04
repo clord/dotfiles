@@ -11,6 +11,7 @@
     registry = {
       nixpkgs = {flake = inputs.nixpkgs;};
     };
+    package = pkgs.nix;
     nixPath = [
       "nixpkgs=${inputs.nixpkgs}"
       "/nix/var/nix/profiles/per-user/root/channels"

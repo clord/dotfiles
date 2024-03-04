@@ -1,6 +1,8 @@
 {pkgs, ...}: {
   imports = [./common.nix ./programs];
 
+  programs.fish.enable = true;
+
   home.packages = with pkgs; [
     age
     difftastic

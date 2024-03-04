@@ -21,7 +21,7 @@
     flake-utils,
     ...
   } @ inputs: let
-    overlays = with inputs; [rust-overlay.overlays.default];
+    overlays = with inputs; [rust-overlay.overlays.default nix-darwin.overlays.default];
     defaultModules = [
       inputs.agenix.nixosModules.default
       ./nixos-modules
@@ -29,7 +29,7 @@
     ];
     hm = {config, ...}: {
       home-manager = {
-        useGlobalPkgs = true;
+        useGlobalPkgs = false;
         useUserPackages = true;
         extraSpecialArgs = {
           inherit inputs;
@@ -80,6 +80,34 @@
             ./systems/edmon.nix
           ]
           ++ defaultModules;
+      };
+    };
+
+    homeManagerConfigurations = {
+      "clord@edmon" = home-manager.lib.homeManagerConfiguration rec {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit inputs;
+          inherit (inputs.devenv.packages.${system}) devenv;
+          agenix = inputs.agenix.packages.${system}.default;
+          pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+          };
+        };
+        modules = [
+          home-manager.homeModules.home-manager
+          hm
+          {
+            roles.terminal.enable = true;
+            clord.user = {
+              enable = true;
+              isMac = true;
+              home = "/Users/clord";
+            };
+          }
+          ./systems/clord.nix
+        ];
       };
     };
 

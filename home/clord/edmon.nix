@@ -5,6 +5,7 @@
     username = "clord";
     homeDirectory = "/Users/clord";
   };
+
   home.packages = with pkgs; [
     fish
     fzf

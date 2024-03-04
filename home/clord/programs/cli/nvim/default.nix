@@ -54,12 +54,12 @@
               lspsaga = {
                 enable = true;
                 mappings = {
-                  rename = "gr";
+                  rename = "<leader>r";
                   renderHoveredDoc = "K";
                   nextDiagnostic = "]d";
                   previousDiagnostic = "[d";
-                  codeAction = "ga";
-                  signatureHelp = "gh";
+                  codeAction = "<leader>a";
+                  signatureHelp = "<leader>gh";
                   smartScrollUp = "<C-u>";
                   smartScrollDown = "<C-d>";
                 };
@@ -82,7 +82,7 @@
               surround.enable = true;
               diffview-nvim.enable = true;
               motion = {
-                hop.enable = true;
+                # hop.enable = true;
                 leap.enable = true;
               };
             };
@@ -195,7 +195,6 @@
             notes = {
               orgmode.enable = false;
               mind-nvim.enable = false;
-              todo-comments.enable = true;
             };
 
             terminal = {

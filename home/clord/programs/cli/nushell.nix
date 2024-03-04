@@ -38,7 +38,7 @@ _: {
     };
 
     starship = {
-      enable = true;
+      enable = false;
       settings = {
         add_newline = true;
         character = {
