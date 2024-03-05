@@ -1,11 +1,4 @@
 {pkgs, ...}: let
-  grafanaInclude = {
-    user = {
-      name = "Christopher Lord";
-      email = "christopher.lord@grafana.com";
-    };
-  };
-
   gitMessage = pkgs.writeText "gitmessage" ''
     ### Title: Summary, imperative, start upper case, don't end with a period
     # No more than 50 chars. #### 50 chars is here: #
@@ -49,20 +42,36 @@ in {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
       signByDefault = true;
     };
-    user = {
-      name = "Christopher Lord";
-      email = "christopher@pliosoft.com";
-    };
-    include = [
-      (
-        if pkgs.system == "aarch64-darwin"
-        then {
-          condition = "hasconfig:remote.*.url:git@github.com:grafana/**";
-          contents = grafanaInclude;
-        }
-        else {}
-      )
+    userName = "Christopher Lord";
+    userEmail = "christopher@pliosoft.com";
+    difftastic.enable = true;
+    includes = [
+      {
+        condition = "hasconfig:remote.*.url:git@github.com:grafana/**";
+        path = builtins.toFile "git-grafana.inc" ''
+          [user]
+           name = Christopher Lord
+           email = christopher.lord@grafana.com
+        '';
+      }
     ];
+
+    aliases = {
+      lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --";
+      unstage = "reset HEAD --";
+      staged = "diff --cached";
+      unstaged = "diff";
+      last = "log -1 HEAD";
+      s = "status -s";
+      d = "diff -w --minimal --word-diff=color --color-words --abbrev --patience";
+      dt = "difftool";
+      c = "commit -am";
+      amend = "commit --amend";
+      a = "add";
+      ai = "add --interactive";
+      tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+      recent = ''branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
+    };
 
     extraConfig = {
       core.excludeFiles = builtins.toFile "clord-gitignore" ''
@@ -112,29 +121,11 @@ in {
         algorithm = "histogram";
         compactionHeuristic = "true";
         colorMoved = "zebra";
-        external = "difft";
       };
       "credential \"https://github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
       "credential \"https://gist.github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
 
       "gpg \"ssh\"" = macInclude;
-    };
-
-    aliases = {
-      lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --";
-      unstage = "reset HEAD --";
-      staged = "diff --cached";
-      unstaged = "diff";
-      last = "log -1 HEAD";
-      s = "status -s";
-      d = "diff -w --minimal --word-diff=color --color-words --abbrev --patience";
-      dt = "difftool";
-      c = "commit -am";
-      amend = "commit --amend";
-      a = "add";
-      ai = "add --interactive";
-      tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
-      recent = ''branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
     };
   };
 

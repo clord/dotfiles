@@ -9,24 +9,15 @@
 in {
   options.clord.user = {
     enable = lib.mkEnableOption "Enables my user.";
-    linuxUser = lib.mkOption {
-      default = false;
-      example = true;
-      type = lib.types.bool;
-    };
     uid = lib.mkOption {
       type = lib.types.nullOr lib.types.int;
       default = 1000;
     };
-    minimal = lib.mkOption {
-      default = false;
-      example = true;
+    isLinux = lib.mkOption {
       type = lib.types.bool;
-    };
-    isMac = lib.mkOption {
-      default = false;
       example = true;
-      type = lib.types.bool;
+      default = false;
+      description = "Is this a Linux user?";
     };
     home = lib.mkOption {
       type = lib.types.path;
@@ -50,24 +41,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home-manager.users.clord =
-      (lib.mkIf cfg.minimal
-        (import ../../home/clord/minimal.nix))
-      // (lib.mkIf cfg.isMac
-        ((import ../../home/clord/edmon.nix)
-          // {
-            programs.ssh = {
-              enable = true;
-              extraConfig = ''
-                # Set up our mac-specific stuff
-                # IdentityAgent /Users/clord/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
-                IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-              '';
-            };
-          }))
-      // (lib.mkIf (!cfg.minimal && !cfg.isMac)
-        (import ../../home/clord));
-
     users.users.clord =
       {
         inherit (cfg) home;
@@ -75,15 +48,17 @@ in {
         shell = pkgs.fish;
         openssh.authorizedKeys.keys = pubkeys.clord.user ++ cfg.extraAuthorizedKeys;
       }
-      // (lib.mkIf cfg.linuxUser {
-        inherit (cfg) uid;
-        isNormalUser = true;
-        extraGroups = ["wheel"] ++ cfg.extraGroups;
-        hashedPasswordFile = config.age.secrets.clordPasswd.path;
-      });
+      // (
+        lib.mkIf cfg.isLinux {
+          inherit (cfg) uid;
+          isNormalUser = true;
+          extraGroups = ["wheel"] ++ cfg.extraGroups;
+          hashedPasswordFile = config.age.secrets.clordPasswd.path;
+        }
+      );
+
     clord.agenix.secrets.clordPasswd = {};
 
-    environment.systemPath = [/run/current-system/sw/bin];
     programs.fish = {
       enable = true;
       loginShellInit = let

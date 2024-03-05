@@ -9,7 +9,7 @@
 in {
   options.eugene.user = {
     enable = lib.mkEnableOption "Enables eugene user.";
-    linuxUser = lib.mkOption {
+    isLinux = lib.mkOption {
       default = false;
       example = true;
       type = lib.types.bool;
@@ -41,6 +41,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     home-manager.users.eugene = import ../../home/eugene;
+    users.groups.eugene = {};
     users.users.eugene =
       {
         inherit (cfg) uid home;
@@ -48,8 +49,9 @@ in {
         shell = pkgs.fish;
         openssh.authorizedKeys.keys = pubkeys.eugene.user ++ cfg.extraAuthorizedKeys;
       }
-      // (lib.mkIf cfg.linuxUser {
+      // (lib.mkIf cfg.isLinux {
         isNormalUser = true;
+        group = "eugene";
         extraGroups = ["wheel"] ++ cfg.extraGroups;
         hashedPasswordFile = config.age.secrets.clordPasswd.path;
       });

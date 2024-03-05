@@ -1,16 +1,22 @@
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [./common.nix ./programs];
 
-  programs.neovim.enable = true;
-  programs.vscode = {enable = true;};
+  programs = {
+    home-manager.enable = true;
+    neovim.enable = true;
+    vscode.enable = true;
+    alacritty = {
+      enable = true;
+      settings = {font.size = 14;};
+    };
+    firefox.enable = true;
+    git.enable = true;
+    rofi = {
+      enable = true;
+      terminal = "${pkgs.alacritty}/bin/alacritty";
+    };
+  };
   home.packages = with pkgs; [
-    alacritty
     alsa-utils
     audacity
     discord
@@ -18,7 +24,6 @@
     dolphin
     typst
     typst-lsp
-    vscode
     go
     hledger
     godot_4
@@ -27,7 +32,6 @@
     eza
     fd
     feh
-    firefox
     floorp
     gcc
     gnome.nautilus
@@ -64,17 +68,5 @@
     };
   };
 
-  programs.alacritty = {
-    enable = true;
-    settings = {font.size = 14;};
-  };
-
-  programs.home-manager.enable = true;
-  programs.git.enable = true;
-
-  programs.rofi = {
-    enable = true;
-    terminal = "${pkgs.alacritty}/bin/alacritty";
-  };
   systemd.user.startServices = "sd-switch";
 }

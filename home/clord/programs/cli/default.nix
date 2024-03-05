@@ -13,7 +13,7 @@
   ];
   config = {
     home = {
-      sessionPath = ["node_modules/.bin"];
+      sessionPath = ["node_modules/.bin" "~/.go/bin"];
       sessionVariables = {
         EDITOR = "nvim";
       };

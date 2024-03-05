@@ -21,7 +21,7 @@
     flake-utils,
     ...
   } @ inputs: let
-    overlays = with inputs; [rust-overlay.overlays.default nix-darwin.overlays.default];
+    overlays = with inputs; [rust-overlay.overlays.default];
     defaultModules = [
       inputs.agenix.nixosModules.default
       ./nixos-modules
@@ -29,7 +29,7 @@
     ];
     hm = {config, ...}: {
       home-manager = {
-        useGlobalPkgs = false;
+        useGlobalPkgs = true;
         useUserPackages = true;
         extraSpecialArgs = {
           inherit inputs;
@@ -71,43 +71,20 @@
             hm
             {
               roles.terminal.enable = true;
+            }
+            {
               clord.user = {
-                isMac = true;
                 enable = true;
                 home = "/Users/clord";
               };
+              users.users.clord.home = "/Users/clord";
+            }
+            {
+              home-manager.users.clord = import ./home/clord/edmon.nix;
             }
             ./systems/edmon.nix
           ]
           ++ defaultModules;
-      };
-    };
-
-    homeManagerConfigurations = {
-      "clord@edmon" = home-manager.lib.homeManagerConfiguration rec {
-        system = "aarch64-darwin";
-        specialArgs = {
-          inherit inputs;
-          inherit (inputs.devenv.packages.${system}) devenv;
-          agenix = inputs.agenix.packages.${system}.default;
-          pkgs = import nixpkgs {
-            inherit system overlays;
-            config.allowUnfree = true;
-          };
-        };
-        modules = [
-          home-manager.homeModules.home-manager
-          hm
-          {
-            roles.terminal.enable = true;
-            clord.user = {
-              enable = true;
-              isMac = true;
-              home = "/Users/clord";
-            };
-          }
-          ./systems/clord.nix
-        ];
       };
     };
 
@@ -128,18 +105,22 @@
             nixos-hardware.nixosModules.system76
             home-manager.nixosModules.home-manager
             hm
-            {roles.terminal.enable = true;}
+            {
+              roles.terminal.enable = true;
+            }
             {
               clord.user = {
                 extraGroups = ["wheel" "networkmanager"];
+                isLinux = true;
                 enable = true;
-                linuxUser = true;
               };
+              home-manager.users.clord = import ./home/clord/default.nix;
               eugene.user = {
                 enable = true;
-                linuxUser = true;
+                isLinux = true;
                 extraGroups = ["networkmanager"];
               };
+              home-manager.users.eugene = import ./home/eugene/default.nix;
             }
             ./systems/wildwood.nix
             ./systems/common.nix
@@ -164,10 +145,11 @@
             hm
             {
               roles.terminal.enable = true;
+              home-manager.users.clord = import ./home/clord/default.nix;
               clord.user = {
                 extraGroups = ["wheel"];
+                isLinux = true;
                 enable = true;
-                linuxUser = true;
               };
             }
             ./systems/dunbar.nix
@@ -197,11 +179,11 @@
             hm
             {
               roles.terminal.enable = true;
+              home-manager.users.clord = import ./home/clord/minimal.nix;
               clord.user = {
-                minimal = true;
+                isLinux = true;
                 extraGroups = ["wheel"];
                 enable = true;
-                linuxUser = true;
               };
             }
             ./systems/chickenpi.nix
