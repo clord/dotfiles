@@ -10,6 +10,7 @@
   inputs,
   roles,
   lib,
+  pkgs,
   ...
 }: {
   imports = [inputs.neovim-flake.homeManagerModules.default];
@@ -27,7 +28,6 @@
             useSystemClipboard = true;
             spellChecking = {
               enable = true;
-              # enableProgrammingWordList = true;
             };
             debugMode = {
               enable = false;
@@ -70,6 +70,15 @@
 
             telescope = {
               enable = true;
+              vimgrep_arguments = [
+                "${pkgs.ripgrep}/bin/rg"
+                "--color=never"
+                "--no-heading"
+                "--with-filename"
+                "--line-number"
+                "--column"
+                "--smart-case"
+              ];
               mappings = {
                 findFiles = "<C-p>";
                 liveGrep = "<C-f>";

@@ -63,7 +63,7 @@ in {
       unstaged = "diff";
       last = "log -1 HEAD";
       s = "status -s";
-      d = "diff -w --minimal --word-diff=color --color-words --abbrev --patience";
+      d = "diff -w --minimal --word-diff=color --color-words --abbrev";
       dt = "difftool";
       c = "commit -am";
       amend = "commit --amend";

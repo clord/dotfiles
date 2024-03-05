@@ -32,7 +32,7 @@ _: {
         gc = "git commit --verbose";
         gp = "git push";
         gu = "git pull";
-        gd = "git diff --patience -w";
+        gd = "git diff -w";
         lll = "eza -bghHliS";
       };
     };
