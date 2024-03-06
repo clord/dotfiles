@@ -13,6 +13,7 @@
   pkgs,
   ...
 }: {
+  # based on https://github.com/NotAShelf/neovim-flake
   imports = [inputs.neovim-flake.homeManagerModules.default];
   config = lib.mkIf roles.terminal.enable {
     programs.neovim-flake = {
@@ -27,12 +28,29 @@
             tabWidth = 2;
             useSystemClipboard = true;
             spellChecking = {
-              enable = true;
+              enable = false;
             };
             debugMode = {
               enable = false;
               level = 20;
               logFile = "/tmp/nvim.log";
+            };
+
+            dashboard = {
+              startify = {
+                enable = true;
+                changeToVCRoot = true;
+                customHeader = [
+                  "                                                                      "
+                  "         ████ ██████           █████      ██                    "
+                  "        ███████████             █████                            "
+                  "        █████████ ███████████████████ ███   ███████████  "
+                  "       █████████  ███    █████████████ █████ ██████████████  "
+                  "      █████████ ██████████ █████████ █████ █████ ████ █████  "
+                  "    ███████████ ███    ███ █████████ █████ █████ ████ █████ "
+                  "   ██████  █████████████████████ ████ █████ █████ ████ ██████"
+                ];
+              };
             };
 
             lsp = {
@@ -131,7 +149,7 @@
               };
               cursorline = {
                 enable = true;
-                lineTimeout = 200;
+                lineTimeout = 500;
               };
             };
 
