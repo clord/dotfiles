@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./bat.nix
     ./btop.nix
@@ -17,7 +13,7 @@
   ];
   config = {
     home = {
-      sessionPath = ["node_modules/.bin" "$HOME/.go/bin"];
+      sessionPath = ["node_modules/.bin" "$HOME/go/bin"];
       sessionVariables = {
         EDITOR = "nvim";
       };
