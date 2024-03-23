@@ -1,5 +1,6 @@
 {
   config,
+  devenv,
   pkgs,
   lib,
   ...
@@ -97,5 +98,6 @@
     libz
     pciutils
     gnumake
+    devenv
   ];
 }

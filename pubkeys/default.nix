@@ -1,6 +1,7 @@
 let
   clord = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINXLYw43gNlnfEoHpmK/UWae4DcQyLBQTGQH9ZYlRG5q clord" # wildwood
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBhEnoyJb6TRJA9koH+50dHxNZSpMmjNWUPAx4iEXTEn clord" # wildwood2
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINLtiIXQ0r+l0gtnjCj1hT5Z1YzRqgJ/g66pP/eEuXM3 clord" # ipad
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHrw5QuFDaSsiZIXHypWLk4xQgxIoaVzPn4QzRag4eX clord" # chickenpi
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO clord" # 1p
