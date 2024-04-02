@@ -61,7 +61,7 @@ in {
       nameservers = ["10.68.3.4"];
       firewall = {
         enable = true;
-        allowedTCPPorts = [21 22 80 3030 443];
+        allowedTCPPorts = [ 21 22 80 3030 9002 443 ];
       };
     };
 
