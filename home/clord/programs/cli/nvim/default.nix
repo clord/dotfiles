@@ -100,18 +100,32 @@
               mappings = {
                 findFiles = "<C-p>";
                 liveGrep = "<C-f>";
+                gitCommits = "<leader>hcc";
+                gitBufferCommits = "<leader>hcb";
+                gitBranches = "<leader>hvr";
+                gitStatus = "<leader>hvs";
+                gitStash = "<leader>hvx";
               };
             };
             utility = {
               ccc.enable = true;
               vim-wakatime.enable = false;
               icon-picker.enable = false;
-              surround.enable = true;
+              surround = {
+                enable = true;
+                useVendoredKeybindings = true;
+              };
               diffview-nvim.enable = true;
               motion = {
                 # hop.enable = true;
                 leap.enable = true;
               };
+            };
+
+            treesitter = {
+              enable = true;
+              fold = true;
+              autotagHtml = true;
             };
 
             languages = {
@@ -138,6 +152,10 @@
             visuals = {
               enable = true;
               nvimWebDevicons.enable = true;
+              highlight-undo.enable = true;
+              cellularAutomaton = {
+                enable = true;
+              };
               fidget-nvim.enable = true;
               indentBlankline = {
                 enable = true;
@@ -156,14 +174,19 @@
             statusline = {
               lualine = {
                 enable = true;
-                theme = "tokyonight";
+                theme = "onedark";
+              };
+            };
+
+            tabline = {
+              nvimBufferline = {
+                enable = true;
               };
             };
 
             theme = {
               enable = true;
-              name = "tokyonight";
-              style = "night";
+              name = "onedark";
               transparent = false;
             };
             autopairs.enable = false;
@@ -171,12 +194,21 @@
             autocomplete = {
               enable = true;
               type = "nvim-cmp";
+              mappings = {
+                next = "<Down>";
+                previous = "<Up>";
+              };
             };
 
             filetree = {
               nvimTree = {
                 enable = true;
-                mappings = {toggle = "<leader>e";};
+                mappings = {
+                  toggle = "<leader>e";
+                  findFile = "<leader>eg";
+                  focus = "<leader>ef";
+                  refresh = "<leader>er";
+                };
                 view.float = {enable = true;};
                 openOnSetup = false;
               };
@@ -227,6 +259,8 @@
             terminal = {
               toggleterm = {
                 enable = true;
+                direction = "float";
+                enable_winbar = true;
               };
             };
 
@@ -235,7 +269,6 @@
               noice.enable = true;
               colorizer.enable = true;
               modes-nvim.enable = true;
-              illuminate.enable = true;
               breadcrumbs = {
                 enable = true;
                 navbuddy.enable = true;
@@ -246,7 +279,12 @@
               copilot = {
                 enable = true;
                 cmp.enable = true;
-                mappings.panel.refresh = "<leader>cr";
+                mappings = {
+                  panel = {
+                    refresh = "<leader>cr";
+                    open = "<leader>co";
+                  };
+                };
               };
             };
 
@@ -259,7 +297,12 @@
             };
 
             comments = {
-              comment-nvim.enable = false;
+              comment-nvim = {
+                enable = true;
+                mappings = {
+                  toggleCurrentLine = "<C-c>";
+                };
+              };
             };
 
             presence = {
