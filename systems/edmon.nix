@@ -1,7 +1,6 @@
 {
   pkgs,
   inputs,
-  devenv,
   ...
 }: {
   # Auto upgrade nix package and the daemon service.
@@ -23,7 +22,7 @@
     settings.experimental-features = "nix-command flakes";
   };
 
-  environment.systemPackages = [devenv] ++ (with pkgs; [fish nushell vim git]);
+  environment.systemPackages = with pkgs; [fish nushell vim git];
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";

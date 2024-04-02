@@ -58,7 +58,7 @@
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
-          inherit (inputs.devenv.packages.${system}) devenv;
+          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -93,7 +93,7 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          inherit (inputs.devenv.packages.${system}) devenv;
+          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -132,7 +132,7 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          inherit (inputs.devenv.packages.${system}) devenv;
+          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -162,7 +162,7 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          inherit (inputs.devenv.packages.${system}) devenv;
+          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -206,10 +206,10 @@
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # devenv = {
+    #   url = "github:cachix/devenv";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     neovim-flake = {
       url = "github:notashelf/neovim-flake";
       inputs.nixpkgs.follows = "nixpkgs";
