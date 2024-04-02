@@ -1,4 +1,4 @@
-_: {
+{pkgs, ...}: {
   imports = [./common.nix ./programs];
 
   home = {
