@@ -143,7 +143,11 @@
                 enable = true;
                 crates.enable = true;
               };
-              ts.enable = true;
+              ts = {
+                enable = true;
+                # eslint_d does not know how to deal with incident
+                extraDiagnostics = {enable = false;};
+              };
               go.enable = true;
               python.enable = true;
               bash.enable = true;
