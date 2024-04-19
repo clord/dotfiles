@@ -178,7 +178,6 @@
             statusline = {
               lualine = {
                 enable = true;
-                theme = "onedark";
               };
             };
 
@@ -191,6 +190,7 @@
             theme = {
               enable = true;
               name = "onedark";
+              style = "darker";
               transparent = false;
             };
             autopairs.enable = false;

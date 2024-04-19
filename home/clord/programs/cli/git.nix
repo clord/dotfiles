@@ -70,7 +70,7 @@ in {
       a = "add";
       ai = "add --interactive";
       tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
-      recent = ''branch --sort=-committerdate --format="%(committerdate:relative)%09%(refname:short)"'';
+      recent = "for-each-ref --sort=-committerdate refs/heads --format='%(refname:short)|%(HEAD)%(color:yellow)%(refname:short)|%(color:bold green)%(committerdate:relative)|%(color:blue)%(subject)|%(color:magenta)%(authorname)%(color:reset)' --color=always --count=20";
     };
 
     extraConfig = {

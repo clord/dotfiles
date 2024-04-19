@@ -40,6 +40,7 @@
       gp = "git push";
       gu = "git pull";
       gd = "git diff";
+      fomo = "git fetch origin main && git rebase origin/main";
       lll = "eza -bghHliS";
     };
     functions = {
