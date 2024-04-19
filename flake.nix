@@ -179,7 +179,7 @@
             hm
             {
               roles.terminal.enable = true;
-              home-manager.users.clord = import ./home/clord/default.nix;
+              home-manager.users.clord = import ./home/clord/minimal.nix;
               clord.user = {
                 extraGroups = ["wheel"];
                 isLinux = true;
