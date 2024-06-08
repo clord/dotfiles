@@ -30,8 +30,9 @@
         go
         mosh
         nixfmt
-        nodePackages.yarn
-        nodejs
+        angle-grinder
+        nodejs_21
+        corepack_21
         pandoc
         python311Packages.pynvim
         sqlite
