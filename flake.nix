@@ -211,7 +211,7 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     neovim-flake = {
-      url = "github:notashelf/neovim-flake";
+      url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

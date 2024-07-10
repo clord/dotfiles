@@ -2,6 +2,7 @@
   imports = [
     ./bat.nix
     ./btop.nix
+    ./kitty.nix
     ./direnv.nix
     ./eza.nix
     ./fish.nix

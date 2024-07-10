@@ -27,7 +27,7 @@
             vimAlias = true;
             tabWidth = 2;
             useSystemClipboard = true;
-            spellChecking = {
+            spellcheck = {
               enable = false;
             };
             debugMode = {
@@ -88,15 +88,17 @@
 
             telescope = {
               enable = true;
-              vimgrep_arguments = [
-                "${pkgs.ripgrep}/bin/rg"
-                "--color=never"
-                "--no-heading"
-                "--with-filename"
-                "--line-number"
-                "--column"
-                "--smart-case"
-              ];
+              setupOpts = {
+                vimgrep_arguments = [
+                  "${pkgs.ripgrep}/bin/rg"
+                  "--color=never"
+                  "--no-heading"
+                  "--with-filename"
+                  "--line-number"
+                  "--column"
+                  "--smart-case"
+                ];
+              };
               mappings = {
                 findFiles = "<C-p>";
                 liveGrep = "<C-f>";
@@ -143,14 +145,8 @@
                 enable = true;
                 crates.enable = true;
               };
-              ts = {
-                enable = true;
-                # eslint_d does not know how to deal with incident
-                extraDiagnostics = {enable = false;};
-              };
               go.enable = true;
               python.enable = true;
-              bash.enable = true;
             };
 
             visuals = {
@@ -187,12 +183,6 @@
               };
             };
 
-            theme = {
-              enable = true;
-              name = "onedark";
-              style = "darker";
-              transparent = false;
-            };
             autopairs.enable = false;
 
             autocomplete = {
@@ -213,8 +203,10 @@
                   focus = "<leader>ef";
                   refresh = "<leader>er";
                 };
-                view.float = {enable = true;};
-                openOnSetup = false;
+                setupOpts = {
+                  view.float = {enable = true;};
+                  openOnSetup = false;
+                };
               };
             };
 
@@ -263,8 +255,10 @@
             terminal = {
               toggleterm = {
                 enable = true;
-                direction = "float";
-                enable_winbar = true;
+                setupOpts = {
+                  direction = "float";
+                  enable_winbar = true;
+                };
               };
             };
 
