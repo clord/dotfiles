@@ -94,7 +94,7 @@
                 "source.fixAll.eslint" = true;
               };
               format = {enable = true;};
-              nodePath = "${pkgs.nodejs_21}";
+              nodePath = "${pkgs.nodejs_22}";
               quiet = false;
               run = "onType";
               validate = "on";

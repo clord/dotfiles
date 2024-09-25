@@ -1,10 +1,6 @@
 {pkgs, ...}: {
   imports = [./locale.nix];
 
-  system = {
-    # Did you read the comment?
-    stateVersion = "23.11";
-  };
   services.timesyncd.enable = true;
   environment.systemPackages = [pkgs.git pkgs.vim pkgs.home-manager pkgs.fish pkgs.nushell];
 

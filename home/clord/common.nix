@@ -1,8 +1,8 @@
 {pkgs, ...}: {
   imports = [];
-  programs.home-manager.enable = true;
-  home.stateVersion = "23.11";
-  home.packages = with pkgs; [
+ programs.home-manager.enable = true;
+ home.stateVersion = "24.05";
+ home.packages = with pkgs; [
     age
     basex
     bundix

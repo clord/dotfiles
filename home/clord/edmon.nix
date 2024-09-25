@@ -44,6 +44,7 @@
     k3d
     tilt
     kubernetes-helm
+    kind
     nodePackages.svgo
   ];
 }

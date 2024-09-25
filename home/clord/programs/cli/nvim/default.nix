@@ -17,7 +17,7 @@
   imports = [inputs.neovim-flake.homeManagerModules.default];
   config = lib.mkIf roles.terminal.enable {
     programs.neovim-flake = {
-      enable = true;
+      enable = false;
       settings = {
         config = {
           vim = {

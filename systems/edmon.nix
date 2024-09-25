@@ -1,11 +1,14 @@
 {
   pkgs,
+  lib,
   inputs,
+  config,
   ...
 }: {
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-
+  # 
+  system.stateVersion = 5;
   nix = {
     registry = {
       nixpkgs = {flake = inputs.nixpkgs;};
@@ -14,15 +17,26 @@
     nixPath = [
       "nixpkgs=${inputs.nixpkgs}"
       "/nix/var/nix/profiles/per-user/root/channels"
+      "nixpkgs=${config.nix.registry.nixpkgs.to.path}"
     ];
-    settings.trusted-users = ["@admin" "clord"];
     configureBuildUsers = true;
 
-    # Necessary for using flakes on this system.
-    settings.experimental-features = "nix-command flakes";
+    settings = { 
+      trusted-users = ["@admin" "clord"];
+
+        experimental-features = [
+          "flakes"
+          "nix-command"
+        ];
+
+        log-lines = 50;
+        warn-dirty = false;
+        http-connections = 50;
+    };
+
   };
 
-  environment.systemPackages = with pkgs; [fish nushell vim git];
+  environment.systemPackages = with pkgs; [fish nushell vim git devenv];
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";

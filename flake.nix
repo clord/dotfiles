@@ -196,10 +196,10 @@
     packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
   };
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-23.11";
+    nixpkgs.url = "nixpkgs/nixos-24.05";
     agenix.url = "github:ryantm/agenix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-23.11";
+    home-manager.url = "github:rycee/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";

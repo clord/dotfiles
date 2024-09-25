@@ -13,6 +13,8 @@
     ./ssh.nix
   ];
   config = {
+
+    programs.neovim.enable = true;
     home = {
       sessionPath = ["node_modules/.bin" "$HOME/go/bin"];
       sessionVariables = {
@@ -26,14 +28,13 @@
         ffmpeg
         hledger
         fzf
-        nixfmt
         git
         go
         mosh
         nixfmt
         angle-grinder
-        nodejs_21
-        corepack_21
+        nodejs_22
+        corepack_22
         pandoc
         python311Packages.pynvim
         sqlite
