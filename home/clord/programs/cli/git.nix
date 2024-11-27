@@ -37,7 +37,12 @@ in {
 
   programs.git = {
     enable = true;
-    ignores = ["*~" "*.swp"];
+    ignores = [
+    	"*~" 
+	"*.swp"
+        ".DS_Store"
+        ".idea"
+    ];
     signing = {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
       signByDefault = true;
@@ -67,6 +72,8 @@ in {
       dt = "difftool";
       c = "commit -am";
       amend = "commit --amend";
+      # conflicts = "diff --name-only --diff-filter=U --relative";
+      conflict = "diff --check";
       a = "add";
       ai = "add --interactive";
       tree = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
@@ -74,10 +81,6 @@ in {
     };
 
     extraConfig = {
-      core.excludeFiles = builtins.toFile "clord-gitignore" ''
-        .DS_Store
-        .idea
-      '';
       github.user = "clord";
       init.defaultBranch = "main";
       transfer.fsckobjects = true;
