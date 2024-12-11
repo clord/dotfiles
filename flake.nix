@@ -58,7 +58,6 @@
         system = "aarch64-darwin";
         specialArgs = {
           inherit inputs;
-          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -93,7 +92,6 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -132,7 +130,6 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -162,7 +159,6 @@
         system = "aarch64-linux";
         specialArgs = {
           inherit inputs;
-          # inherit (inputs.devenv.packages.${system}) devenv;
           agenix = inputs.agenix.packages.${system}.default;
           pkgs = import nixpkgs {
             inherit system overlays;
@@ -196,20 +192,16 @@
     packages.aarch64-linux.chickenpiImage = self.nixosConfigurations.chickenpi.config.system.build.sdImage;
   };
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-24.05";
+    nixpkgs.url = "nixpkgs/nixos-24.11";
     agenix.url = "github:ryantm/agenix";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-24.05";
+    home-manager.url = "github:rycee/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-    # devenv = {
-    #   url = "github:cachix/devenv";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
     neovim-flake = {
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";

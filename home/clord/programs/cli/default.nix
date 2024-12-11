@@ -35,6 +35,7 @@
         go
         mosh
 	nixd
+	nil
         angle-grinder
         nodejs_22
         corepack_22

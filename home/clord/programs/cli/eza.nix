@@ -1,7 +1,7 @@
 {roles, ...}: {
   programs.eza = {
     enable = roles.terminal.enable;
-    icons = true;
+    icons = "auto";
     git = true;
   };
 }

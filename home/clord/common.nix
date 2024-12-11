@@ -20,7 +20,7 @@
     jless
     jsonnet
     mosh
-    nixfmt
+    nixfmt-rfc-style
     nq
     openssh
     pandoc
