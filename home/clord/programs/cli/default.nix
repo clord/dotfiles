@@ -33,6 +33,7 @@
         fzf
         git
         go
+	rustup
         mosh
 	nixd
 	nil

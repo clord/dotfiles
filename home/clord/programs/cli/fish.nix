@@ -25,11 +25,14 @@
       set -g theme_display_nix no
       set -g default_user clord
 
+      cat ${./logo.ascii}
+
       if test -d $GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d
           for file in $GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/*.fish
               source $file
           end
       end
+
     '';
     shellAliases = {
     };
