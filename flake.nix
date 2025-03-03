@@ -201,7 +201,6 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
     restedpi.url = "github:clord/restedpi";
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-24.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     neovim-flake = {
       url = "github:notashelf/nvf";
       inputs.nixpkgs.follows = "nixpkgs";
