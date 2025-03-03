@@ -19,7 +19,7 @@
     programs.bun.enable = true;
 
     home = {
-      sessionPath = ["node_modules/.bin" "$HOME/go/bin"];
+      sessionPath = ["node_modules/.bin" "$HOME/.local/node_modules/.bin" "$HOME/go/bin"];
       sessionVariables = {
         EDITOR = "nvim";
       };
