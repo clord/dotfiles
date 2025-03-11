@@ -132,5 +132,5 @@ in {
     };
   };
 
-  home.packages = with pkgs; [difftastic gitAndTools.transcrypt gh];
+  home.packages = with pkgs; [difftastic gitAndTools.transcrypt gh git-lfs];
 }
