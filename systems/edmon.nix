@@ -1,10 +1,8 @@
 {
   pkgs,
-  lib,
-  inputs,
-  config,
   ...
-}: {
+}:
+{
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
@@ -13,15 +11,18 @@
   nix = {
     package = pkgs.nix;
     configureBuildUsers = true;
-    settings = { 
-      trusted-users = ["@admin" "clord"];
-        experimental-features = [
-          "flakes"
-          "nix-command"
-        ];
-        log-lines = 50;
-        warn-dirty = false;
-        http-connections = 50;
+    settings = {
+      trusted-users = [
+        "@admin"
+        "clord"
+      ];
+      experimental-features = [
+        "flakes"
+        "nix-command"
+      ];
+      log-lines = 50;
+      warn-dirty = false;
+      http-connections = 50;
     };
   };
 
@@ -39,11 +40,17 @@
     };
     NSGlobalDomain = {
       AppleKeyboardUIMode = 3;
-      "com.apple.keyboard.fnState" = true;
+      "com.apple.keyboard.fnState" = false;
     };
   };
 
-  environment.systemPackages = with pkgs; [fish vim git devenv home-manager];
+  environment.systemPackages = with pkgs; [
+    fish
+    vim
+    git
+    home-manager
+    devenv
+  ];
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
