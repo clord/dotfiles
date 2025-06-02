@@ -15,6 +15,8 @@
 
 ## Installation
 
+- install non-determinate nix (can use installer but use plain nix)
+
 Once nix is installed, see the `Makefile` at the root.
 
 ## Inspriations

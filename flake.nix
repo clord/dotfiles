@@ -110,6 +110,26 @@
     {
       inherit devShells;
       darwinConfigurations = {
+        waba =
+          let
+            system = "aarch64-darwin";
+          in
+          nix-darwin.lib.darwinSystem {
+            inherit system;
+            specialArgs = createSpecialArgs system;
+            modules = baseModules system false ++ [
+              (mkUserConfig {
+                username = "clord";
+                config = {
+                  enable = true;
+                  home = "/Users/clord";
+                };
+                homeConfig = import ./home/clord/waba.nix;
+              })
+              { users.users.clord.home = "/Users/clord"; }
+              ./systems/waba.nix
+            ];
+          };
         edmon =
           let
             system = "aarch64-darwin";

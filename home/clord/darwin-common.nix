@@ -1,27 +1,13 @@
 {pkgs, ...}: {
-  imports = [];
-  programs.home-manager.enable = true;
-  home = { 
-  stateVersion = "24.05";
-  packages = with pkgs; [
-    age
-    basex
-    bundix
-    difftastic
-    dua
-    fd
+  imports = [./common.nix ./programs];
+
+  home.packages = with pkgs; [
     fish
-    ffmpeg
-    ffsend
     fzf
     fzy
-    git-crypt
     gnused
-    hledger
     jless
     jsonnet
-    mosh
-    nixfmt-rfc-style
     nq
     openssh
     pandoc
@@ -42,6 +28,10 @@
     wget
     xz
     zip
+    k3d
+    tilt
+    kubernetes-helm
+    kind
+    nodePackages.svgo
   ];
-};
 }
