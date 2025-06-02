@@ -1,5 +1,6 @@
-{pkgs, ...}: {
-  imports = [./darwin-common.nix];
+{ ... }:
+{
+  imports = [ ./darwin-common.nix ];
 
   home = {
     username = "clord";
