@@ -56,8 +56,8 @@
         "com.apple.keyboard.fnState" = false;
         ApplePressAndHoldEnabled = false;
 
-        InitialKeyRepeat = 2;
-        KeyRepeat = 0;
+        InitialKeyRepeat = 10;
+        KeyRepeat = 1;
 
         PMPrintingExpandedStateForPrint = true;
 
