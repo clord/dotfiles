@@ -3,7 +3,7 @@
   ...
 }:
 {
-  imports = [./darwin-common.nix];
+  imports = [ ./darwin-common.nix ];
 
   services.nix-daemon.enable = true;
   system.stateVersion = 5;
