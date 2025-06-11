@@ -53,13 +53,13 @@ in {
     difftastic.enable = true;
     includes = [
       {
-        condition = "hasconfig:remote.*.url:git@github.com:grafana/**";
+        condition = "hasconfig:remote.*.url:git@*github.com:grafana/**";
         path = builtins.toFile "git-grafana.inc" ''
           [user]
            name = Christopher Lord
            email = christopher.lord@grafana.com
         '';
-      }
+	}
     ];
 
     aliases = {

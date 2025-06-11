@@ -4,10 +4,6 @@
 }:
 {
   system = {
-    keyboard = {
-      enableKeyMapping = true;
-      remapCapsLockToControl = true;
-    };
 
     defaults = {
       spaces.spans-displays = false;
@@ -89,15 +85,15 @@
         KeyRepeat = 1;
 
         PMPrintingExpandedStateForPrint = true;
-
-        NSAutomaticCapitalizationEnabled = false;
-        NSAutomaticInlinePredictionEnabled = false;
-        NSAutomaticDashSubstitutionEnabled = false;
-        NSAutomaticPeriodSubstitutionEnabled = false;
-        NSAutomaticQuoteSubstitutionEnabled = false;
-        NSAutomaticSpellingCorrectionEnabled = false;
         NSNavPanelExpandedStateForSaveMode = true;
         NSNavPanelExpandedStateForSaveMode2 = true;
+
+        # NSAutomaticCapitalizationEnabled = false;
+        # NSAutomaticInlinePredictionEnabled = false;
+        # NSAutomaticDashSubstitutionEnabled = false;
+        # NSAutomaticPeriodSubstitutionEnabled = false;
+        # NSAutomaticQuoteSubstitutionEnabled = false;
+        # NSAutomaticSpellingCorrectionEnabled = false;
       };
 
       trackpad.Clicking = true;
