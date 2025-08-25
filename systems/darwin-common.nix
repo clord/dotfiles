@@ -1,10 +1,5 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   system = {
-
     defaults = {
       spaces.spans-displays = false;
       alf.globalstate = 1;
@@ -45,7 +40,6 @@
 
         # Prevent Photos from opening automatically when devices are plugged in
         "com.apple.ImageCapture".disableHotPlug = true;
-
       };
 
       dock = {
@@ -98,7 +92,6 @@
 
       trackpad.Clicking = true;
       trackpad.TrackpadThreeFingerDrag = true;
-
     };
   };
 

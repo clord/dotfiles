@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   imports = [./darwin-common.nix];
 
   services.nix-daemon.enable = true;

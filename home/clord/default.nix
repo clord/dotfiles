@@ -1,4 +1,8 @@
 _: {
-  imports = [./common.nix ./programs];
+  imports = [
+    ./common.nix
+    ./packages/linux.nix
+    ./programs
+  ];
   programs.fish.enable = true;
 }

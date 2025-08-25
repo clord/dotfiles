@@ -39,10 +39,10 @@ in {
     enable = true;
     lfs.enable = true;
     ignores = [
-    	"*~" 
-	"*.swp"
-        ".DS_Store"
-        ".idea"
+      "*~"
+      "*.swp"
+      ".DS_Store"
+      ".idea"
     ];
     signing = {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHTOl4xwPOT82EmW5bEBpWyi5Iy9ZEYWPToJEQjIagyO";
@@ -59,7 +59,7 @@ in {
            name = Christopher Lord
            email = christopher.lord@grafana.com
         '';
-	}
+      }
     ];
 
     aliases = {
