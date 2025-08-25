@@ -84,6 +84,9 @@
           nodePackages.concurrently
           nodePackages.prettier
 
+          # Helpful kube stuff
+          k9s
+
           # Tilt requires some kube stuff
           tilt
           tanka
