@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./bat.nix
     ./btop.nix
@@ -14,7 +13,6 @@
     ./atuin.nix
   ];
   config = {
-
     programs.neovim.enable = true;
 
     programs.bun.enable = true;
@@ -29,8 +27,7 @@
       sessionVariables = {
         EDITOR = "nvim";
       };
-      packages =
-        with pkgs;
+      packages = with pkgs;
         [
           age
           dua
@@ -44,7 +41,7 @@
           rustup
           mosh
           nixd
-	  caddy
+          caddy
           nil
           angle-grinder
           nodejs_22

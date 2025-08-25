@@ -1,9 +1,5 @@
-{
-  pkgs,
-  ...
-}:
-{
-  imports = [ ./darwin-common.nix ];
+{pkgs, ...}: {
+  imports = [./darwin-common.nix];
 
   services.nix-daemon.enable = true;
   system.stateVersion = 5;
@@ -24,5 +20,4 @@
       http-connections = 50;
     };
   };
-
 }
