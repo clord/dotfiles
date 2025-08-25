@@ -108,40 +108,43 @@
     );
   in {
     inherit devShells;
-    
+
     # Formatter for nix fmt
     formatter = flake-utils.lib.eachDefaultSystemMap (
       system: (createPkgs system).alejandra
     );
-    
+
     # Checks for CI/validation
     checks = flake-utils.lib.eachDefaultSystemMap (
       system: let
         pkgs = createPkgs system;
       in {
-        format = pkgs.runCommand "check-format" {
-          buildInputs = with pkgs; [alejandra];
-        } ''
-          ${pkgs.alejandra}/bin/alejandra --check ${./.}
-          touch $out
-        '';
-        
-        statix = pkgs.runCommand "check-statix" {
-          buildInputs = with pkgs; [statix];
-        } ''
-          ${pkgs.statix}/bin/statix check ${./.}
-          touch $out
-        '';
-        
-        deadnix = pkgs.runCommand "check-deadnix" {
-          buildInputs = with pkgs; [deadnix];
-        } ''
-          ${pkgs.deadnix}/bin/deadnix --fail ${./.}
-          touch $out
-        '';
+        format =
+          pkgs.runCommand "check-format" {
+            buildInputs = with pkgs; [alejandra];
+          } ''
+            ${pkgs.alejandra}/bin/alejandra --check ${./.}
+            touch $out
+          '';
+
+        statix =
+          pkgs.runCommand "check-statix" {
+            buildInputs = with pkgs; [statix];
+          } ''
+            ${pkgs.statix}/bin/statix check ${./.}
+            touch $out
+          '';
+
+        deadnix =
+          pkgs.runCommand "check-deadnix" {
+            buildInputs = with pkgs; [deadnix];
+          } ''
+            ${pkgs.deadnix}/bin/deadnix --fail ${./.}
+            touch $out
+          '';
       }
     );
-    
+
     darwinConfigurations = {
       waba = let
         system = "aarch64-darwin";
