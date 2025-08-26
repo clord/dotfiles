@@ -1,5 +1,5 @@
 _: {
-  imports = [ ];
+  imports = [];
   home.stateVersion = "24.05";
   programs = {
     bat.enable = true;
