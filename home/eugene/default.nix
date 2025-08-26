@@ -27,21 +27,21 @@
     go
     hledger
     godot_4
-    element-desktop
+    # element-desktop # Removed: depends on insecure olm library (CVE-2024-45191/2/3)
     exfat
     eza
     fd
     feh
     floorp
     gcc
-    gnome.nautilus
+    nautilus # Changed from gnome.nautilus
     gnumake
     htop
     jdk17
     killall
     konsole
     libreoffice
-    matrix-commander
+    # matrix-commander # Removed: depends on insecure olm library
     networkmanagerapplet
     nitrogen
     obs-studio

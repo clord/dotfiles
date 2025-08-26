@@ -22,19 +22,19 @@
   };
   nixpkgs.config.allowUnfree = true;
   services = {
+    displayManager = {
+      autoLogin.enable = true;
+      autoLogin.user = "clord";
+      gdm.enable = true;
+    };
+    
     xserver = {
-      displayManager = {
-        autoLogin.enable = true;
-        autoLogin.user = "clord";
-
-        # Enable the GNOME Desktop Environment.
-        gdm.enable = true;
-      };
       desktopManager.gnome.enable = true;
-
       enable = true;
-      layout = "us";
-      xkbVariant = "";
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
     };
 
     # Enable CUPS to print documents.
