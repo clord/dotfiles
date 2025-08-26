@@ -1,0 +1,77 @@
+name: Check Flake
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Check flake
+        run: nix flake check --all-systems
+      
+      - name: Check formatting
+        run: nix fmt -- --check .
+      
+      - name: Run statix
+        run: nix develop -c statix check
+      
+      - name: Run deadnix
+        run: nix develop -c deadnix --fail
+  
+  build-darwin:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        host: [waba, edmon]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Build Darwin configuration
+        run: |
+          nix build .#darwinConfigurations.${{ matrix.host }}.system --dry-run
+  
+  build-nixos:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host: [wildwood, dunbar, chickenpi]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Build NixOS configuration
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --dry-run

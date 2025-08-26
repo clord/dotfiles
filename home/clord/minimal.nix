@@ -1,25 +1,20 @@
-{pkgs, ...}: {
-  imports = [./common.nix];
+{ pkgs, ... }:
+{
+  imports = [
+    ./common.nix
+    ./modules # Use modular configuration even for minimal
+  ];
   home = {
     username = "clord";
     homeDirectory = "/home/clord";
 
+    # Minimal system overrides - keep only essentials
     packages = with pkgs; [
-      age
-      direnv
-      eza
-      fd
-      fish
-      sqlite
+      # These override the modular packages for a minimal install
       openssh
-      ripgrep
-      sops
-      sqlite
-      tree
-      unzip
       wget
-      xz
-      zip
+      git
+      vim
     ];
   };
 }
