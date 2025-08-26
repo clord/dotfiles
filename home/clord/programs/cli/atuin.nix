@@ -1,6 +1,6 @@
 {roles, ...}: {
   programs.atuin = {
-    enable = roles.terminal.enable;
+    inherit (roles.terminal) enable;
     flags = ["--disable-up-arrow"];
     enableFishIntegration = roles.terminal.enable;
     settings = {

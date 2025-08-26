@@ -48,16 +48,16 @@ in {
 
   config = mkIf cfg.enable {
     networking = {
-      hostName = cfg.hostName;
+      inherit (cfg) hostName;
       networkmanager.enable = cfg.enableNetworkManager;
 
       firewall = {
         enable = cfg.enableFirewall;
-        allowedTCPPorts = cfg.allowedTCPPorts;
-        allowedUDPPorts = cfg.allowedUDPPorts;
+        inherit (cfg) allowedTCPPorts;
+        inherit (cfg) allowedUDPPorts;
       };
 
-      enableIPv6 = cfg.enableIPv6;
+      inherit (cfg) enableIPv6;
 
       # Common network optimizations
       useDHCP = lib.mkDefault true;

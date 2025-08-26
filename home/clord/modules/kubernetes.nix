@@ -7,47 +7,58 @@
   ...
 }: {
   config = lib.mkIf roles.kubernetes.enable {
-    home.packages = with pkgs;
-      [
-        # Core tools
-        kubectl
-        kubernetes-helm
+    home = {
+      packages = with pkgs;
+        [
+          # Core tools
+          kubectl
+          kubernetes-helm
 
-        # Local development clusters
-        kind
-        k3d
-        minikube
+          # Local development clusters
+          kind
+          k3d
+          minikube
 
-        # Development tools
-        tilt
-        skaffold
-        telepresence2
-        ctlptl # Local kubernetes cluster management
+          # Development tools
+          tilt
+          skaffold
+          telepresence2
+          ctlptl # Local kubernetes cluster management
 
-        # Manifest management
-        kustomize
+          # Manifest management
+          kustomize
 
-        # Monitoring and debugging
-        stern
-        kubectx
-        kubecolor
+          # Monitoring and debugging
+          stern
+          kubectx
+          kubecolor
 
-        # Policy and security
-        kubeval
-        kubesec
+          # Policy and security
+          kubeval
+          kubesec
 
-        # Operators and controllers
-        operator-sdk
+          # Operators and controllers
+          operator-sdk
 
-        # Cloud provider tools
-        eksctl
+          # Cloud provider tools
+          eksctl
 
-        # GitOps
-        argocd
-        fluxcd
-      ]
-      ++ (lib.optional roles.kubernetes.includeK9s k9s)
-      ++ (lib.optional roles.kubernetes.includeHelm helmfile);
+          # GitOps
+          argocd
+          fluxcd
+        ]
+        ++ (lib.optional roles.kubernetes.includeK9s k9s)
+        ++ (lib.optional roles.kubernetes.includeHelm helmfile);
+
+      sessionVariables = {
+        KUBECONFIG = "$HOME/.kube/config";
+      };
+
+      file.".kube/config".text = lib.mkDefault ''
+        # Kubernetes config will be managed here
+        # Add your cluster configurations
+      '';
+    };
 
     programs.fish.shellAbbrs = lib.mkIf config.programs.fish.enable {
       k = "kubectl";
@@ -62,14 +73,5 @@
       kgs = "kubectl get services";
       kgd = "kubectl get deployments";
     };
-
-    home.sessionVariables = {
-      KUBECONFIG = "$HOME/.kube/config";
-    };
-
-    home.file.".kube/config".text = lib.mkDefault ''
-      # Kubernetes config will be managed here
-      # Add your cluster configurations
-    '';
   };
 }

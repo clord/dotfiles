@@ -422,9 +422,6 @@
 
     packages.aarch64-linux.chickenpiImage =
       self.nixosConfigurations.chickenpi.config.system.build.sdImage;
-
-    # Export public keys for agenix
-    publicKeys = import ./pubkeys/default.nix;
   };
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-24.11";

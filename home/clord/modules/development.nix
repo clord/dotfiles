@@ -54,57 +54,63 @@
 
     # Go development
     (lib.mkIf (roles.development.enable && roles.development.languages.go) {
-      home.packages = with pkgs; [
-        go
-        gopls
-        gotools
-        go-migrate
-        golangci-lint
-        delve
-        gomodifytags
-        gotests
-        impl
-        godef
-      ];
+      home = {
+        packages = with pkgs; [
+          go
+          gopls
+          gotools
+          go-migrate
+          golangci-lint
+          delve
+          gomodifytags
+          gotests
+          impl
+          godef
+        ];
 
-      home.sessionPath = ["$HOME/go/bin"];
+        sessionPath = ["$HOME/go/bin"];
 
-      home.sessionVariables = {
-        GOPATH = "$HOME/go";
-        GO111MODULE = "on";
+        sessionVariables = {
+          GOPATH = "$HOME/go";
+          GO111MODULE = "on";
+        };
       };
     })
 
     # Rust development
     (lib.mkIf (roles.development.enable && roles.development.languages.rust) {
-      home.packages = with pkgs; [
-        rustup
-        # rust-analyzer is included in rustup
-        cargo-edit
-        cargo-watch
-        cargo-audit
-        cargo-outdated
-        cargo-expand
-        sccache
-      ];
+      home = {
+        packages = with pkgs; [
+          rustup
+          # rust-analyzer is included in rustup
+          cargo-edit
+          cargo-watch
+          cargo-audit
+          cargo-outdated
+          cargo-expand
+          sccache
+        ];
 
-      home.sessionPath = ["$HOME/.cargo/bin"];
+        sessionPath = ["$HOME/.cargo/bin"];
+      };
     })
 
     # Node.js development
     (lib.mkIf (roles.development.enable && roles.development.languages.node) {
-      home.packages = with pkgs; [
-        nodejs_22
-        corepack_22
-        yarn
-        pnpm
-        bun
-      ];
+      home = {
+        packages = with pkgs; [
+          nodejs_22
+          corepack_22
+          yarn
+          pnpm
+          bun
+        ];
 
-      home.sessionPath = [
-        "node_modules/.bin"
-        "$HOME/.local/node_modules/.bin"
-      ];
+        sessionPath = [
+          "node_modules/.bin"
+          "$HOME/.local/node_modules/.bin"
+        ];
+      };
     })
 
     # Python development

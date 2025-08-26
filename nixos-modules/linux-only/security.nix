@@ -122,7 +122,7 @@ in {
     # SSH configuration
     services.openssh = mkIf cfg.sshConfig.enable {
       enable = true;
-      ports = cfg.sshConfig.ports;
+      inherit (cfg.sshConfig) ports;
       settings = {
         PasswordAuthentication = cfg.sshConfig.passwordAuthentication;
         PermitRootLogin = cfg.sshConfig.permitRootLogin;
