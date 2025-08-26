@@ -1,6 +1,6 @@
 {roles, ...}: {
   programs.eza = {
-    enable = roles.terminal.enable;
+    inherit (roles.terminal) enable;
     icons = "auto";
     git = true;
   };

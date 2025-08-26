@@ -1,0 +1,168 @@
+name: Optimized CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+# Cancel in-progress runs when a new run is triggered
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # Quick checks that can run immediately in parallel
+  quick-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate cache key
+        id: cache-key
+        run: echo "key=${{ runner.os }}-nix-${{ hashFiles('flake.lock') }}" >> $GITHUB_OUTPUT
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = 4
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Parallel checks
+        run: |
+          # Run all quick checks in parallel
+          echo "Starting parallel checks..."
+          
+          # Format check
+          (nix fmt -- --check . && echo "✅ Format check passed" || (echo "❌ Format check failed" && exit 1)) &
+          FORMAT_PID=$!
+          
+          # Statix check
+          (nix develop -c statix check && echo "✅ Statix check passed" || (echo "❌ Statix check failed" && exit 1)) &
+          STATIX_PID=$!
+          
+          # Deadnix check
+          (nix develop -c deadnix --fail && echo "✅ Deadnix check passed" || (echo "❌ Deadnix check failed" && exit 1)) &
+          DEADNIX_PID=$!
+          
+          # Wait for all background jobs and capture their exit codes
+          FAILED=0
+          
+          wait $FORMAT_PID || FAILED=1
+          wait $STATIX_PID || FAILED=1
+          wait $DEADNIX_PID || FAILED=1
+          
+          if [ $FAILED -eq 1 ]; then
+            echo "::error::One or more checks failed"
+            exit 1
+          fi
+          
+          echo "✅ All quick checks passed!"
+  
+  # Comprehensive flake check
+  flake-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: quick-checks
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Check flake
+        run: |
+          # Skip checks we already ran in quick-checks
+          nix flake check --all-systems
+  
+  # Build matrix with smart caching
+  build:
+    needs: quick-checks
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Darwin builds
+          - os: macos-latest
+            system: aarch64-darwin
+            target: darwinConfigurations.waba
+          - os: macos-latest
+            system: aarch64-darwin
+            target: darwinConfigurations.edmon
+          # NixOS builds
+          - os: ubuntu-latest
+            system: x86_64-linux
+            target: nixosConfigurations.wildwood
+          - os: ubuntu-latest
+            system: aarch64-linux
+            target: nixosConfigurations.dunbar
+          - os: ubuntu-latest
+            system: aarch64-linux
+            target: nixosConfigurations.chickenpi
+    
+    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.target }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = 4
+            ${{ matrix.os == 'ubuntu-latest' && matrix.system == 'aarch64-linux' && 'extra-platforms = aarch64-linux' || '' }}
+      
+      - name: Setup QEMU for ARM builds
+        if: matrix.os == 'ubuntu-latest' && matrix.system == 'aarch64-linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Build configuration
+        run: |
+          if [[ "${{ matrix.target }}" == darwinConfigurations.* ]]; then
+            nix build .#${{ matrix.target }}.system --dry-run
+          else
+            nix build .#${{ matrix.target }}.config.system.build.toplevel --dry-run
+          fi
+  
+  # Final status check
+  ci-status:
+    if: always()
+    needs: [quick-checks, flake-check, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report CI status
+        run: |
+          if [[ "${{ needs.quick-checks.result }}" == "success" && \
+                "${{ needs.flake-check.result }}" == "success" && \
+                "${{ needs.build.result }}" == "success" ]]; then
+            echo "✅ All CI checks passed!"
+            exit 0
+          else
+            echo "❌ CI checks failed:"
+            [[ "${{ needs.quick-checks.result }}" != "success" ]] && echo "  - quick-checks: ${{ needs.quick-checks.result }}"
+            [[ "${{ needs.flake-check.result }}" != "success" ]] && echo "  - flake-check: ${{ needs.flake-check.result }}"
+            [[ "${{ needs.build.result }}" != "success" ]] && echo "  - build: ${{ needs.build.result }}"
+            exit 1
+          fi

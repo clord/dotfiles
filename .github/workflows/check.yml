@@ -1,0 +1,208 @@
+name: Check Flake
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+# Cancel in-progress runs when a new run is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Warm up caches for other jobs
+  setup-and-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Evaluate flake and warm caches
+        run: |
+          # Evaluate the flake to populate caches
+          nix flake show --all-systems --json > /dev/null
+          # Build the dev shell to cache development tools
+          nix develop --profile ./dev-profile -c true
+          # Pre-fetch some common dependencies
+          nix build .#devShells.x86_64-linux.default --dry-run
+  
+  # Parallel check jobs
+  flake-check:
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Check flake
+        run: nix flake check --all-systems
+  
+  format-check:
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Check formatting
+        run: nix fmt -- --check .
+  
+  statix-check:
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Run statix
+        run: nix develop -c statix check
+  
+  deadnix-check:
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Run deadnix
+        run: nix develop -c deadnix --fail
+  
+  # Build jobs with optimized matrix
+  build-darwin:
+    needs: setup-and-cache
+    runs-on: macos-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false  # Don't cancel all jobs if one fails
+      max-parallel: 2    # Limit concurrent jobs to manage costs
+      matrix:
+        host: [waba, edmon]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = 4
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Build Darwin configuration
+        run: |
+          nix build .#darwinConfigurations.${{ matrix.host }}.system --dry-run
+  
+  build-nixos:
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false  # Don't cancel all jobs if one fails
+      max-parallel: 3    # Run all three in parallel since Ubuntu runners are free
+      matrix:
+        host: [wildwood, dunbar, chickenpi]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = 4
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Build NixOS configuration
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel --dry-run
+  
+  # Summary job to check if all required checks passed
+  all-checks-passed:
+    if: always()
+    needs: 
+      - flake-check
+      - format-check
+      - statix-check
+      - deadnix-check
+      - build-darwin
+      - build-nixos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs
+        run: |
+          if [[ "${{ needs.flake-check.result }}" != "success" ]]; then
+            echo "flake-check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.format-check.result }}" != "success" ]]; then
+            echo "format-check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.statix-check.result }}" != "success" ]]; then
+            echo "statix-check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.deadnix-check.result }}" != "success" ]]; then
+            echo "deadnix-check failed"
+            exit 1
+          fi
+          if [[ "${{ needs.build-darwin.result }}" != "success" ]]; then
+            echo "build-darwin failed"
+            exit 1
+          fi
+          if [[ "${{ needs.build-nixos.result }}" != "success" ]]; then
+            echo "build-nixos failed"
+            exit 1
+          fi
+          echo "All checks passed!"

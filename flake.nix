@@ -23,11 +23,14 @@
   } @ inputs: let
     commonModules = [
       inputs.agenix.nixosModules.default
-      ./nixos-modules
       ./roles
     ];
     linuxCommonModules = [
+      ./nixos-modules # Contains platform-aware modules
       ./systems/common.nix
+    ];
+    darwinCommonModules = [
+      ./nixos-modules # Contains platform-aware modules (will filter internally)
     ];
     homeManagerConfig = {config, ...}: {
       home-manager = {
@@ -59,12 +62,16 @@
     # Helper function for user configuration
     mkUserConfig = {
       username,
-      config,
+      config ? {},
       homeConfig ? null,
+      isLinux ? false,
     }: let
-      userAttrs = {
-        "${username}".user = config;
-      };
+      userAttrs =
+        if isLinux && config != {}
+        then {
+          users.users.${username} = config;
+        }
+        else {};
       homeAttrs =
         if homeConfig != null
         then {home-manager.users.${username} = homeConfig;}
@@ -73,7 +80,7 @@
       userAttrs // homeAttrs;
 
     # Base modules for all systems
-    baseModules = system: isLinux:
+    baseModules = _system: isLinux:
       [
         (
           if isLinux
@@ -87,7 +94,7 @@
       ++ (
         if isLinux
         then linuxCommonModules
-        else []
+        else darwinCommonModules
       );
 
     # These are tools that are used to develop dotfiles themselves
@@ -110,9 +117,7 @@
     inherit devShells;
 
     # Formatter for nix fmt
-    formatter = flake-utils.lib.eachDefaultSystemMap (
-      system: (createPkgs system).alejandra
-    );
+    formatter = flake-utils.lib.eachDefaultSystemMap (system: (createPkgs system).alejandra);
 
     # Checks for CI/validation
     checks = flake-utils.lib.eachDefaultSystemMap (
@@ -120,25 +125,31 @@
         pkgs = createPkgs system;
       in {
         format =
-          pkgs.runCommand "check-format" {
+          pkgs.runCommand "check-format"
+          {
             buildInputs = with pkgs; [alejandra];
-          } ''
+          }
+          ''
             ${pkgs.alejandra}/bin/alejandra --check ${./.}
             touch $out
           '';
 
         statix =
-          pkgs.runCommand "check-statix" {
+          pkgs.runCommand "check-statix"
+          {
             buildInputs = with pkgs; [statix];
-          } ''
+          }
+          ''
             ${pkgs.statix}/bin/statix check ${./.}
             touch $out
           '';
 
         deadnix =
-          pkgs.runCommand "check-deadnix" {
+          pkgs.runCommand "check-deadnix"
+          {
             buildInputs = with pkgs; [deadnix];
-          } ''
+          }
+          ''
             ${pkgs.deadnix}/bin/deadnix --fail ${./.}
             touch $out
           '';
@@ -155,12 +166,34 @@
           modules =
             baseModules system false
             ++ [
+              {
+                # Set roles for waba (work machine)
+                roles = {
+                  terminal.enable = true;
+                  development = {
+                    enable = true;
+                    languages = {
+                      go = true;
+                      rust = true;
+                      node = true;
+                      python = true;
+                      zig = true;
+                    };
+                  };
+                  kubernetes = {
+                    enable = true;
+                    includeHelm = true;
+                    includeK9s = true;
+                  };
+                  grafana = {
+                    enable = true;
+                    includeCloud = true;
+                  };
+                  server.enable = true; # Need server tools for development
+                };
+              }
               (mkUserConfig {
                 username = "clord";
-                config = {
-                  enable = true;
-                  home = "/Users/clord";
-                };
                 homeConfig = import ./home/clord/waba.nix;
               })
               {users.users.clord.home = "/Users/clord";}
@@ -176,12 +209,32 @@
           modules =
             baseModules system false
             ++ [
+              {
+                # Set roles for edmon (personal machine)
+                roles = {
+                  terminal.enable = true;
+                  development = {
+                    enable = true;
+                    languages = {
+                      go = true;
+                      rust = true;
+                      node = true;
+                      python = true;
+                    };
+                  };
+                  kubernetes = {
+                    enable = false; # Personal machine, less k8s
+                    includeHelm = false;
+                    includeK9s = false;
+                  };
+                  grafana = {
+                    enable = false; # No Grafana on personal
+                    includeCloud = false;
+                  };
+                };
+              }
               (mkUserConfig {
                 username = "clord";
-                config = {
-                  enable = true;
-                  home = "/Users/clord";
-                };
                 homeConfig = import ./home/clord/edmon.nix;
               })
               {users.users.clord.home = "/Users/clord";}
@@ -201,24 +254,55 @@
             baseModules system true
             ++ [
               nixos-hardware.nixosModules.system76
+              {
+                # Set roles for wildwood (desktop workstation)
+                roles = {
+                  terminal.enable = true;
+                  development = {
+                    enable = true;
+                    languages = {
+                      go = true;
+                      rust = true;
+                      node = true;
+                      python = true;
+                    };
+                  };
+                  kubernetes = {
+                    enable = true;
+                    includeHelm = true;
+                    includeK9s = true;
+                  };
+                  grafana = {
+                    enable = false;
+                    includeCloud = false;
+                  };
+                  desktop = {
+                    enable = true; # Has GNOME
+                    gaming = false;
+                    multimedia = false;
+                  };
+                };
+              }
               (mkUserConfig {
                 username = "clord";
+                isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = [
                     "wheel"
                     "networkmanager"
                   ];
-                  isLinux = true;
-                  enable = true;
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/default.nix;
               })
               (mkUserConfig {
                 username = "eugene";
+                isLinux = true;
                 config = {
-                  enable = true;
-                  isLinux = true;
+                  isNormalUser = true;
                   extraGroups = ["networkmanager"];
+                  home = "/home/eugene";
                 };
                 homeConfig = import ./home/eugene/default.nix;
               })
@@ -235,12 +319,44 @@
           modules =
             baseModules system true
             ++ [
+              {
+                # Set roles for dunbar (headless server)
+                roles = {
+                  terminal.enable = true;
+                  development = {
+                    enable = true;
+                    languages = {
+                      go = true;
+                      rust = false;
+                      node = false;
+                      python = true;
+                      zig = false;
+                    };
+                  };
+                  kubernetes = {
+                    enable = false; # Server, no k8s
+                    includeHelm = false;
+                    includeK9s = false;
+                  };
+                  grafana = {
+                    enable = false;
+                    includeCloud = false;
+                  };
+                  desktop = {
+                    enable = false; # Headless
+                    gaming = false;
+                    multimedia = false;
+                  };
+                  server.enable = true;
+                };
+              }
               (mkUserConfig {
                 username = "clord";
+                isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = ["wheel"];
-                  isLinux = true;
-                  enable = true;
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/default.nix;
               })
@@ -260,12 +376,42 @@
               "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
               {sdImage.compressImage = false;}
               {inherit (restedpi.packages.${system}) restedpi;}
+              {
+                # Set minimal roles for chickenpi (Raspberry Pi)
+                roles = {
+                  terminal.enable = true; # Basic terminal only
+                  development = {
+                    enable = false; # Minimal system
+                    languages = {
+                      go = false;
+                      rust = false;
+                      node = false;
+                      python = false;
+                    };
+                  };
+                  kubernetes = {
+                    enable = false;
+                    includeHelm = false;
+                    includeK9s = false;
+                  };
+                  grafana = {
+                    enable = false;
+                    includeCloud = false;
+                  };
+                  desktop = {
+                    enable = false;
+                    gaming = false;
+                    multimedia = false;
+                  };
+                };
+              }
               (mkUserConfig {
                 username = "clord";
+                isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = ["wheel"];
-                  isLinux = true;
-                  enable = true;
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/minimal.nix;
               })

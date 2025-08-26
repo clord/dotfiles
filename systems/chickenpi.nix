@@ -85,6 +85,11 @@ in {
     };
 
     nixpkgs.hostPlatform = "aarch64-linux";
+
+    # This value determines the NixOS release with which your system is to be
+    # compatible. Read the release notes before changing.
+    system.stateVersion = "24.11";
+
     systemd.services.restedpi = {
       enable = true;
       environment = {RUST_BACKTRACE = "1";};

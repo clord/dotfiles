@@ -57,7 +57,10 @@
       mcd = "mkdir -p $argv; and cd $argv";
 
       print_help = {
-        argumentNames = ["msg" "script_name"];
+        argumentNames = [
+          "msg"
+          "script_name"
+        ];
         body = ''
           if test -n "$msg"
               set_color red

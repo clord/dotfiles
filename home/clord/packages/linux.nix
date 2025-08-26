@@ -1,6 +1,6 @@
 # Linux-specific packages
-{pkgs, ...}: {
-  home.packages = with pkgs; [
+_: {
+  home.packages = [
     # Linux-specific utilities can go here
   ];
 }

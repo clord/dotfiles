@@ -22,19 +22,19 @@
   };
   nixpkgs.config.allowUnfree = true;
   services = {
+    displayManager = {
+      autoLogin.enable = true;
+      autoLogin.user = "clord";
+    };
+
     xserver = {
-      displayManager = {
-        autoLogin.enable = true;
-        autoLogin.user = "clord";
-
-        # Enable the GNOME Desktop Environment.
-        gdm.enable = true;
-      };
+      displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
-
       enable = true;
-      layout = "us";
-      xkbVariant = "";
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
     };
 
     # Enable CUPS to print documents.
@@ -53,7 +53,7 @@
   users.users.root.hashedPasswordFile = config.age.secrets.rootPasswd.path;
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  # sound.enable is deprecated, configured via pipewire
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
@@ -70,4 +70,8 @@
   swapDevices = [];
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+
+  # This value determines the NixOS release with which your system is to be
+  # compatible. Read the release notes before changing.
+  system.stateVersion = "24.11";
 }
