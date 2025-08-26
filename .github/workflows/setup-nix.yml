@@ -1,0 +1,54 @@
+name: Setup Nix Environment
+
+# This is a reusable workflow that sets up Nix with caching
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: 'Runner OS (ubuntu-latest, macos-latest)'
+        required: false
+        default: 'ubuntu-latest'
+        type: string
+      max-jobs:
+        description: 'Maximum number of parallel jobs for Nix'
+        required: false
+        default: '4'
+        type: string
+      extra-conf:
+        description: 'Additional Nix configuration'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  setup:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            experimental-features = nix-command flakes
+            max-jobs = ${{ inputs.max-jobs }}
+            ${{ inputs.extra-conf }}
+      
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+      
+      - name: Cache Nix store
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/nix
+            ~/.nix-defexpr
+            ~/.nix-profile
+          key: ${{ inputs.runner }}-nix-${{ hashFiles('flake.lock') }}
+          restore-keys: |
+            ${{ inputs.runner }}-nix-
+      
+      - name: Verify Nix installation
+        run: |
+          nix --version
+          nix flake metadata
