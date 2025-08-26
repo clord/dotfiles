@@ -81,12 +81,15 @@
     };
   };
 
-  # Enable sound with pipewire.
-  sound.enable = true;
+  # Sound is configured via pipewire above
   security.rtkit.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # This value determines the NixOS release with which your system is to be
+  # compatible. Read the release notes before changing.
+  system.stateVersion = "24.11";
 
   environment.systemPackages = with pkgs; [
     linux-firmware

@@ -285,10 +285,12 @@
                 username = "clord";
                 isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = [
                     "wheel"
                     "networkmanager"
                   ];
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/default.nix;
               })
@@ -296,7 +298,9 @@
                 username = "eugene";
                 isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = [ "networkmanager" ];
+                  home = "/home/eugene";
                 };
                 homeConfig = import ./home/eugene/default.nix;
               })
@@ -347,7 +351,9 @@
                 username = "clord";
                 isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = [ "wheel" ];
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/default.nix;
               })
@@ -399,7 +405,9 @@
                 username = "clord";
                 isLinux = true;
                 config = {
+                  isNormalUser = true;
                   extraGroups = [ "wheel" ];
+                  home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/minimal.nix;
               })
