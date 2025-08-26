@@ -1,7 +1,11 @@
 # Common services configuration
-{ config, lib, pkgs, ... }:
-with lib;
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.modules.services;
 in {
   options.modules.services = {
@@ -10,50 +14,50 @@ in {
       default = false;
       description = "Enable Docker";
     };
-    
+
     enablePodman = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Podman (rootless containers)";
     };
-    
+
     enableLibvirt = mkOption {
       type = types.bool;
       default = false;
       description = "Enable libvirt for virtualization";
     };
-    
+
     enableTailscale = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Tailscale VPN";
     };
-    
+
     enableSyncthing = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Syncthing for file synchronization";
     };
-    
+
     enablePrinting = mkOption {
       type = types.bool;
       default = false;
       description = "Enable CUPS printing service";
     };
-    
+
     enableBluetooth = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Bluetooth support";
     };
-    
+
     enableFlatpak = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Flatpak support";
     };
   };
-  
+
   config = mkMerge [
     # Docker
     (mkIf cfg.enableDocker {
@@ -65,7 +69,7 @@ in {
           dates = "weekly";
         };
       };
-      
+
       environment.systemPackages = with pkgs; [
         docker-compose
         docker-credential-helpers
@@ -73,7 +77,7 @@ in {
         lazydocker
       ];
     })
-    
+
     # Podman
     (mkIf cfg.enablePodman {
       virtualisation = {
@@ -83,14 +87,14 @@ in {
           defaultNetwork.settings.dns_enabled = true;
         };
       };
-      
+
       environment.systemPackages = with pkgs; [
         podman-compose
         buildah
         skopeo
       ];
     })
-    
+
     # Libvirt
     (mkIf cfg.enableLibvirt {
       virtualisation.libvirtd = {
@@ -102,27 +106,27 @@ in {
           ovmf.enable = true;
         };
       };
-      
+
       environment.systemPackages = with pkgs; [
         virt-manager
         virt-viewer
         virtiofsd
       ];
     })
-    
+
     # Tailscale
     (mkIf cfg.enableTailscale {
       services.tailscale = {
         enable = true;
         useRoutingFeatures = lib.mkDefault "client";
       };
-      
+
       networking.firewall = {
         checkReversePath = "loose";
-        trustedInterfaces = [ "tailscale0" ];
+        trustedInterfaces = ["tailscale0"];
       };
     })
-    
+
     # Syncthing
     (mkIf cfg.enableSyncthing {
       services.syncthing = {
@@ -134,7 +138,7 @@ in {
         overrideFolders = false;
       };
     })
-    
+
     # Printing
     (mkIf cfg.enablePrinting {
       services.printing = {
@@ -147,7 +151,7 @@ in {
           epson-escpr2
         ];
       };
-      
+
       # Enable network printer discovery
       services.avahi = {
         enable = true;
@@ -155,7 +159,7 @@ in {
         openFirewall = true;
       };
     })
-    
+
     # Bluetooth
     (mkIf cfg.enableBluetooth {
       hardware.bluetooth = {
@@ -168,16 +172,16 @@ in {
           };
         };
       };
-      
+
       services.blueman.enable = config.services.xserver.enable;
     })
-    
+
     # Flatpak
     (mkIf cfg.enableFlatpak {
       services.flatpak.enable = true;
       xdg.portal = {
         enable = true;
-        extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+        extraPortals = with pkgs; [xdg-desktop-portal-gtk];
       };
     })
   ];

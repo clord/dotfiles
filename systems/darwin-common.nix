@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   system = {
     defaults = {
       spaces.spans-displays = false;

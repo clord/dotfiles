@@ -4,11 +4,9 @@
   pkgs,
   roles,
   ...
-}:
-{
+}: {
   config = lib.mkIf roles.grafana.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         # Grafana tools
         jsonnet
@@ -17,7 +15,6 @@
 
         # Testing tools
         k6
-
 
         # Act for GitHub Actions testing
         act

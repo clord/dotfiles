@@ -11,165 +11,161 @@
 #       ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃
 {
   description = "NixOS configuration for all machines in the network";
-  outputs =
-    {
-      self,
-      home-manager,
-      restedpi,
-      nixpkgs,
-      nix-darwin,
-      nixos-hardware,
-      flake-utils,
-      ...
-    }@inputs:
-    let
-      commonModules = [
-        inputs.agenix.nixosModules.default
-        ./roles
-      ];
-      linuxCommonModules = [
-        ./nixos-modules # Contains platform-aware modules
-        ./systems/common.nix
-      ];
-      darwinCommonModules = [
-        ./nixos-modules # Contains platform-aware modules (will filter internally)
-      ];
-      homeManagerConfig =
-        { config, ... }:
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = {
-              inherit inputs;
-              inherit (config) roles;
-            };
-          };
+  outputs = {
+    self,
+    home-manager,
+    restedpi,
+    nixpkgs,
+    nix-darwin,
+    nixos-hardware,
+    flake-utils,
+    ...
+  } @ inputs: let
+    commonModules = [
+      inputs.agenix.nixosModules.default
+      ./roles
+    ];
+    linuxCommonModules = [
+      ./nixos-modules # Contains platform-aware modules
+      ./systems/common.nix
+    ];
+    darwinCommonModules = [
+      ./nixos-modules # Contains platform-aware modules (will filter internally)
+    ];
+    homeManagerConfig = {config, ...}: {
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        extraSpecialArgs = {
+          inherit inputs;
+          inherit (config) roles;
         };
+      };
+    };
 
-      createPkgs =
-        system:
-        import nixpkgs {
-          inherit system;
-          overlays = with inputs; [
-            rust-overlay.overlays.default
-            devenv.overlays.default
-          ];
-          config.allowUnfree = true;
-        };
-
-      createSpecialArgs = system: {
-        inherit inputs;
-        agenix = inputs.agenix.packages.${system}.default;
-        pkgs = createPkgs system;
+    createPkgs = system:
+      import nixpkgs {
+        inherit system;
+        overlays = with inputs; [
+          rust-overlay.overlays.default
+          devenv.overlays.default
+        ];
+        config.allowUnfree = true;
       };
 
-      # Helper function for user configuration
-      mkUserConfig =
-        {
-          username,
-          config ? { },
-          homeConfig ? null,
-          isLinux ? false,
-        }:
-        let
-          userAttrs =
-            if isLinux && config != { } then
-              {
-                users.users.${username} = config;
-              }
-            else
-              { };
-          homeAttrs = if homeConfig != null then { home-manager.users.${username} = homeConfig; } else { };
-        in
-        userAttrs // homeAttrs;
+    createSpecialArgs = system: {
+      inherit inputs;
+      agenix = inputs.agenix.packages.${system}.default;
+      pkgs = createPkgs system;
+    };
 
-      # Base modules for all systems
-      baseModules =
-        _system: isLinux:
-        [
-          (
-            if isLinux then home-manager.nixosModules.home-manager else home-manager.darwinModules.home-manager
-          )
-          homeManagerConfig
-          { roles.terminal.enable = true; }
-        ]
-        ++ commonModules
-        ++ (if isLinux then linuxCommonModules else darwinCommonModules);
-
-      # These are tools that are used to develop dotfiles themselves
-      devShells = flake-utils.lib.eachDefaultSystemMap (
-        system:
-        let
-          pkgs = createPkgs system;
-        in
-        {
-          default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              nixd
-              nil
-              statix
-              alejandra
-              deadnix
-            ];
-          };
+    # Helper function for user configuration
+    mkUserConfig = {
+      username,
+      config ? {},
+      homeConfig ? null,
+      isLinux ? false,
+    }: let
+      userAttrs =
+        if isLinux && config != {}
+        then {
+          users.users.${username} = config;
         }
-      );
+        else {};
+      homeAttrs =
+        if homeConfig != null
+        then {home-manager.users.${username} = homeConfig;}
+        else {};
     in
-    {
-      inherit devShells;
+      userAttrs // homeAttrs;
 
-      # Formatter for nix fmt
-      formatter = flake-utils.lib.eachDefaultSystemMap (system: (createPkgs system).alejandra);
-
-      # Checks for CI/validation
-      checks = flake-utils.lib.eachDefaultSystemMap (
-        system:
-        let
-          pkgs = createPkgs system;
-        in
-        {
-          format =
-            pkgs.runCommand "check-format"
-              {
-                buildInputs = with pkgs; [ alejandra ];
-              }
-              ''
-                ${pkgs.alejandra}/bin/alejandra --check ${./.}
-                touch $out
-              '';
-
-          statix =
-            pkgs.runCommand "check-statix"
-              {
-                buildInputs = with pkgs; [ statix ];
-              }
-              ''
-                ${pkgs.statix}/bin/statix check ${./.}
-                touch $out
-              '';
-
-          deadnix =
-            pkgs.runCommand "check-deadnix"
-              {
-                buildInputs = with pkgs; [ deadnix ];
-              }
-              ''
-                ${pkgs.deadnix}/bin/deadnix --fail ${./.}
-                touch $out
-              '';
-        }
+    # Base modules for all systems
+    baseModules = _system: isLinux:
+      [
+        (
+          if isLinux
+          then home-manager.nixosModules.home-manager
+          else home-manager.darwinModules.home-manager
+        )
+        homeManagerConfig
+        {roles.terminal.enable = true;}
+      ]
+      ++ commonModules
+      ++ (
+        if isLinux
+        then linuxCommonModules
+        else darwinCommonModules
       );
 
-      darwinConfigurations = {
-        waba =
-          let
-            system = "aarch64-darwin";
-          in
-          nix-darwin.lib.darwinSystem {
-            inherit system;
-            specialArgs = createSpecialArgs system;
-            modules = baseModules system false ++ [
+    # These are tools that are used to develop dotfiles themselves
+    devShells = flake-utils.lib.eachDefaultSystemMap (
+      system: let
+        pkgs = createPkgs system;
+      in {
+        default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            nixd
+            nil
+            statix
+            alejandra
+            deadnix
+          ];
+        };
+      }
+    );
+  in {
+    inherit devShells;
+
+    # Formatter for nix fmt
+    formatter = flake-utils.lib.eachDefaultSystemMap (system: (createPkgs system).alejandra);
+
+    # Checks for CI/validation
+    checks = flake-utils.lib.eachDefaultSystemMap (
+      system: let
+        pkgs = createPkgs system;
+      in {
+        format =
+          pkgs.runCommand "check-format"
+          {
+            buildInputs = with pkgs; [alejandra];
+          }
+          ''
+            ${pkgs.alejandra}/bin/alejandra --check ${./.}
+            touch $out
+          '';
+
+        statix =
+          pkgs.runCommand "check-statix"
+          {
+            buildInputs = with pkgs; [statix];
+          }
+          ''
+            ${pkgs.statix}/bin/statix check ${./.}
+            touch $out
+          '';
+
+        deadnix =
+          pkgs.runCommand "check-deadnix"
+          {
+            buildInputs = with pkgs; [deadnix];
+          }
+          ''
+            ${pkgs.deadnix}/bin/deadnix --fail ${./.}
+            touch $out
+          '';
+      }
+    );
+
+    darwinConfigurations = {
+      waba = let
+        system = "aarch64-darwin";
+      in
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system false
+            ++ [
               {
                 # Set roles for waba (work machine)
                 roles = {
@@ -200,18 +196,19 @@
                 username = "clord";
                 homeConfig = import ./home/clord/waba.nix;
               })
-              { users.users.clord.home = "/Users/clord"; }
+              {users.users.clord.home = "/Users/clord";}
               ./systems/waba.nix
             ];
-          };
-        edmon =
-          let
-            system = "aarch64-darwin";
-          in
-          nix-darwin.lib.darwinSystem {
-            inherit system;
-            specialArgs = createSpecialArgs system;
-            modules = baseModules system false ++ [
+        };
+      edmon = let
+        system = "aarch64-darwin";
+      in
+        nix-darwin.lib.darwinSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system false
+            ++ [
               {
                 # Set roles for edmon (personal machine)
                 roles = {
@@ -240,21 +237,22 @@
                 username = "clord";
                 homeConfig = import ./home/clord/edmon.nix;
               })
-              { users.users.clord.home = "/Users/clord"; }
+              {users.users.clord.home = "/Users/clord";}
               ./systems/edmon.nix
             ];
-          };
-      };
+        };
+    };
 
-      nixosConfigurations = {
-        wildwood =
-          let
-            system = "x86_64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = createSpecialArgs system;
-            modules = baseModules system true ++ [
+    nixosConfigurations = {
+      wildwood = let
+        system = "x86_64-linux";
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system true
+            ++ [
               nixos-hardware.nixosModules.system76
               {
                 # Set roles for wildwood (desktop workstation)
@@ -303,23 +301,24 @@
                 isLinux = true;
                 config = {
                   isNormalUser = true;
-                  extraGroups = [ "networkmanager" ];
+                  extraGroups = ["networkmanager"];
                   home = "/home/eugene";
                 };
                 homeConfig = import ./home/eugene/default.nix;
               })
               ./systems/wildwood.nix
             ];
-          };
+        };
 
-        dunbar =
-          let
-            system = "aarch64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = createSpecialArgs system;
-            modules = baseModules system true ++ [
+      dunbar = let
+        system = "aarch64-linux";
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system true
+            ++ [
               {
                 # Set roles for dunbar (headless server)
                 roles = {
@@ -356,26 +355,27 @@
                 isLinux = true;
                 config = {
                   isNormalUser = true;
-                  extraGroups = [ "wheel" ];
+                  extraGroups = ["wheel"];
                   home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/default.nix;
               })
               ./systems/dunbar.nix
             ];
-          };
+        };
 
-        chickenpi =
-          let
-            system = "aarch64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = createSpecialArgs system;
-            modules = baseModules system true ++ [
+      chickenpi = let
+        system = "aarch64-linux";
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system true
+            ++ [
               "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-              { sdImage.compressImage = false; }
-              { inherit (restedpi.packages.${system}) restedpi; }
+              {sdImage.compressImage = false;}
+              {inherit (restedpi.packages.${system}) restedpi;}
               {
                 # Set minimal roles for chickenpi (Raspberry Pi)
                 roles = {
@@ -410,22 +410,22 @@
                 isLinux = true;
                 config = {
                   isNormalUser = true;
-                  extraGroups = [ "wheel" ];
+                  extraGroups = ["wheel"];
                   home = "/home/clord";
                 };
                 homeConfig = import ./home/clord/minimal.nix;
               })
               ./systems/chickenpi.nix
             ];
-          };
-      };
-
-      packages.aarch64-linux.chickenpiImage =
-        self.nixosConfigurations.chickenpi.config.system.build.sdImage;
-
-      # Export public keys for agenix
-      publicKeys = import ./pubkeys/default.nix;
+        };
     };
+
+    packages.aarch64-linux.chickenpiImage =
+      self.nixosConfigurations.chickenpi.config.system.build.sdImage;
+
+    # Export public keys for agenix
+    publicKeys = import ./pubkeys/default.nix;
+  };
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-24.11";
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-24.11";

@@ -3,8 +3,7 @@
   pkgs,
   roles,
   ...
-}:
-{
+}: {
   imports = [
     ../programs/cli/nvim
     ../programs/cli/helix.nix

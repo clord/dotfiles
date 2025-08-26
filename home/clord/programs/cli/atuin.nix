@@ -1,11 +1,7 @@
-{
-  roles,
-  ...
-}:
-{
+{roles, ...}: {
   programs.atuin = {
     enable = roles.terminal.enable;
-    flags = [ "--disable-up-arrow" ];
+    flags = ["--disable-up-arrow"];
     enableFishIntegration = roles.terminal.enable;
     settings = {
       style = "compact";

@@ -4,11 +4,9 @@
   pkgs,
   ...
 }:
-with lib;
-let
+with lib; let
   cfg = config.modules.networking;
-in
-{
+in {
   options.modules.networking = {
     enable = mkEnableOption "common networking configuration";
 
@@ -31,13 +29,13 @@ in
 
     allowedTCPPorts = mkOption {
       type = types.listOf types.port;
-      default = [ ];
+      default = [];
       description = "List of allowed TCP ports";
     };
 
     allowedUDPPorts = mkOption {
       type = types.listOf types.port;
-      default = [ ];
+      default = [];
       description = "List of allowed UDP ports";
     };
 

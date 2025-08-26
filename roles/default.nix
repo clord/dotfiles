@@ -1,7 +1,7 @@
 {lib, ...}: {
   options.roles = {
     terminal.enable = lib.mkEnableOption "Terminal and shell tools";
-    
+
     development = {
       enable = lib.mkEnableOption "General development tools";
       languages = {
@@ -12,7 +12,7 @@
         zig = lib.mkEnableOption "Zig development";
       };
     };
-    
+
     kubernetes = {
       enable = lib.mkEnableOption "Kubernetes tools";
       includeHelm = lib.mkOption {
@@ -26,7 +26,7 @@
         description = "Include k9s terminal UI";
       };
     };
-    
+
     grafana = {
       enable = lib.mkEnableOption "Grafana development setup";
       includeCloud = lib.mkOption {
@@ -35,17 +35,17 @@
         description = "Include Grafana Cloud tools";
       };
     };
-    
+
     desktop = {
       enable = lib.mkEnableOption "Desktop environment and GUI apps";
       gaming = lib.mkEnableOption "Gaming tools and platforms";
       multimedia = lib.mkEnableOption "Multimedia editing tools";
     };
-    
+
     server = {
       enable = lib.mkEnableOption "Server and infrastructure tools";
     };
   };
-  
+
   config = {};
 }

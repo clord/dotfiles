@@ -26,7 +26,7 @@
       autoLogin.enable = true;
       autoLogin.user = "clord";
     };
-    
+
     xserver = {
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
@@ -70,7 +70,7 @@
   swapDevices = [];
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
-  
+
   # This value determines the NixOS release with which your system is to be
   # compatible. Read the release notes before changing.
   system.stateVersion = "24.11";

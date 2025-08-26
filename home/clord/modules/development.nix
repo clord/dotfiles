@@ -3,8 +3,7 @@
   pkgs,
   roles,
   ...
-}:
-{
+}: {
   config = lib.mkMerge [
     # Base development tools
     (lib.mkIf roles.development.enable {
@@ -68,7 +67,7 @@
         godef
       ];
 
-      home.sessionPath = [ "$HOME/go/bin" ];
+      home.sessionPath = ["$HOME/go/bin"];
 
       home.sessionVariables = {
         GOPATH = "$HOME/go";
@@ -89,7 +88,7 @@
         sccache
       ];
 
-      home.sessionPath = [ "$HOME/.cargo/bin" ];
+      home.sessionPath = ["$HOME/.cargo/bin"];
     })
 
     # Node.js development

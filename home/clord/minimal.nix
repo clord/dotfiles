@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./common.nix
     ./modules # Use modular configuration even for minimal

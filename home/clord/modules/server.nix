@@ -5,8 +5,7 @@
   pkgs,
   roles,
   ...
-}:
-{
+}: {
   config = lib.mkIf (roles.server.enable or false) {
     home.packages = with pkgs; [
       # Web servers

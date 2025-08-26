@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-let
+{pkgs, ...}: let
   gitConfig = {
     core = {
       editor = "nvim";
@@ -26,8 +22,7 @@ let
   };
 
   rg = "${pkgs.ripgrep}/bin/rg";
-in
-{
+in {
   programs.git = {
     enable = true;
     aliases = {

@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./darwin-common.nix
     ./modules

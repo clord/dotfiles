@@ -3,8 +3,7 @@
   pkgs,
   roles,
   ...
-}:
-{
+}: {
   imports = [
     ../programs/cli/fish.nix
     ../programs/cli/nushell.nix
