@@ -38,43 +38,34 @@ jobs:
       
       - name: Parallel checks
         run: |
-          # Run all quick checks in parallel using Nix's built-in parallelism
-          nix run .#checks.x86_64-linux.format &
+          # Run all quick checks in parallel
+          echo "Starting parallel checks..."
+          
+          # Format check
+          (nix fmt -- --check . && echo "✅ Format check passed" || (echo "❌ Format check failed" && exit 1)) &
           FORMAT_PID=$!
           
-          nix run .#checks.x86_64-linux.statix &
+          # Statix check
+          (nix develop -c statix check && echo "✅ Statix check passed" || (echo "❌ Statix check failed" && exit 1)) &
           STATIX_PID=$!
           
-          nix run .#checks.x86_64-linux.deadnix &
+          # Deadnix check
+          (nix develop -c deadnix --fail && echo "✅ Deadnix check passed" || (echo "❌ Deadnix check failed" && exit 1)) &
           DEADNIX_PID=$!
           
           # Wait for all background jobs and capture their exit codes
-          wait $FORMAT_PID
-          FORMAT_EXIT=$?
+          FAILED=0
           
-          wait $STATIX_PID
-          STATIX_EXIT=$?
+          wait $FORMAT_PID || FAILED=1
+          wait $STATIX_PID || FAILED=1
+          wait $DEADNIX_PID || FAILED=1
           
-          wait $DEADNIX_PID
-          DEADNIX_EXIT=$?
-          
-          # Report results
-          if [ $FORMAT_EXIT -ne 0 ]; then
-            echo "::error::Format check failed"
+          if [ $FAILED -eq 1 ]; then
+            echo "::error::One or more checks failed"
             exit 1
           fi
           
-          if [ $STATIX_EXIT -ne 0 ]; then
-            echo "::error::Statix check failed"
-            exit 1
-          fi
-          
-          if [ $DEADNIX_EXIT -ne 0 ]; then
-            echo "::error::Deadnix check failed"
-            exit 1
-          fi
-          
-          echo "All quick checks passed!"
+          echo "✅ All quick checks passed!"
   
   # Comprehensive flake check
   flake-check:
