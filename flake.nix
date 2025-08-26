@@ -28,11 +28,11 @@
         ./roles
       ];
       linuxCommonModules = [
-        ./nixos-modules  # Contains platform-aware modules
+        ./nixos-modules # Contains platform-aware modules
         ./systems/common.nix
       ];
       darwinCommonModules = [
-        ./nixos-modules  # Contains platform-aware modules (will filter internally)
+        ./nixos-modules # Contains platform-aware modules (will filter internally)
       ];
       homeManagerConfig =
         { config, ... }:
@@ -68,21 +68,25 @@
       mkUserConfig =
         {
           username,
-          config ? {},
+          config ? { },
           homeConfig ? null,
           isLinux ? false,
         }:
         let
-          userAttrs = if isLinux && config != {} then {
-            users.users.${username} = config;
-          } else {};
+          userAttrs =
+            if isLinux && config != { } then
+              {
+                users.users.${username} = config;
+              }
+            else
+              { };
           homeAttrs = if homeConfig != null then { home-manager.users.${username} = homeConfig; } else { };
         in
         userAttrs // homeAttrs;
 
       # Base modules for all systems
       baseModules =
-        system: isLinux:
+        _system: isLinux:
         [
           (
             if isLinux then home-manager.nixosModules.home-manager else home-manager.darwinModules.home-manager
