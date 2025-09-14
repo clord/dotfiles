@@ -13,6 +13,11 @@
       }
     ];
     interactiveShellInit = ''
+      # Ensure nix profile binaries are in PATH early
+      if test -d /etc/profiles/per-user/clord/bin
+          set -gx PATH /etc/profiles/per-user/clord/bin $PATH
+      end
+
       set fish_greeting # Disable greeting
       fish_vi_key_bindings
       set fish_cursor_default block
