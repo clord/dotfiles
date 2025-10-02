@@ -31,7 +31,6 @@
         host    all             all             10.68.3.0/24            md5
       '';
       settings = {
-        listen_addresses = "0.0.0.0";
         max_connections = 100;
         shared_buffers = "128MB";
         work_mem = "4MB";
@@ -46,15 +45,11 @@
       ensureUsers = [
         {
           name = "homeauth";
-          ensurePermissions = {
-            "DATABASE homeauth" = "ALL PRIVILEGES";
-          };
+          ensureDBOwnership = true;
         }
         {
           name = "lectures";
-          ensurePermissions = {
-            "DATABASE lectures" = "ALL PRIVILEGES";
-          };
+          ensureDBOwnership = true;
         }
       ];
     };
