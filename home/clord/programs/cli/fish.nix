@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   programs.fish = {
     enable = true;
     plugins = [
@@ -84,7 +85,7 @@
       };
 
       gen_commit_msg = {
-        argumentNames = ["gitDiff"];
+        argumentNames = [ "gitDiff" ];
         body = ''
           # Constants
           set prompt "I want you to act as a commit message generator. I will provide you with a git diff containing changes I've made to my project, and I would like you to generate 3 appropriate commit messages using the conventional commit format. Do not give me choices like \"if the commit was adding a feature, choose this commit message,\" or \"if the commit was fixing a bug, choose that commit message;\" just do your best to decide which 3 commit messages are the most appropriate based on the changes contained in the git diff. Do not write any explanations or other words, just reply with the commit message. Here is the git diff: \n"
@@ -122,7 +123,7 @@
         '';
       };
       prepend_path = {
-        argumentNames = ["r"];
+        argumentNames = [ "r" ];
         body = ''
           if test -d $r
               test -d $r/sbin ; and set PATH $r/sbin $PATH
