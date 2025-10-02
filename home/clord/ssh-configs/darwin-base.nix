@@ -1,5 +1,5 @@
 # Base SSH configuration for all macOS systems
-{...}: {
+_: {
   programs.ssh = {
     enable = true;
     extraConfig = ''

@@ -1,12 +1,16 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.openssh.enable = true;
-  
+
   # Open ports only in this container
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 ];
+    allowedTCPPorts = [22 80 443];
   };
-  
+
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
@@ -62,7 +66,7 @@
       add_header X-Content-Type-Options "nosniff" always;
       add_header X-XSS-Protection "1; mode=block" always;
       add_header Referrer-Policy "no-referrer-when-downgrade" always;
-      
+
       # Logging configuration
       log_format detailed '$remote_addr - $remote_user [$time_local] '
                          '"$request" $status $body_bytes_sent '
@@ -70,7 +74,7 @@
       access_log /var/log/nginx/access.log detailed;
     '';
   };
-  
+
   # Set up basic authentication for certain sites
   security.htpasswd = {
     enable = true;
@@ -83,6 +87,6 @@
       };
     };
   };
-  
+
   system.stateVersion = "23.11";
 }

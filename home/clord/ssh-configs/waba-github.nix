@@ -1,5 +1,5 @@
 # Waba-specific SSH configuration for GitHub (personal + Grafana)
-{...}: {
+_: {
   programs.ssh.extraConfig = ''
     # Personal GitHub
     Host personal.github.com

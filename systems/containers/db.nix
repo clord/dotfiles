@@ -1,10 +1,14 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.openssh.enable = true;
-  
+
   # Restrict access to internal network only
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 5432 ]; # SSH and PostgreSQL
+    allowedTCPPorts = [22 5432]; # SSH and PostgreSQL
     extraCommands = ''
       # Allow connections only from proxy and host
       iptables -A INPUT -s 10.68.3.1/32 -j ACCEPT
@@ -13,7 +17,7 @@
       iptables -A INPUT -j DROP
     '';
   };
-  
+
   services.postgresql = {
     enable = true;
     enableTCPIP = true;
@@ -52,13 +56,13 @@
       }
     ];
   };
-  
+
   # Create backup script
   environment.systemPackages = with pkgs; [
     postgresql
     gzip
   ];
-  
+
   # Daily database backups
   services.cron = {
     enable = true;
@@ -66,6 +70,6 @@
       "0 3 * * * root mkdir -p /data/backups && pg_dump -U postgres -F c -Z 9 -f /data/backups/all_$(date +\\%Y\\%m\\%d).psql.gz postgres && find /data/backups -type f -name '*.psql.gz' -mtime +14 -delete"
     ];
   };
-  
+
   system.stateVersion = "23.11";
 }

@@ -1,11 +1,15 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.openssh.enable = true;
-  
+
   # Restrict access to internal network only
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 9091 51413 ]; # SSH, Transmission web, Transmission peer
-    allowedUDPPorts = [ 51413 ]; # Transmission peer UDP
+    allowedTCPPorts = [22 9091 51413]; # SSH, Transmission web, Transmission peer
+    allowedUDPPorts = [51413]; # Transmission peer UDP
     extraCommands = ''
       # Allow connections only from proxy and host
       iptables -A INPUT -s 10.68.3.1/32 -j ACCEPT
@@ -17,7 +21,7 @@
       iptables -A INPUT -j DROP
     '';
   };
-  
+
   services.transmission = {
     enable = true;
     settings = {
@@ -32,6 +36,6 @@
       rpc-password = "{changeme}"; # Should be replaced with a proper password hash
     };
   };
-  
+
   system.stateVersion = "23.11";
 }

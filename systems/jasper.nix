@@ -22,11 +22,15 @@
       luks = {
         devices = {
           # You'll need to replace these UUIDs with the actual ones for jasper
-          "luks-root".device = "/dev/disk/by-uuid/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+          "luks-root" = {
+            device = "/dev/disk/by-uuid/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+          };
 
           # Enable swap on luks if needed
-          "luks-swap".device = "/dev/disk/by-uuid/yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy";
-          "luks-swap".keyFile = "/crypto_keyfile.bin";
+          "luks-swap" = {
+            device = "/dev/disk/by-uuid/yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy";
+            keyFile = "/crypto_keyfile.bin";
+          };
         };
       };
     };
@@ -166,11 +170,14 @@
     useDHCP = lib.mkDefault false;
 
     # Server static IP configuration
-    interfaces.enp0s31f6 = {  # Replace with actual interface name
-      ipv4.addresses = [{
-        address = "10.68.3.2";  # Server's IP address
-        prefixLength = 24;      # /24 subnet (255.255.255.0)
-      }];
+    interfaces.enp0s31f6 = {
+      # Replace with actual interface name
+      ipv4.addresses = [
+        {
+          address = "10.68.3.2"; # Server's IP address
+          prefixLength = 24; # /24 subnet (255.255.255.0)
+        }
+      ];
     };
     defaultGateway = "10.68.3.1";
     nameservers = ["1.1.1.1" "8.8.8.8"];
@@ -194,7 +201,7 @@
     enable = true;
     enableIPv6 = false;
     internalInterfaces = ["ve-+"];
-    externalInterface = "enp0s31f6";  # Replace with actual interface name
+    externalInterface = "enp0s31f6"; # Replace with actual interface name
   };
 
   # Enable IP forwarding for containers
@@ -205,7 +212,7 @@
   # Firewall configuration - only allow external access to the proxy server and SSH
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 ]; # SSH, HTTP, HTTPS
+    allowedTCPPorts = [22 80 443]; # SSH, HTTP, HTTPS
     extraCommands = ''
       # Allow all traffic from internal container network
       iptables -A INPUT -s 10.68.3.0/24 -j ACCEPT
@@ -242,7 +249,7 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.16";  # New IP for v2
+      localAddress = "10.68.3.16"; # New IP for v2
 
       config = import ./containers/goatbook-v2.nix;
     };
@@ -251,7 +258,7 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.17";  # New IP for homeauth
+      localAddress = "10.68.3.17"; # New IP for homeauth
 
       config = import ./containers/homeauth.nix;
     };
@@ -269,7 +276,7 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.5";  # edson
+      localAddress = "10.68.3.5"; # edson
 
       bindMounts = {
         "/data" = {
@@ -277,7 +284,7 @@
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/lectures.nix;
     };
 
@@ -285,15 +292,15 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.5";  # edson (same as lectures)
-      
+      localAddress = "10.68.3.5"; # edson (same as lectures)
+
       bindMounts = {
         "/media" = {
           hostPath = "/media";
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/plex.nix;
     };
 
@@ -301,15 +308,15 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.9";  # robson
-      
+      localAddress = "10.68.3.9"; # robson
+
       bindMounts = {
         "/downloads" = {
           hostPath = "/media/downloads";
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/torrents.nix;
     };
 
@@ -317,8 +324,8 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.10";  # burns
-      
+      localAddress = "10.68.3.10"; # burns
+
       bindMounts = {
         "/dozer" = {
           hostPath = "/dozer";
@@ -329,7 +336,7 @@
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/smb.nix;
     };
 
@@ -337,7 +344,7 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.14";  # maymont
+      localAddress = "10.68.3.14"; # maymont
 
       bindMounts = {
         "/projects" = {
@@ -345,7 +352,7 @@
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/maymont.nix;
     };
 
@@ -353,32 +360,40 @@
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
-      localAddress = "10.68.3.18";  # mundare
-      
+      localAddress = "10.68.3.18"; # mundare
+
       bindMounts = {
         "/data" = {
           hostPath = "/dozer/users/Shared/db_data";
           isReadOnly = false;
         };
       };
-      
+
       config = import ./containers/db.nix;
-    },
+    };
 
     nginx-proxy-server = {
       autoStart = true;
       privateNetwork = true;
       hostAddress = "10.68.3.1";
       localAddress = "10.68.3.1";
-      
+
       # Make this container's ports accessible from the host
       extraVeths = {
         # This creates a direct link to the host for this container only
         proxy-host = {
           hostBridge = "br0"; # Assuming br0 exists or will be created
           forwardPorts = [
-            { hostPort = 80; containerPort = 80; protocol = "tcp"; }
-            { hostPort = 443; containerPort = 443; protocol = "tcp"; }
+            {
+              hostPort = 80;
+              containerPort = 80;
+              protocol = "tcp";
+            }
+            {
+              hostPort = 443;
+              containerPort = 443;
+              protocol = "tcp";
+            }
           ];
         };
       };
