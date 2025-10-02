@@ -32,9 +32,10 @@
         pre-commit
         actionlint
 
-        # Language servers
+        # Language servers & formatters
         nixd
         nil
+        nixfmt-rfc-style
 
         # Database tools
         sqlite
@@ -44,6 +45,13 @@
         curl
         httpie
         postman
+
+        # Ruby development (moved from common.nix)
+        rbenv
+        bundix
+
+        # Performance & benchmarking
+        sysbench
       ];
 
       home.sessionVariables = {
