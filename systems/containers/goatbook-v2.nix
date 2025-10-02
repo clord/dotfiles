@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{...}: {
   services.openssh.enable = true;
 
   # Restrict access to internal network only

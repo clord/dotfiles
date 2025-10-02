@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   services.openssh.enable = true;
 
   # Restrict access to internal network only
@@ -18,57 +14,58 @@
     '';
   };
 
-  services.postgresql = {
-    enable = true;
-    enableTCPIP = true;
-    authentication = ''
-      # TYPE  DATABASE        USER            ADDRESS                 METHOD
-      local   all             all                                     trust
-      host    all             all             127.0.0.1/32            md5
-      host    all             all             ::1/128                 md5
-      host    all             all             10.68.3.0/24            md5
-    '';
-    settings = {
-      listen_addresses = "0.0.0.0";
-      max_connections = 100;
-      shared_buffers = "128MB";
-      work_mem = "4MB";
-      maintenance_work_mem = "64MB";
-      effective_cache_size = "512MB";
-    };
-    dataDir = "/data/postgres";
-    ensureDatabases = [
-      "homeauth"
-      "lectures"
-    ];
-    ensureUsers = [
-      {
-        name = "homeauth";
-        ensurePermissions = {
-          "DATABASE homeauth" = "ALL PRIVILEGES";
-        };
-      }
-      {
-        name = "lectures";
-        ensurePermissions = {
-          "DATABASE lectures" = "ALL PRIVILEGES";
-        };
-      }
-    ];
-  };
-
-  # Create backup script
   environment.systemPackages = with pkgs; [
     postgresql
     gzip
   ];
 
-  # Daily database backups
-  services.cron = {
-    enable = true;
-    systemCronJobs = [
-      "0 3 * * * root mkdir -p /data/backups && pg_dump -U postgres -F c -Z 9 -f /data/backups/all_$(date +\\%Y\\%m\\%d).psql.gz postgres && find /data/backups -type f -name '*.psql.gz' -mtime +14 -delete"
-    ];
+  services = {
+    postgresql = {
+      enable = true;
+      enableTCPIP = true;
+      authentication = ''
+        # TYPE  DATABASE        USER            ADDRESS                 METHOD
+        local   all             all                                     trust
+        host    all             all             127.0.0.1/32            md5
+        host    all             all             ::1/128                 md5
+        host    all             all             10.68.3.0/24            md5
+      '';
+      settings = {
+        listen_addresses = "0.0.0.0";
+        max_connections = 100;
+        shared_buffers = "128MB";
+        work_mem = "4MB";
+        maintenance_work_mem = "64MB";
+        effective_cache_size = "512MB";
+      };
+      dataDir = "/data/postgres";
+      ensureDatabases = [
+        "homeauth"
+        "lectures"
+      ];
+      ensureUsers = [
+        {
+          name = "homeauth";
+          ensurePermissions = {
+            "DATABASE homeauth" = "ALL PRIVILEGES";
+          };
+        }
+        {
+          name = "lectures";
+          ensurePermissions = {
+            "DATABASE lectures" = "ALL PRIVILEGES";
+          };
+        }
+      ];
+    };
+
+    # Daily database backups
+    cron = {
+      enable = true;
+      systemCronJobs = [
+        "0 3 * * * root mkdir -p /data/backups && pg_dump -U postgres -F c -Z 9 -f /data/backups/all_$(date +\\%Y\\%m\\%d).psql.gz postgres && find /data/backups -type f -name '*.psql.gz' -mtime +14 -delete"
+      ];
+    };
   };
 
   system.stateVersion = "23.11";

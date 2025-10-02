@@ -46,120 +46,122 @@
   };
 
   # You'll need to update these with the actual UUIDs for jasper
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz";
-    fsType = "ext4";
-  };
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz";
+      fsType = "ext4";
+    };
 
-  fileSystems."/boot/efi" = {
-    device = "/dev/disk/by-uuid/AAAA-BBBB";
-    fsType = "vfat";
-  };
+    "/boot/efi" = {
+      device = "/dev/disk/by-uuid/AAAA-BBBB";
+      fsType = "vfat";
+    };
 
-  # ZFS filesystems
-  fileSystems."/media" = {
-    device = "sam";
-    fsType = "zfs";
-  };
+    # ZFS filesystems
+    "/media" = {
+      device = "sam";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer" = {
-    device = "dozer";
-    fsType = "zfs";
-  };
+    "/dozer" = {
+      device = "dozer";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/photos" = {
-    device = "dozer/photos";
-    fsType = "zfs";
-  };
+    "/dozer/photos" = {
+      device = "dozer/photos";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/photos/gidget" = {
-    device = "dozer/photos/gidget";
-    fsType = "zfs";
-  };
+    "/dozer/photos/gidget" = {
+      device = "dozer/photos/gidget";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/photos/snowbie" = {
-    device = "dozer/photos/snowbie";
-    fsType = "zfs";
-  };
+    "/dozer/photos/snowbie" = {
+      device = "dozer/photos/snowbie";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users" = {
-    device = "dozer/users";
-    fsType = "zfs";
-  };
+    "/dozer/users" = {
+      device = "dozer/users";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Backups" = {
-    device = "dozer/users/Backups";
-    fsType = "zfs";
-  };
+    "/dozer/users/Backups" = {
+      device = "dozer/users/Backups";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Backups/Leduc" = {
-    device = "dozer/users/Backups/Leduc";
-    fsType = "zfs";
-  };
+    "/dozer/users/Backups/Leduc" = {
+      device = "dozer/users/Backups/Leduc";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Home" = {
-    device = "dozer/users/Home";
-    fsType = "zfs";
-  };
+    "/dozer/users/Home" = {
+      device = "dozer/users/Home";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/ISOs" = {
-    device = "dozer/users/ISOs";
-    fsType = "zfs";
-  };
+    "/dozer/users/ISOs" = {
+      device = "dozer/users/ISOs";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Photos" = {
-    device = "dozer/users/Photos";
-    fsType = "zfs";
-  };
+    "/dozer/users/Photos" = {
+      device = "dozer/users/Photos";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Shared" = {
-    device = "dozer/users/Shared";
-    fsType = "zfs";
-  };
+    "/dozer/users/Shared" = {
+      device = "dozer/users/Shared";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/users/Wikipedia" = {
-    device = "dozer/users/Wikipedia";
-    fsType = "zfs";
-  };
+    "/dozer/users/Wikipedia" = {
+      device = "dozer/users/Wikipedia";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/DISKs" = {
-    device = "dozer/DISKs";
-    fsType = "zfs";
-  };
+    "/dozer/DISKs" = {
+      device = "dozer/DISKs";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/DNS" = {
-    device = "dozer/DNS";
-    fsType = "zfs";
-  };
+    "/dozer/DNS" = {
+      device = "dozer/DNS";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/GRIMSHAW" = {
-    device = "dozer/GRIMSHAW";
-    fsType = "zfs";
-  };
+    "/dozer/GRIMSHAW" = {
+      device = "dozer/GRIMSHAW";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/Library" = {
-    device = "dozer/LIBRARY";
-    fsType = "zfs";
-  };
+    "/dozer/Library" = {
+      device = "dozer/LIBRARY";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/MKVs" = {
-    device = "dozer/MKVs";
-    fsType = "zfs";
-  };
+    "/dozer/MKVs" = {
+      device = "dozer/MKVs";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/TUCK" = {
-    device = "dozer/TUCK";
-    fsType = "zfs";
-  };
+    "/dozer/TUCK" = {
+      device = "dozer/TUCK";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/UniFi" = {
-    device = "dozer/UNIFI";
-    fsType = "zfs";
-  };
+    "/dozer/UniFi" = {
+      device = "dozer/UNIFI";
+      fsType = "zfs";
+    };
 
-  fileSystems."/dozer/wiki" = {
-    device = "dozer/wiki";
-    fsType = "zfs";
+    "/dozer/wiki" = {
+      device = "dozer/wiki";
+      fsType = "zfs";
+    };
   };
 
   swapDevices = [{device = "/dev/disk/by-uuid/wwwwwwww-wwww-wwww-wwww-wwwwwwwwwwww";}];
