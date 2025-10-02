@@ -144,9 +144,18 @@ nix flake show       # Show flake outputs
 ## Configuration Patterns
 
 ### Adding a New Package
-- For all systems: Add to `home/clord/common.nix`
-- For macOS only: Add to `home/clord/darwin-common.nix`
-- For specific system: Add to that system's home config
+
+**See [PACKAGE_ORGANIZATION.md](./PACKAGE_ORGANIZATION.md) for complete guide.**
+
+Quick decision tree:
+1. **Role-specific?** (dev tools, k8s, grafana) → `home/clord/modules/*.nix`
+2. **Universal CLI utility?** (ripgrep, fzf, wget) → `home/clord/packages/common.nix`
+3. **Platform-specific utility?** → `home/clord/packages/{darwin,linux}.nix`
+
+Key principles:
+- Role-based modules are preferred over static package lists
+- No duplication - each package should be defined once
+- Check existing modules before adding to `packages/common.nix`
 
 ### Creating a New System
 1. Add configuration in `systems/<hostname>.nix`

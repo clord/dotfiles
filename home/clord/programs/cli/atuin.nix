@@ -1,4 +1,8 @@
-{roles, pkgs, ...}: {
+{
+  roles,
+  pkgs,
+  ...
+}: {
   programs.atuin = {
     inherit (roles.terminal) enable;
     package = pkgs.atuin;

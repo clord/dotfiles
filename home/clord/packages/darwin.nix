@@ -1,13 +1,10 @@
 # macOS-specific packages
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # Kubernetes tools (commonly used on macOS for dev)
-    k3d
-    tilt
-    kubernetes-helm
-    kind
-
     # Node packages
     nodePackages.svgo
+
+    # Note: Kubernetes tools (k3d, tilt, kubernetes-helm, kind) moved to
+    # home/clord/modules/kubernetes.nix (role-based configuration)
   ];
 }
