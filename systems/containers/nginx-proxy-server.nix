@@ -1,4 +1,4 @@
-{...}: {
+_: {
   services.openssh.enable = true;
 
   # Open ports only in this container

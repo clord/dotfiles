@@ -1,4 +1,4 @@
-{...}: {
+_: {
   services.openssh.enable = true;
 
   # SMB typically needs to be directly accessible on the LAN
