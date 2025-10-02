@@ -18,6 +18,8 @@
           set -gx PATH /etc/profiles/per-user/clord/bin $PATH
       end
 
+      set -gx PATH /run/current-system/sw/bin $PATH
+
       set fish_greeting # Disable greeting
       fish_vi_key_bindings
       set fish_cursor_default block
