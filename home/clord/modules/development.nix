@@ -64,6 +64,7 @@
           delve
           gomodifytags
           gotests
+          moq
           impl
           godef
         ];
