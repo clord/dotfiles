@@ -1,4 +1,6 @@
 _: {
+  nixpkgs.config.allowUnfree = true;
+
   services.openssh.enable = true;
 
   # Restrict access to internal network only

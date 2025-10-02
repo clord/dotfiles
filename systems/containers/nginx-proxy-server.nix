@@ -71,18 +71,5 @@ _: {
     '';
   };
 
-  # Set up basic authentication for certain sites
-  security.htpasswd = {
-    enable = true;
-    files = {
-      "/etc/nginx/htpasswd" = {
-        admin = {
-          # Replace with proper password or use age secrets
-          hashedPassword = "$2y$05$KVRLsnCJsh7QjAhDtZ13Uer8V67QgZGFNe7T41K/eKnBG6jbFVvXW";
-        };
-      };
-    };
-  };
-
   system.stateVersion = "23.11";
 }

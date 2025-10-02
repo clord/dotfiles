@@ -418,6 +418,59 @@
               ./systems/chickenpi.nix
             ];
         };
+
+      jasper = let
+        system = "x86_64-linux";
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = createSpecialArgs system;
+          modules =
+            baseModules system true
+            ++ [
+              {
+                # Set roles for jasper (server with containers)
+                roles = {
+                  terminal.enable = true;
+                  development = {
+                    enable = false; # Server, no dev tools
+                    languages = {
+                      go = false;
+                      rust = false;
+                      node = false;
+                      python = false;
+                    };
+                  };
+                  kubernetes = {
+                    enable = false;
+                    includeHelm = false;
+                    includeK9s = false;
+                  };
+                  grafana = {
+                    enable = false;
+                    includeCloud = false;
+                  };
+                  desktop = {
+                    enable = false; # Headless server
+                    gaming = false;
+                    multimedia = false;
+                  };
+                  server.enable = true;
+                };
+              }
+              (mkUserConfig {
+                username = "clord";
+                isLinux = true;
+                config = {
+                  isNormalUser = true;
+                  extraGroups = ["wheel"];
+                  home = "/home/clord";
+                };
+                homeConfig = import ./home/clord/default.nix;
+              })
+              ./systems/jasper-test.nix
+            ];
+        };
     };
 
     packages.aarch64-linux.chickenpiImage =

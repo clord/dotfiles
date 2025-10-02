@@ -18,26 +18,27 @@ _: {
       shares = {
         media = {
           path = "/media";
-          browseable = true;
-          "read only" = false;
-          "guest ok" = false;
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
         };
         dozer = {
           path = "/dozer";
-          browseable = true;
-          "read only" = false;
-          "guest ok" = false;
+          browseable = "yes";
+          "read only" = "no";
+          "guest ok" = "no";
         };
       };
-      extraConfig = ''
-        # Only allow connections from local network
-        hosts allow = 10.68.3. 127.0.0.1
-        hosts deny = all
-
-        # Security settings
-        server signing = mandatory
-        smb encrypt = required
-      '';
+      settings = {
+        global = {
+          # Only allow connections from local network
+          "hosts allow" = "10.68.3. 127.0.0.1";
+          "hosts deny" = "all";
+          # Security settings
+          "server signing" = "mandatory";
+          "smb encrypt" = "required";
+        };
+      };
     };
 
     syncthing = {
